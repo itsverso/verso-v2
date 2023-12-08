@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+	font-family: "GEIST";
+	font-weight: "light";
+	src: url("../public/fonts/Geist-Light.otf");
+}
+
+@font-face {
+	font-family: "GEIST";
+	font-weight: "regular";
+	src: url("../public/fonts/Geist-Regular.otf");
+}
+
+@font-face {
+	font-family: "GEIST";
+	font-weight: "medium";
+	src: url("../public/fonts/Geist-Medium.otf");
+}
+
+@font-face {
+	font-family: "GEIST";
+	font-weight: "semibold";
+	src: url("../public/fonts/Geist-SemiBold.otf");
+}
+
+@font-face {
+	font-family: "GEIST";
+	font-weight: "bold";
+	src: url("../public/fonts/Geist-Bold.otf");
+}
+
+:root {
+	--foreground-rgb: 0, 0, 0;
+	--background-start-rgb: 245, 245, 245;
+	--background-end-rgb: 245, 245, 245;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--foreground-rgb: 255, 255, 255;
+		--background-start-rgb: 0, 0, 0;
+		--background-end-rgb: 0, 0, 0;
+	}
+}
+
+body {
+	color: rgb(var(--foreground-rgb));
+	background: linear-gradient(
+			to bottom,
+			transparent,
+			rgb(var(--background-end-rgb))
+		)
+		rgb(var(--background-start-rgb));
+}
