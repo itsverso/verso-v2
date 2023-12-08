@@ -3,6 +3,7 @@ import Head from "next/head";
 import type { AppProps } from "next/app";
 import { Header } from "@/components/common/Header";
 import { PrivyProvider } from "@privy-io/react-auth";
+import { optimismGoerli } from "viem/chains";
 
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
@@ -32,6 +33,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 				appId="clpispdty00ycl80fpueukbhl"
 				createPrivyWalletOnLogin={true}
 				config={{
+					defaultChain: optimismGoerli,
+					supportedChains: [optimismGoerli],
 					loginMethods: ["email", "wallet"],
 					appearance: {
 						theme: "light",

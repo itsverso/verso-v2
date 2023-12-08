@@ -2,59 +2,114 @@ import React, { useContext } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useState, useEffect } from "react";
+import { getProfileContractInstance } from "@/lib/contracts";
 import Head from "next/head";
+import { useWallets, usePrivy } from "@privy-io/react-auth";
+import { Spinner } from "@/components/common/Spinner";
 import { ethers } from "ethers";
 
 const CreateProfile: NextPage = () => {
 	// Global state hooks
 	const router = useRouter();
+	const { authenticated, user, login } = usePrivy();
+	const { wallets } = useWallets();
+
+	// Global page state
+	const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+	const [loading, setIsLoading] = useState<boolean>(false);
+	const [wallet, setWallet] = useState<any>(null);
+	const [signer, setSigner] = useState<any>(null);
+	const [metadataURL, setMetadataURL] = useState<string>("");
 
 	// Form state variables
-	const [image, setImage] = useState<string | any>();
 	const [name, setName] = useState<string>("");
-	const [preview, setPreview] = useState<string>();
-	const [mimeType, setMimeType] = useState<string>("");
 	const [handle, setHandle] = useState<string>("");
-	const [metadataURL, setMetadataURL] = useState<string>("");
-	const [redirect, setRedirect] = useState<boolean>(false);
-	const [isConnected, setIsConnected] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
 	const [nameError, setNameError] = useState<string | null>(null);
 	const [handleError, setHandleError] = useState<string | null>(null);
 
-	const PROFILE_REGISTRY_ADDRESS: any =
-		process.env.NEXT_PUBLIC_PROFILE_REGISTRY_ADDRESS || ""; // OP gorli
+	// Checks if users is logged in and sets state.
+	useEffect(() => {
+		console.log(authenticated);
+		if (authenticated) {
+			setIsLoggedIn(true);
+		} else setIsLoggedIn(false);
+	}, [authenticated]);
 
-	const checkIfAddressHasProfile = async () => {};
+	// If wallets exists, sets wallet and signer
+	useEffect(() => {
+		if (wallets[0]) {
+			let wallet = wallets[0];
+			setWallet(wallet);
+			getProviderAndSetSigner(wallet);
+		} else setIsLoggedIn(false);
+	}, [wallets]);
 
+	// If signer, checks if address has profile
+	useEffect(() => {
+		if (signer && isLoggedIn) checkIfAddressHasProfile();
+		else setError(null);
+	}, [signer, isLoggedIn]);
+
+	// Get provider and set signer
+	const getProviderAndSetSigner = async (wallet: any) => {
+		let provider = await wallet.getEthersProvider();
+		setSigner(provider.getSigner());
+	};
+
+	// Check if address already has profile
+	const checkIfAddressHasProfile = async () => {
+		let address = wallet.address;
+		let contractInstance = getProfileContractInstance(signer);
+		let response = await contractInstance.addressToProfileID(address);
+		let id = parseInt(response._hex);
+		if (id == 0) setError(null);
+		else setError("This address already has a profile.");
+	};
+
+	// Check that handle is not empty nor taken
+	const runHandleValidation = async () => {
+		let length = handle.length;
+		if (length == 0) setHandleError("Handle cannot be empty");
+		let contractInstance = getProfileContractInstance(signer);
+		let response = await contractInstance.getIdFromHandle(handle);
+		let id = parseInt(response._hex);
+		if (id !== 0) setHandleError("This handle already taken");
+		if (length == 0 || id !== 0) return false;
+		else return true;
+	};
+
+	// Initiate & execute minting
+	const runChecksAndMintProfile = async (e: any) => {
+		e.preventDefault();
+		setIsLoading(true);
+		let isCorrect = await runHandleValidation();
+		if (ready && isCorrect) mintProfile();
+	};
+
+	// Execute minting
 	const mintProfile = async () => {
-		console.log("here");
-		let error = await handleErrors(name, handle);
-	};
-
-	const handleErrors = async (name: string | undefined, handle: string) => {
-		let nameError;
-		// let handleIsCorrect = await checkHandle();
-		if (name?.length == 0) {
-			console.log("here");
-			setNameError("Name can't be empty");
-			nameError = true;
+		try {
+			let address = wallet.address;
+			let contractInstance = getProfileContractInstance(signer);
+			let register = await contractInstance.registerProfile(
+				"0xA6922859cfd81e9dDB9B7504558ff2B1acB7240b",
+				handle,
+				"www.url.com"
+			);
+			await register.wait();
+			console.log("minted?");
+		} catch (e) {
+			setIsLoading(false);
+			console.log(e);
 		}
-		if (nameError || error) {
-			return true;
-		} else return false;
 	};
 
-	const checkHandle = async () => {
-		return true;
-	};
-
+	// HANDLE input
 	const handleHandleInput = useCallback(
 		(e: any) => {
 			e.preventDefault();
-			if (error) {
-				setHandleError(null);
-			}
+			setHandleError(null);
 			setHandle(
 				e.target.value
 					.toLocaleLowerCase()
@@ -69,6 +124,7 @@ const CreateProfile: NextPage = () => {
 		[error]
 	);
 
+	// NAME input
 	const handleNameInput = useCallback(
 		(e: any) => {
 			e.preventDefault();
@@ -78,7 +134,7 @@ const CreateProfile: NextPage = () => {
 		[error]
 	);
 
-	const ready = !error && handle.length > 0;
+	const ready = !loading && !error && !nameError && handle.length > 0;
 
 	return (
 		<div>
@@ -102,11 +158,11 @@ const CreateProfile: NextPage = () => {
 							<span className="text-versoMint">.</span>
 						</h1>
 
-						{error ? (
+						{error || handleError ? (
 							<div className="w-full flex flex-row">
 								<div className="flex items-center">
-									<h6 className="font-lora text-rose700 text-sm font-normal">
-										{error}
+									<h6 className="text-rose-700 text-sm font-normal">
+										{error || handleError}
 									</h6>
 								</div>
 							</div>
@@ -166,20 +222,38 @@ const CreateProfile: NextPage = () => {
 							<div>
 								{
 									// Buttons
-									!isConnected ? (
-										<div
-											onClick={mintProfile}
-											className={`h-16 flex flex-col items-center justify-center bg-teal-400 cursor-pointer hover:opacity-90`}
-										></div>
+									isLoggedIn ? (
+										<button
+											onClick={runChecksAndMintProfile}
+											disabled={ready ? false : true}
+											className={`h-14 w-full rounded-sm flex flex-col items-center justify-center
+												${
+													ready
+														? "cursor-pointer hover:opacity-90 bg-teal-400"
+														: "bg-teal-400 opacity-70"
+												} `}
+										>
+											{loading ? (
+												<Spinner
+													color="zinc-800"
+													size="8"
+												/>
+											) : (
+												<p className="font-mono">
+													Create Profile
+												</p>
+											)}
+										</button>
 									) : (
 										<div
-											onClick={mintProfile}
-											className={`h-16 flex flex-col items-center justify-center bg-teal-400 ${
-												!!true
-													? "opacity-70"
-													: " shadow-md cursor-pointer hover:opacity-90"
+											onClick={login}
+											className={`h-14 rounded-sm flex flex-col items-center justify-center bg-zinc-600 shadow-md cursor-pointer hover:opacity-90
 											}`}
-										></div>
+										>
+											<p className="text-white font-mono">
+												Connect
+											</p>
+										</div>
 									)
 								}
 							</div>
@@ -192,64 +266,3 @@ const CreateProfile: NextPage = () => {
 };
 
 export default CreateProfile;
-
-/**
- * 
- 
- <div className="relative w-16 lg:w-20 h-16 lg:h-20 rounded-full cursor-pointer flex flex-row items-center justify-center bg-gradient-to-tr from-gradientLight to-zinc300">
-                            <label className={`h-full w-full ${image ? null : 'pt-4 lg:pt-6 px-2 lg:px-4'}`}>
-                                {
-                                    !!image ? 
-                                    <div> 
-                                        <img
-                                            src={preview}
-                                            className="z-10 w-16 lg:w-20 h-16 lg:h-20 rounded-full object-cover object-center"
-                                        />
-                                    </div>
-                                    :
-                                    <div>
-                                        <p className="text-xs font-extralight lg:font-normal text-center">Add Image</p>
-                                    </div>
-                                }
-    
-                                    <input 
-                                        type="file" 
-                                        accept=".jpg, .jpge, .png"
-                                        name="add image"
-                                        className="opacity-0" 
-                                        onChange={handleImageUpload}>
-                                    </input>
-                            </label>
-                            {
-                                !!image ?
-                                <div
-                                    onClick={handleRemovePic} 
-                                    className="absolute left-16 lg:left-20 w-10 flex flex-row items-center justify-center cursor-pointer">
-                                    <Icons.circledX color="gray"/>
-                                </div>
-                                :
-                                null
-                            }
-                        </div>
-
-
-
-                        <div className="w-full mb-6 lg:mb-4">
-                            {
-                                // Description
-                            }
-                            <label className="h-full w-full flex flex-col">
-                                <p className="text-sm font-bold">Description</p>
-                                    <textarea 
-                                        name="name"
-                                        value={description || ""}
-                                        placeholder='Tell people about yourself'
-                                        className="font-light text-zinc700 text-sm focus:outline-none" 
-                                        onChange={handleDescriptionInput}>
-                                    </textarea>
-                            </label>
-                        </div>
-
- * 
- * Currently building https://www.itsverso.xyz for fun. Previously growth at Dune Analytics. I like the ocean and summer mornings.
- */
