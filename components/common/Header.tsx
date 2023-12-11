@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { usePrivy } from "@privy-io/react-auth";
-import { UserButton } from "../main/UserButtonOnHeader";
+import { UserDropDown } from "../main/UserDropDown";
 
 export function Header() {
 	const [top, setTop] = useState(true);
@@ -45,7 +45,7 @@ export function Header() {
 			<div className="w-1/3 md:w-1/5 pr-5 lg:pr-10 flex flex-col items-end justify-center">
 				{ready ? (
 					<div>
-						{authenticated ? <UserButton /> : <LoginButton />}
+						{authenticated ? <UserDropDown /> : <LoginButton />}
 					</div>
 				) : null}
 			</div>

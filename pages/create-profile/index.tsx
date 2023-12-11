@@ -30,7 +30,6 @@ const CreateProfile: NextPage = () => {
 
 	// Checks if users is logged in and sets state.
 	useEffect(() => {
-		console.log(authenticated);
 		if (authenticated) {
 			setIsLoggedIn(true);
 		} else setIsLoggedIn(false);
@@ -150,10 +149,10 @@ const CreateProfile: NextPage = () => {
 			<main className="pl-0">
 				<div className="overflow-hidden h-screen pt-32 lg:pt-0 flex flex-col lg:items-center lg:justify-center">
 					<div className="flex flex-col px-6 lg:w-1/3">
-						<h1 className="font-lora font-light text-zinc400 text-2xl">
+						<h1 className="font-light text-zinc400 text-2xl">
 							Welcome to verso.
 						</h1>
-						<h1 className="font-lora font-light text-black text-2xl mb-4">
+						<h1 className="font-light text-black text-2xl mb-4">
 							Start by creating your profile
 							<span className="text-versoMint">.</span>
 						</h1>
@@ -175,7 +174,7 @@ const CreateProfile: NextPage = () => {
 								// Name
 							}
 							<label className="h-full w-full flex flex-col">
-								<p className="text-sm font-mono text-neutral-600 font-medium py-2">
+								<p className="text-sm text-neutral-600 font-medium py-2">
 									Name
 								</p>
 								<input
@@ -201,7 +200,7 @@ const CreateProfile: NextPage = () => {
 								// Handle
 							}
 							<label className="h-full w-full flex flex-col">
-								<p className="text-sm font-mono text-neutral-600 font-medium  py-2">
+								<p className="text-sm  text-neutral-600 font-medium  py-2">
 									Handle
 								</p>
 								<input
@@ -212,7 +211,7 @@ const CreateProfile: NextPage = () => {
 									className="h-12 px-2 font-light text-neutral-800 text-sm bg-neutral-200 focus:outline-none"
 									onChange={handleHandleInput}
 								></input>
-								<p className="text-sm font-lora text-neutral-500 py-2">
+								<p className="text-sm  text-neutral-500 py-2">
 									itsverso.com/{handle}.verso
 								</p>
 							</label>
@@ -239,7 +238,7 @@ const CreateProfile: NextPage = () => {
 													size="8"
 												/>
 											) : (
-												<p className="font-mono">
+												<p className="">
 													Create Profile
 												</p>
 											)}
@@ -250,7 +249,7 @@ const CreateProfile: NextPage = () => {
 											className={`h-14 rounded-sm flex flex-col items-center justify-center bg-zinc-600 shadow-md cursor-pointer hover:opacity-90
 											}`}
 										>
-											<p className="text-white font-mono">
+											<p className="text-white ">
 												Connect
 											</p>
 										</div>
