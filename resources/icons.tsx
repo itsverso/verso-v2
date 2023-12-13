@@ -32,3 +32,72 @@ export const CopyFull = ({ size = "6" }) => {
 		</svg>
 	);
 };
+
+export const Info = ({ size = "6" }) => {
+	return (
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			fill="none"
+			viewBox="0 0 24 24"
+			strokeWidth={1.5}
+			stroke="currentColor"
+			className={`w-${size} h-${size}`}
+		>
+			<path
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+			/>
+		</svg>
+	);
+};
+
+export const Underline = ({ size = 16, color = "currentColor" }) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width={size}
+		height={size}
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke={color}
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"></path>
+		<line x1="4" y1="21" x2="20" y2="21"></line>
+	</svg>
+);
+
+export const Bold = ({ size = 16, color = "currentColor" }) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width={size}
+		height={size}
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke={color}
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+		<path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+	</svg>
+);
+
+export const Italic = ({ size = 16, color = "currentColor" }) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width={size}
+		height={size}
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke={color}
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<path d="M19 4h-9M14 20H5M14.7 4.7L9.2 19.4" />
+	</svg>
+);

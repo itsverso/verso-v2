@@ -83,7 +83,8 @@ const CreateProfile: NextPage = () => {
 		e.preventDefault();
 		setIsLoading(true);
 		let isCorrect = await runHandleValidation();
-		if (ready && isCorrect) mintProfile();
+		// if (ready && isCorrect) mintProfile();
+		router.push("/create");
 	};
 
 	// Execute minting
