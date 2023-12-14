@@ -84,10 +84,11 @@ const CreateProfile: NextPage = () => {
 		e.preventDefault();
 		setIsLoading(true);
 		let isCorrect = await runHandleValidation();
-		let profileUrl = await uploadProfileToArweave(name, handle);
-		await mintProfile(profileUrl.url);
-		// if (ready && isCorrect) mintProfile();
-		router.push("/create");
+		if (ready && isCorrect) {
+			let profileUrl = await uploadProfileToArweave(name, handle);
+			await mintProfile(profileUrl.url);
+		}
+		router.push(`/${handle}`);
 	};
 
 	// Execute minting

@@ -1,8 +1,8 @@
 import React from "react";
 
 type Props = {
-	color: string;
-	size: string;
+	color?: string;
+	size?: string;
 };
 
 export const Spinner = (props: Props) => {
