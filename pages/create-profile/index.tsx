@@ -6,6 +6,7 @@ import { getProfileContractInstance } from "@/lib/contracts";
 import Head from "next/head";
 import { useWallets, usePrivy } from "@privy-io/react-auth";
 import { Spinner } from "@/components/common/Spinner";
+import { uploadDataToArweave } from "@/resources";
 import { ethers } from "ethers";
 
 const CreateProfile: NextPage = () => {
@@ -83,26 +84,32 @@ const CreateProfile: NextPage = () => {
 		e.preventDefault();
 		setIsLoading(true);
 		let isCorrect = await runHandleValidation();
+		let profileUrl = await uploadProfileToArweave(name, handle);
+		await mintProfile(profileUrl.url);
 		// if (ready && isCorrect) mintProfile();
 		router.push("/create");
 	};
 
 	// Execute minting
-	const mintProfile = async () => {
+	const mintProfile = async (metadata: string) => {
 		try {
 			let address = wallet.address;
 			let contractInstance = getProfileContractInstance(signer);
 			let register = await contractInstance.registerProfile(
-				"0xA6922859cfd81e9dDB9B7504558ff2B1acB7240b",
+				address,
 				handle,
-				"www.url.com"
+				metadata
 			);
 			await register.wait();
-			console.log("minted?");
 		} catch (e) {
 			setIsLoading(false);
 			console.log(e);
 		}
+	};
+
+	// Upload to Arweave
+	const uploadProfileToArweave = async (name: string, handle: string) => {
+		return await uploadDataToArweave({ name, handle });
 	};
 
 	// HANDLE input
