@@ -55,3 +55,8 @@ body {
 		)
 		rgb(var(--background-start-rgb));
 }
+
+h1 {
+	font-size: 3.8rem;
+	font-weight: bold;
+}
