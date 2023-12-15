@@ -6,6 +6,7 @@ export type UserType = {
 	image: string | undefined;
 	signer: any | undefined;
 	collections: any[];
+	fetch: any;
 };
 
 export type SimpleUserType = {

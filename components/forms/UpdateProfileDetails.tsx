@@ -45,8 +45,10 @@ export function UpdateProfileDetailsForm(props: Props) {
 				metadata
 			);
 			await tx.wait();
+			setLoading(false);
 			props.onUpdateComplete();
 		} catch (e) {
+			setLoading(false);
 			console.log("E: ", e);
 		}
 	};

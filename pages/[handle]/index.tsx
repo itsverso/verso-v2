@@ -3,6 +3,7 @@ import { NextPage } from "next";
 import { GetStaticPaths } from "next";
 import { ethers } from "ethers";
 
+import { UserActionTypes } from "@/reducers/userReducer";
 import { AppContext } from "@/context/context";
 import { Spinner } from "@/components/common/Spinner";
 import { Drawer } from "@/components/common/Drawer";
@@ -29,11 +30,16 @@ const Profile: NextPage = (props: any) => {
 	let [openUpdateDrawer, setOpenUpdateDrawer] = useState<boolean>(false);
 	let { data, error, isLoading, mutate } = useGetUserProfile(props.handle);
 
+	// If profile is updated
+	// refetch both locally and globally
 	useEffect(() => {
 		if (fireFetch) {
-			console.log("fire fetch");
 			mutate();
 			setFireFetch(false);
+			dispatch({
+				type: UserActionTypes.FETCH,
+				payload: { fetch: true },
+			});
 		}
 	}, [fireFetch]);
 
@@ -42,7 +48,6 @@ const Profile: NextPage = (props: any) => {
 		if (data?.user && data?.user?.handle == props.handle) {
 			// Only open drawer if users owns the profile
 			if (state.user.handle == data?.user?.handle) {
-				console.log(state.user);
 				setOpenUpdateDrawer(true);
 			}
 		}

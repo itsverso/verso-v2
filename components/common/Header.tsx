@@ -12,7 +12,7 @@ export function Header() {
 	const [top, setTop] = useState(true);
 	const [wallet, setWallet] = useState<any>();
 	const { ready, authenticated, user, login } = usePrivy();
-	const { data, error, isLoading } = useGetUserProfile(wallet?.address);
+	const { data, error, mutate } = useGetUserProfile(wallet?.address);
 
 	// Simple use effect to get wallet
 	useEffect(() => {
@@ -28,6 +28,17 @@ export function Header() {
 		handleSetUserInGlobalState();
 	}, [data, wallet]);
 
+	// Simple use effect to refetch profile
+	useEffect(() => {
+		if (state.user.fetch) {
+			mutate();
+			dispatch({
+				type: UserActionTypes.FETCH,
+				payload: { fetch: false },
+			});
+		}
+	}, [state.user.fetch]);
+
 	// Simple use effect to handle scroll behavior
 	useEffect(() => {
 		const scrollHandler = () => {
@@ -37,6 +48,7 @@ export function Header() {
 		return () => window.removeEventListener("scroll", scrollHandler);
 	}, [top]);
 
+	// Set user in global state.
 	const handleSetUserInGlobalState = async () => {
 		if (!data || !wallet) return;
 		// if user is logged in and authenticated

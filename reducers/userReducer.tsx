@@ -13,11 +13,15 @@ type ActionMap<M extends { [index: string]: any }> = {
 
 export enum UserActionTypes {
 	SET_USER = "SET_USER",
+	FETCH = "FETCH",
 }
 
 type UserPayload = {
 	[UserActionTypes.SET_USER]: {
 		user: UserType | undefined;
+	};
+	[UserActionTypes.FETCH]: {
+		fetch: boolean | undefined;
 	};
 };
 
@@ -34,6 +38,11 @@ export const userReducer = (state: UserType, action: UserActions) => {
 				address: action?.payload.user?.address,
 				image: action?.payload?.user?.image,
 				signer: action?.payload?.user?.signer,
+			};
+		case UserActionTypes.FETCH:
+			return {
+				...state,
+				fetch: action?.payload?.fetch,
 			};
 		default:
 			return state;
