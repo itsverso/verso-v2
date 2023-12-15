@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { NextPage } from "next";
 import { GetStaticPaths } from "next";
-import { fetchUserProfileFromHandle } from "@/lib/user";
 import { ethers } from "ethers";
+
+import { AppContext } from "@/context/context";
 import { Spinner } from "@/components/common/Spinner";
 import { Drawer } from "@/components/common/Drawer";
 import { UpdateProfileDetailsForm } from "@/components/forms/UpdateProfileDetails";
@@ -24,8 +25,19 @@ export async function getStaticProps({ params }: any) {
 const Profile: NextPage = (props: any) => {
 	// Component state
 	let [fireFetch, setFireFetch] = useState<boolean>(false);
+	let { state, dispatch } = useContext(AppContext);
 	let [openUpdateDrawer, setOpenUpdateDrawer] = useState<boolean>(false);
 	let { data, error, isLoading } = useGetUserProfile(props.handle);
+
+	const handleUpdateDrawer = useCallback(() => {
+		// Check if user exists
+		if (data?.user && data?.user?.handle == props.handle) {
+			// Only open drawer if users owns the profile
+			if (state.user.handle == data?.user?.handle) {
+				setOpenUpdateDrawer(true);
+			}
+		}
+	}, [data]);
 
 	if (isLoading) {
 		return (
@@ -35,7 +47,7 @@ const Profile: NextPage = (props: any) => {
 		);
 	}
 
-	if (error) {
+	if (error || data.error) {
 		return (
 			<main className="flex flex-row items-center justify-center min-h-screen min-w-screen">
 				<p>Something went wrong: {data.message}</p>
@@ -56,13 +68,13 @@ const Profile: NextPage = (props: any) => {
 			<div className="w-full p-4 flex flex-col items-center">
 				{data.user.image ? (
 					<img
-						onClick={() => setOpenUpdateDrawer(true)}
+						onClick={handleUpdateDrawer}
 						className="h-20 w-20 rounded-md object-cover"
 						src={data.user?.image}
 					/>
 				) : (
 					<div
-						onClick={() => setOpenUpdateDrawer(true)}
+						onClick={handleUpdateDrawer}
 						className="h-20 w-20 rounded-md object-cover bg-zinc-200"
 					/>
 				)}

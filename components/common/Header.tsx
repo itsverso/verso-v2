@@ -1,11 +1,14 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { UserDropDown } from "../main/UserDropDown";
+import { AppContext } from "@/context/context";
+import { UserActionTypes } from "@/reducers/userReducer";
 import useGetUserProfile from "@/hooks/getUserProfile";
 
 export function Header() {
 	const { wallets } = useWallets();
+	const { state, dispatch } = useContext(AppContext);
 	const [top, setTop] = useState(true);
 	const [wallet, setWallet] = useState<any>();
 	const { ready, authenticated, user, login } = usePrivy();
@@ -16,9 +19,20 @@ export function Header() {
 		if (ready && authenticated && wallets) {
 			// we set the user wallet
 			setWallet(wallets[0]);
-			console.log(data);
 		}
 	}, [ready, authenticated, wallets]);
+
+	useEffect(() => {
+		// Set user in global state
+		if (!data || !wallet) return;
+		else if (!data?.error && !error) {
+			let user = { ...data.user, address: wallet.address };
+			dispatch({
+				type: UserActionTypes.SET_USER,
+				payload: { user },
+			});
+		}
+	}, [data, wallet]);
 
 	useEffect(() => {
 		const scrollHandler = () => {
