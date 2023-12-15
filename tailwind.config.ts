@@ -9,7 +9,7 @@ const config: Config = {
 	theme: {
 		extend: {
 			fontFamily: {
-				geist: ["GEIST", "sans-serif"],
+				lora: ["Lora", "serif"],
 			},
 		},
 	},

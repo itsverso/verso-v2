@@ -1,5 +1,7 @@
 import { ethers } from "ethers";
 
+export const FILE_SIZE = 3100000;
+
 export const PROFILE_REGISTRY_ADDRESS__GOERLI =
 	process.env.NEXT_PUBLIC_PROFILE_REGISTRY_ADDRESSS__GOERLI;
 

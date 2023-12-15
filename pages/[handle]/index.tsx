@@ -4,6 +4,8 @@ import { GetStaticPaths } from "next";
 import { fetchUserProfileFromHandle } from "@/lib/user";
 import { ethers } from "ethers";
 import { Spinner } from "@/components/common/Spinner";
+import { Drawer } from "@/components/common/Drawer";
+import { UpdateProfileDetailsForm } from "@/components/forms/UpdateProfileDetails";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
 	return {
@@ -22,11 +24,12 @@ const Profile: NextPage = (props: any) => {
 	// State
 	let [user, setUser] = useState<any>(null);
 	let [loading, setLoading] = useState<boolean>(true);
+	let [fireFetch, setFireFetch] = useState<boolean>(false);
+	let [openUpdateDrawer, setOpenUpdateDrawer] = useState<boolean>(false);
 
 	// Use effects
 	useEffect(() => {
 		fetchUserData();
-		console.log("HAND: ", props.handle);
 	}, []);
 
 	// Get user
@@ -47,16 +50,26 @@ const Profile: NextPage = (props: any) => {
 
 	return (
 		<main className="flex flex-row min-h-screen min-w-screen py-20 px-32">
+			<Drawer isOpen={openUpdateDrawer} setIsOpen={setOpenUpdateDrawer}>
+				<UpdateProfileDetailsForm
+					side={true}
+					fireFetch={() => {
+						setFireFetch(true);
+					}}
+				/>
+			</Drawer>
 			<div className="w-full p-4 flex flex-col items-center">
 				{user.image ? (
 					<img
+						onClick={() => setOpenUpdateDrawer(true)}
 						className="h-20 w-20 rounded-md object-cover"
-						src={
-							"https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?q=80&w=2776&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-						}
+						src={user?.image}
 					/>
 				) : (
-					<div className="h-20 w-20 rounded-md object-cover bg-zinc-200" />
+					<div
+						onClick={() => setOpenUpdateDrawer(true)}
+						className="h-20 w-20 rounded-md object-cover bg-zinc-200"
+					/>
 				)}
 				<p className="mt-6 text-3xl font-bold">{user.name}</p>
 				<p className="italic text-lg font-light">{user.handle}.verso</p>

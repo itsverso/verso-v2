@@ -1,35 +1,34 @@
+@import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-	font-family: "GEIST";
-	font-weight: "light";
-	src: url("../public/fonts/Geist-Light.otf");
+h1 {
+	@apply font-lora;
+	@apply text-4xl;
+	@apply lg:text-6xl;
+	@apply text-zinc-800;
 }
 
-@font-face {
-	font-family: "GEIST";
-	font-weight: "regular";
-	src: url("../public/fonts/Geist-Regular.otf");
+h2 {
+	@apply font-lora;
+	@apply text-2xl;
+	@apply font-light;
+	@apply text-zinc-700;
 }
 
-@font-face {
-	font-family: "GEIST";
-	font-weight: "medium";
-	src: url("../public/fonts/Geist-Medium.otf");
+h3 {
+	@apply text-xl;
+	@apply font-lora;
+	@apply text-zinc-800;
 }
 
-@font-face {
-	font-family: "GEIST";
-	font-weight: "semibold";
-	src: url("../public/fonts/Geist-SemiBold.otf");
-}
-
-@font-face {
-	font-family: "GEIST";
-	font-weight: "bold";
-	src: url("../public/fonts/Geist-Bold.otf");
+p {
+	@apply font-lora;
+	@apply text-zinc-700;
+	@apply font-light;
+	@apply text-lg;
 }
 
 :root {

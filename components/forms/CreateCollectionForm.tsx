@@ -146,12 +146,12 @@ export function CreateCollectionForm(props: Props) {
 							name="title"
 							value={title || ""}
 							placeholder="Rebirth of Detroit"
-							className="h-14 pl-2 text-base border border-neutral-400 rounded-sm font-light bg-neutral-100 focus:outline-none"
+							className="h-14 pl-2 text-base border border-neutral-400 rounded-sm font-light focus:outline-none"
 							onChange={(e) => setTitle(e.target.value)}
 							onFocus={() => setTitleError("")}
 						></input>
 						<div className="flex flex-row items-center mt-1">
-							<p className="text-rose700 text-xs font-semibold">
+							<p className="text-rose-700 text-xs font-semibold">
 								{titleError}
 							</p>
 						</div>
@@ -166,7 +166,7 @@ export function CreateCollectionForm(props: Props) {
 							name="description"
 							value={description || ""}
 							placeholder="What will be your verse?"
-							className="h-32 p-2 border border-neutral-400 rounded-sm text-base font-light bg-neutral-100 focus:outline-none"
+							className="h-32 p-2 border border-neutral-400 rounded-sm text-base font-light focus:outline-none"
 							onChange={(e) => setDescription(e.target.value)}
 							onFocus={() => setDescriptionError("")}
 						></textarea>
@@ -187,7 +187,7 @@ export function CreateCollectionForm(props: Props) {
 							name="title"
 							value={title || ""}
 							placeholder="0.008"
-							className="h-14 pl-2 text-base border border-neutral-400 rounded-sm font-light bg-neutral-100 focus:outline-none"
+							className="h-14 pl-2 text-base border border-neutral-400 rounded-sm font-light focus:outline-none"
 							onChange={(e) => setTitle(e.target.value)}
 							onFocus={() => setTitleError("")}
 						></input>
