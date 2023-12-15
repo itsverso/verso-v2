@@ -146,7 +146,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 						) : null}
 
 						<div className="w-full mt-4 mb-5 flex flex-row">
-							<div className="w-16 lg:w-20 h-16 lg:h-20 rounded-full flex flex-row bg-zinc-100">
+							<div className="w-16 lg:w-20 h-16 lg:h-20 rounded-md flex flex-row bg-zinc-100">
 								<label className={`h-full w-full`}>
 									{!!image || props.user.image ? (
 										<div>
@@ -154,7 +154,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 												src={
 													preview || props.user.image
 												}
-												className="w-16 lg:w-20 h-16 lg:h-20 rounded-full object-cover object-center"
+												className="w-16 lg:w-20 h-16 lg:h-20 rounded-md object-cover object-center"
 											/>
 										</div>
 									) : (

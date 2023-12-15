@@ -5,6 +5,8 @@ import { UserDropDown } from "../main/UserDropDown";
 import { AppContext } from "@/context/context";
 import { UserActionTypes } from "@/reducers/userReducer";
 import useGetUserProfile from "@/hooks/getUserProfile";
+import * as Icons from "@/resources/icons";
+import Link from "next/link";
 
 export function Header() {
 	const { wallets } = useWallets();
@@ -79,7 +81,7 @@ export function Header() {
 
 	return (
 		<div
-			className={`z-20 w-full h-20 lg:h-16 fixed top-0 flex flex-row ${
+			className={`z-10 w-full h-20 lg:h-16 fixed top-0 flex flex-row bg-white ${
 				!top && "shadow-md"
 			}`}
 		>
@@ -96,7 +98,19 @@ export function Header() {
 				{ready ? (
 					<div>
 						{authenticated ? (
-							<UserDropDown user={data?.user} wallet={wallet} />
+							<div className="flex flex-row justify-center">
+								<div className="flex items-center justify-center mr-8">
+									<Link href={`/create`}>
+										<p className="cursor-pointer hover:opacity-80">
+											create
+										</p>
+									</Link>
+								</div>
+								<UserDropDown
+									user={data?.user}
+									wallet={wallet}
+								/>
+							</div>
 						) : (
 							<LoginButton />
 						)}

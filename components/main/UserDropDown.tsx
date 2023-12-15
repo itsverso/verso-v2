@@ -51,14 +51,14 @@ export function UserDropDown(props: any) {
 				className="relative h-10 w-10 rounded-md flex items-center justify-center hover:opacity-80"
 				onClick={() => setIsVisible(true)}
 			>
-				<div className="h-8 w-8 rounded-full">
+				<div className="h-8 w-8 rounded-md">
 					{props.user?.image ? (
 						<img
-							className="h-8 w-8 rounded-full object-cover"
+							className="h-8 w-8 rounded-md object-cover"
 							src={props.user?.image}
 						/>
 					) : (
-						<div className="h-8 w-8 rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500" />
+						<div className="h-8 w-8 rounded-md bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500" />
 					)}
 				</div>
 			</button>
@@ -77,11 +77,11 @@ export function UserDropDown(props: any) {
 								<div className="h-10 w-10 rounded-full bg-white">
 									{props.user?.image ? (
 										<img
-											className="h-10 w-10 rounded-full object-cover"
+											className="h-10 w-10 rounded-md object-cover"
 											src={props.user?.image}
 										/>
 									) : (
-										<div className="h-10 w-10 rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500" />
+										<div className="h-10 w-10 rounded-md bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500" />
 									)}
 								</div>
 							</div>

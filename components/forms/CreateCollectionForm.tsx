@@ -135,10 +135,11 @@ export function CreateCollectionForm(props: Props) {
 
 	if (true) {
 		return (
-			<div className="w-full h-full flex flex-col justify-center lg:py-20 lg:pr-32">
+			<div className="w-full h-full flex flex-col justify-center bg-white lg:py-20 px-8">
+				<h1 className="text-5xl mb-10">Create Collection</h1>
 				<div className="w-full">
 					<label className="w-full flex flex-col">
-						<p className="text-xs font-extrabold text-zinc-600 py-2">
+						<p className="text-sm font-extrabold text-zinc-600 py-2">
 							Title
 						</p>
 						<input
@@ -146,7 +147,7 @@ export function CreateCollectionForm(props: Props) {
 							name="title"
 							value={title || ""}
 							placeholder="Rebirth of Detroit"
-							className="h-14 pl-2 text-base border border-neutral-400 rounded-sm font-light focus:outline-none"
+							className="h-14 pl-2 text-base bg-zinc-100 font-lora rounded-sm font-light focus:outline-none"
 							onChange={(e) => setTitle(e.target.value)}
 							onFocus={() => setTitleError("")}
 						></input>
@@ -159,14 +160,14 @@ export function CreateCollectionForm(props: Props) {
 				</div>
 				<div className="w-full mt-2">
 					<label className="w-full flex flex-col">
-						<p className="text-xs font-extrabold text-zinc-600 py-2">
+						<p className="text-sm font-extrabold text-zinc-600 py-2">
 							Description
 						</p>
 						<textarea
 							name="description"
 							value={description || ""}
 							placeholder="What will be your verse?"
-							className="h-32 p-2 border border-neutral-400 rounded-sm text-base font-light focus:outline-none"
+							className="h-32 p-2 bg-zinc-100 rounded-sm text-base font-lora font-light focus:outline-none"
 							onChange={(e) => setDescription(e.target.value)}
 							onFocus={() => setDescriptionError("")}
 						></textarea>
@@ -179,7 +180,7 @@ export function CreateCollectionForm(props: Props) {
 				</div>
 				<div className="w-full mt-2">
 					<label className="w-full flex flex-col">
-						<p className="text-xs font-extrabold text-zinc-600 py-2">
+						<p className="text-sm font-extrabold text-zinc-600 py-2">
 							Access Price
 						</p>
 						<input
@@ -187,7 +188,7 @@ export function CreateCollectionForm(props: Props) {
 							name="title"
 							value={title || ""}
 							placeholder="0.008"
-							className="h-14 pl-2 text-base border border-neutral-400 rounded-sm font-light focus:outline-none"
+							className="h-14 pl-2 text-base bg-zinc-100 rounded-sm font-lora font-light focus:outline-none"
 							onChange={(e) => setTitle(e.target.value)}
 							onFocus={() => setTitleError("")}
 						></input>
@@ -205,10 +206,10 @@ export function CreateCollectionForm(props: Props) {
 						}`}
 					>
 						<label className="h-full w-full flex flex-col absolute">
-							<p className="text-xs font-extrabold text-zinc-600 py-2">
+							<p className="text-sm font-extrabold text-zinc-600 py-2">
 								Cover Picture
 							</p>
-							<div className="flex flex-col items-center border border-neutral-400 rounded-sm justify-center h-20 cursor-pointer bg-zinc100 overflow-hidden pt-8 pb-8">
+							<div className="flex flex-col items-center bg-zinc-100 rounded-sm justify-center h-20 cursor-pointer bg-zinc100 overflow-hidden pt-8 pb-8">
 								{!fileName ? (
 									<div>
 										<p className="text-xs text-zinc800">
