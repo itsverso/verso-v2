@@ -6,6 +6,7 @@ import { ethers } from "ethers";
 import { Spinner } from "@/components/common/Spinner";
 import { Drawer } from "@/components/common/Drawer";
 import { UpdateProfileDetailsForm } from "@/components/forms/UpdateProfileDetails";
+import useGetUserProfile from "@/hooks/getUserProfile";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
 	return {
@@ -21,29 +22,23 @@ export async function getStaticProps({ params }: any) {
 }
 
 const Profile: NextPage = (props: any) => {
-	// State
-	let [user, setUser] = useState<any>(null);
-	let [loading, setLoading] = useState<boolean>(true);
+	// Component state
 	let [fireFetch, setFireFetch] = useState<boolean>(false);
 	let [openUpdateDrawer, setOpenUpdateDrawer] = useState<boolean>(false);
+	let { data, error, isLoading } = useGetUserProfile(props.handle);
 
-	// Use effects
-	useEffect(() => {
-		fetchUserData();
-	}, []);
-
-	// Get user
-	const fetchUserData = async () => {
-		let profile = await fetchUserProfileFromHandle(props.handle);
-		setLoading(false);
-		setUser(profile.user);
-		console.log(profile);
-	};
-
-	if (loading) {
+	if (isLoading) {
 		return (
 			<main className="flex flex-row items-center justify-center min-h-screen min-w-screen">
 				<Spinner />
+			</main>
+		);
+	}
+
+	if (error) {
+		return (
+			<main className="flex flex-row items-center justify-center min-h-screen min-w-screen">
+				<p>Something went wrong: {data.message}</p>
 			</main>
 		);
 	}
@@ -59,11 +54,11 @@ const Profile: NextPage = (props: any) => {
 				/>
 			</Drawer>
 			<div className="w-full p-4 flex flex-col items-center">
-				{user.image ? (
+				{data.user.image ? (
 					<img
 						onClick={() => setOpenUpdateDrawer(true)}
 						className="h-20 w-20 rounded-md object-cover"
-						src={user?.image}
+						src={data.user?.image}
 					/>
 				) : (
 					<div
@@ -71,8 +66,10 @@ const Profile: NextPage = (props: any) => {
 						className="h-20 w-20 rounded-md object-cover bg-zinc-200"
 					/>
 				)}
-				<p className="mt-6 text-3xl font-bold">{user.name}</p>
-				<p className="italic text-lg font-light">{user.handle}.verso</p>
+				<p className="mt-6 text-3xl font-bold">{data.user.name}</p>
+				<p className="italic text-lg font-light">
+					{data.user.handle}.verso
+				</p>
 				<div className="h-14 w-full mt-10 border-y border-black ">
 					<div className="flex flex-row h-full items-center">
 						<p className="mr-10">Created</p>
