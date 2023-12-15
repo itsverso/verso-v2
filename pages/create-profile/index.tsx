@@ -7,7 +7,6 @@ import Head from "next/head";
 import { useWallets, usePrivy } from "@privy-io/react-auth";
 import { Spinner } from "@/components/common/Spinner";
 import { uploadDataToArweave } from "@/resources";
-import { ethers } from "ethers";
 
 const CreateProfile: NextPage = () => {
 	// Global state hooks

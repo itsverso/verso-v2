@@ -1,11 +1,24 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { usePrivy } from "@privy-io/react-auth";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { UserDropDown } from "../main/UserDropDown";
+import useGetUserProfile from "@/hooks/getUserProfile";
 
 export function Header() {
+	const { wallets } = useWallets();
 	const [top, setTop] = useState(true);
-	const { ready, authenticated, user, login, logout } = usePrivy();
+	const [wallet, setWallet] = useState<any>();
+	const { ready, authenticated, user, login } = usePrivy();
+	const { data, error, isLoading } = useGetUserProfile(wallet?.address);
+
+	useEffect(() => {
+		// If user and wallets exists
+		if (ready && authenticated && wallets) {
+			// we set the user wallet
+			setWallet(wallets[0]);
+			console.log(data);
+		}
+	}, [ready, authenticated, wallets]);
 
 	useEffect(() => {
 		const scrollHandler = () => {
@@ -17,12 +30,12 @@ export function Header() {
 
 	function LoginButton() {
 		return (
-			<div className="h-10 w-20 rounded-md bg-neutral-300 flex items-center justify-center hover:opacity-80">
+			<div className="h-10 w-20 rounded-sm bg-zinc-800 flex items-center justify-center hover:opacity-90">
 				<button
-					className="h-full w-full font-mono text-sm font-light"
+					className="h-full w-full text-sm font-light"
 					onClick={login}
 				>
-					Log in
+					<p className="text-white font-light text-sm">Log in</p>
 				</button>
 			</div>
 		);
@@ -45,7 +58,11 @@ export function Header() {
 			<div className="w-1/3 md:w-1/5 pr-5 lg:pr-10 flex flex-col items-end justify-center">
 				{ready ? (
 					<div>
-						{authenticated ? <UserDropDown /> : <LoginButton />}
+						{authenticated ? (
+							<UserDropDown user={data?.user} wallet={wallet} />
+						) : (
+							<LoginButton />
+						)}
 					</div>
 				) : null}
 			</div>
