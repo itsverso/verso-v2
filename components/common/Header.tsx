@@ -14,6 +14,7 @@ export function Header() {
 	const { ready, authenticated, user, login } = usePrivy();
 	const { data, error, isLoading } = useGetUserProfile(wallet?.address);
 
+	// Simple use effect to get wallet
 	useEffect(() => {
 		// If user and wallets exists
 		if (ready && authenticated && wallets) {
@@ -22,18 +23,12 @@ export function Header() {
 		}
 	}, [ready, authenticated, wallets]);
 
+	// Simple use effect to set user in global state
 	useEffect(() => {
-		// Set user in global state
-		if (!data || !wallet) return;
-		else if (!data?.error && !error) {
-			let user = { ...data.user, address: wallet.address };
-			dispatch({
-				type: UserActionTypes.SET_USER,
-				payload: { user },
-			});
-		}
+		handleSetUserInGlobalState();
 	}, [data, wallet]);
 
+	// Simple use effect to handle scroll behavior
 	useEffect(() => {
 		const scrollHandler = () => {
 			window.pageYOffset > 10 ? setTop(false) : setTop(true);
@@ -41,6 +36,21 @@ export function Header() {
 		window.addEventListener("scroll", scrollHandler);
 		return () => window.removeEventListener("scroll", scrollHandler);
 	}, [top]);
+
+	const handleSetUserInGlobalState = async () => {
+		if (!data || !wallet) return;
+		// if user is logged in and authenticated
+		else if (!data?.error && !error) {
+			// fecth provider, signer and set user in state.
+			let provider = await wallet.getEthersProvider();
+			let signer = provider.getSigner();
+			let user = { ...data.user, address: wallet.address, signer };
+			dispatch({
+				type: UserActionTypes.SET_USER,
+				payload: { user },
+			});
+		}
+	};
 
 	function LoginButton() {
 		return (

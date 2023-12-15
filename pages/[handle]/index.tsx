@@ -27,17 +27,31 @@ const Profile: NextPage = (props: any) => {
 	let [fireFetch, setFireFetch] = useState<boolean>(false);
 	let { state, dispatch } = useContext(AppContext);
 	let [openUpdateDrawer, setOpenUpdateDrawer] = useState<boolean>(false);
-	let { data, error, isLoading } = useGetUserProfile(props.handle);
+	let { data, error, isLoading, mutate } = useGetUserProfile(props.handle);
 
-	const handleUpdateDrawer = useCallback(() => {
+	useEffect(() => {
+		if (fireFetch) {
+			console.log("fire fetch");
+			mutate();
+			setFireFetch(false);
+		}
+	}, [fireFetch]);
+
+	const handleOpenUpdateDrawer = useCallback(() => {
 		// Check if user exists
 		if (data?.user && data?.user?.handle == props.handle) {
 			// Only open drawer if users owns the profile
 			if (state.user.handle == data?.user?.handle) {
+				console.log(state.user);
 				setOpenUpdateDrawer(true);
 			}
 		}
-	}, [data]);
+	}, [data, state.user]);
+
+	const handleCloseUpdateDrawer = useCallback(() => {
+		setFireFetch(true);
+		setOpenUpdateDrawer(false);
+	}, []);
 
 	if (isLoading) {
 		return (
@@ -60,21 +74,21 @@ const Profile: NextPage = (props: any) => {
 			<Drawer isOpen={openUpdateDrawer} setIsOpen={setOpenUpdateDrawer}>
 				<UpdateProfileDetailsForm
 					side={true}
-					fireFetch={() => {
-						setFireFetch(true);
-					}}
+					signer={state.user.signer}
+					user={data?.user}
+					onUpdateComplete={handleCloseUpdateDrawer}
 				/>
 			</Drawer>
 			<div className="w-full p-4 flex flex-col items-center">
 				{data.user.image ? (
 					<img
-						onClick={handleUpdateDrawer}
+						onClick={handleOpenUpdateDrawer}
 						className="h-20 w-20 rounded-md object-cover"
 						src={data.user?.image}
 					/>
 				) : (
 					<div
-						onClick={handleUpdateDrawer}
+						onClick={handleOpenUpdateDrawer}
 						className="h-20 w-20 rounded-md object-cover bg-zinc-200"
 					/>
 				)}

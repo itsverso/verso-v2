@@ -33,6 +33,7 @@ export const userReducer = (state: UserType, action: UserActions) => {
 				handle: action?.payload?.user?.handle,
 				address: action?.payload.user?.address,
 				image: action?.payload?.user?.image,
+				signer: action?.payload?.user?.signer,
 			};
 		default:
 			return state;

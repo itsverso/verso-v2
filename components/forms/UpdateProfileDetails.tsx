@@ -8,11 +8,11 @@ import { getProfileContractInstance } from "@/lib/contracts";
 import { FormButton } from "../common/FormButton";
 
 type Props = {
-	fireFetch: any;
 	side?: boolean;
 	signer?: any;
 	handle?: string;
 	user?: any;
+	onUpdateComplete: any;
 };
 
 export function UpdateProfileDetailsForm(props: Props) {
@@ -24,12 +24,9 @@ export function UpdateProfileDetailsForm(props: Props) {
 	const [image, setImage] = useState<string | undefined>();
 	const [preview, setPreview] = useState<string>();
 	const [imageHasChanged, setImageHasChanged] = useState<boolean>(false);
-	const [name, setName] = useState<string>();
-	const [handle, setHandle] = useState<string>("");
 	const [mimeType, setMimeType] = useState<string>("");
-	const [description, setDescription] = useState<string>();
-	const [metadataURL, setMetadataURL] = useState<string>("");
-	const [redirect, setRedirect] = useState<boolean>(false);
+	const [name, setName] = useState<string | null>(null);
+	const [description, setDescription] = useState<string | null>();
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState<boolean>(false);
 
@@ -41,13 +38,14 @@ export function UpdateProfileDetailsForm(props: Props) {
 		// Send TX
 		try {
 			const RegistryContract = getProfileContractInstance(props.signer);
-			let id = await RegistryContract.getIdFromHandle(props.handle);
+			let id = await RegistryContract.getIdFromHandle(props.user.handle);
 			let hexId = parseInt(id._hex);
 			let tx = await RegistryContract.updateProfileMetadata(
 				hexId,
 				metadata
 			);
 			await tx.wait();
+			props.onUpdateComplete();
 		} catch (e) {
 			console.log("E: ", e);
 		}
@@ -56,9 +54,10 @@ export function UpdateProfileDetailsForm(props: Props) {
 	// Upload to Arweave
 	const uploadProfileMetadata = async () => {
 		let res = await uploadDataToArweave({
-			name,
-			description,
 			image,
+			name: name || props.user.name,
+			description: description || props.user?.description,
+			handle: props.user?.handle,
 			mimeType: mimeType,
 			hasChanged: imageHasChanged,
 		});
@@ -146,18 +145,14 @@ export function UpdateProfileDetailsForm(props: Props) {
 
 						<div className="w-full mt-4 mb-5 flex flex-row">
 							<div className="w-16 lg:w-20 h-16 lg:h-20 rounded-full flex flex-row bg-zinc-100">
-								<label
-									className={`h-full w-full ${
-										image
-											? null
-											: "pl-5 lg:pl-7 pt-5 lg:pt-7"
-									}`}
-								>
-									{!!image ? (
+								<label className={`h-full w-full`}>
+									{!!image || props.user.image ? (
 										<div>
 											<img
-												src={preview}
-												className="z-50 w-16 lg:w-20 h-16 lg:h-20 rounded-full object-cover object-center"
+												src={
+													preview || props.user.image
+												}
+												className="w-16 lg:w-20 h-16 lg:h-20 rounded-full object-cover object-center"
 											/>
 										</div>
 									) : (
@@ -194,6 +189,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 									type="text"
 									name="name"
 									value={name || ""}
+									placeholder={props.user?.name || ""}
 									className="h-12 px-4 font-light font-lora text-zinc-500 bg-zinc-100 text-sm focus:outline-none"
 									onChange={handleNameInput}
 								></input>
@@ -210,7 +206,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 								</p>
 								<textarea
 									name="description"
-									value={description}
+									value={description || ""}
 									placeholder={props.user?.description || ""}
 									className="h-24 p-4 font-light font-lora text-zinc-500 bg-zinc-100 text-sm focus:outline-none"
 									onChange={handleDescriptionInput}

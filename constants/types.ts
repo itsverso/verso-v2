@@ -4,6 +4,7 @@ export type UserType = {
 	handle: string | undefined;
 	description: string | undefined;
 	image: string | undefined;
+	signer: any | undefined;
 	collections: any[];
 };
 

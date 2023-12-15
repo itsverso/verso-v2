@@ -121,16 +121,16 @@ export const Plus = ({ size = "6", color = "currentColor" }) => {
 	);
 };
 
-export const Image = ({ size = "6", color = "currentColor" }) => (
+export const Image = ({ size = "2", color = "currentColor" }) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
-		viewBox="0 0 24 24"
+		viewBox="0 0 52 52"
 		fill="none"
 		stroke={color}
 		strokeWidth="1.2"
 		strokeLinecap="round"
 		strokeLinejoin="round"
-		className={`w-${size} h-${size}`}
+		className={`w-2 h-2`}
 	>
 		<path
 			strokeLinecap="round"
