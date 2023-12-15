@@ -49,7 +49,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 			props.onUpdateComplete();
 		} catch (e) {
 			setLoading(false);
-			console.log("E: ", e);
+			console.log("error: ", e);
 		}
 	};
 

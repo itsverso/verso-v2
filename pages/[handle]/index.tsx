@@ -7,6 +7,7 @@ import { UserActionTypes } from "@/reducers/userReducer";
 import { AppContext } from "@/context/context";
 import { Spinner } from "@/components/common/Spinner";
 import { Drawer } from "@/components/common/Drawer";
+import * as Icons from "@/resources/icons";
 import { UpdateProfileDetailsForm } from "@/components/forms/UpdateProfileDetails";
 import useGetUserProfile from "@/hooks/getUserProfile";
 
@@ -84,7 +85,7 @@ const Profile: NextPage = (props: any) => {
 					onUpdateComplete={handleCloseUpdateDrawer}
 				/>
 			</Drawer>
-			<div className="w-full p-4 flex flex-col items-center">
+			<div className="w-full p-4 flex flex-col items-start">
 				{data.user.image ? (
 					<img
 						onClick={handleOpenUpdateDrawer}
@@ -101,11 +102,18 @@ const Profile: NextPage = (props: any) => {
 				<p className="italic text-lg font-light">
 					{data.user.handle}.verso
 				</p>
-				<div className="h-14 w-full mt-10 border-y border-black ">
+				<div className="h-14 w-full my-10 border-y border-zinc-400 ">
 					<div className="flex flex-row h-full items-center">
-						<p className="mr-10">Created</p>
-						<p>Collected</p>
+						<p className="mr-10 text-zinc-600">Created</p>
+						<p className="text-zinc-600">Collected</p>
 					</div>
+				</div>
+				<div
+					key={"#e4e4e7"}
+					onClick={props.onClick}
+					className={`md:mb-20 w-full h-40 lg:h-72 lg:w-72 flex flex-col items-center justify-center cursor-pointer hover:opacity-90 bg-zinc-100`}
+				>
+					<Icons.Plus color={"#e4e4e7"} size={"20"} />
 				</div>
 			</div>
 		</main>

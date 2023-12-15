@@ -85,8 +85,9 @@ export function Header() {
 		>
 			<div className="w-1/3 md:w-1/5 flex flex-col justify-end lg:justify-center pl-5 lg:pl-6">
 				<div className="py-4 lg:p-4 z-50 overflow-visible cursor-pointer">
-					<h4 className="text-xl md:text-2xl font-lora tracking-wide leading-none text-zinc800 lg:text-lg">
-						verso<span className="text-versoMint text-2xl">.</span>
+					<h4 className="text-xl lg:text-xl font-lora tracking-wide leading-none text-zinc-800 ">
+						verso
+						<span className="text-teal-400 lg:text-2xl">.</span>
 					</h4>
 				</div>
 			</div>
