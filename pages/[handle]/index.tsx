@@ -104,7 +104,7 @@ const Profile: NextPage = (props: any) => {
 					/>
 				)}
 				<p className="mt-6 text-3xl font-bold">{data.user.name}</p>
-				<p className="italic text-lg font-light">
+				<p className="italic text-lg font-light text-zinc-600">
 					{data.user.handle}.verso
 				</p>
 				<div className="h-14 w-full my-10 border-y border-zinc-300 ">

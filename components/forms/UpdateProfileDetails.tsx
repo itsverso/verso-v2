@@ -145,7 +145,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 							</div>
 						) : null}
 
-						<div className="w-full mt-4 mb-5 flex flex-row">
+						<div className="w-full mt-4 mb-5 flex flex-col">
 							<div className="w-16 lg:w-20 h-16 lg:h-20 rounded-md flex flex-row bg-zinc-100">
 								<label className={`h-full w-full`}>
 									{!!image || props.user.image ? (
@@ -157,9 +157,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 												className="w-16 lg:w-20 h-16 lg:h-20 rounded-md object-cover object-center"
 											/>
 										</div>
-									) : (
-										<Icons.Image color="black" />
-									)}
+									) : null}
 
 									<input
 										type="file"
