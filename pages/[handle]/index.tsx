@@ -10,6 +10,7 @@ import { Drawer } from "@/components/common/Drawer";
 import * as Icons from "@/resources/icons";
 import { UpdateProfileDetailsForm } from "@/components/forms/UpdateProfileDetails";
 import { CreateCollectionForm } from "@/components/forms/CreateCollectionForm";
+import { CollectionsCarousel } from "@/components/main/CollectionsCarousel";
 import useGetUserProfile from "@/hooks/getUserProfile";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
@@ -115,13 +116,13 @@ const Profile: NextPage = (props: any) => {
 						<p className="font-light text-zinc-600">Collected</p>
 					</div>
 				</div>
-				<div
-					key={"#e4e4e7"}
-					onClick={() => setOpenCreateDrawer(true)}
-					className={`md:mb-20 w-full h-40 lg:h-72 lg:w-72 flex flex-col items-center justify-center cursor-pointer hover:opacity-90 bg-zinc-100`}
-				>
-					<Icons.Plus color={"#e4e4e7"} size={"20"} />
-				</div>
+
+				<CollectionsCarousel
+					openDrawer={() => setOpenCreateDrawer(true)}
+					handle={props.handle}
+					collections={[]}
+					onClick={() => null}
+				/>
 			</div>
 		</main>
 	);

@@ -3,20 +3,15 @@ import { AppContext } from "@/context/context";
 import { Spinner } from "../common/Spinner";
 import { useWallets } from "@privy-io/react-auth";
 import { getFactoryContractInstance } from "@/lib/contracts";
-import { createCollectionV2 } from "@/lib/collections";
 import { uploadDataToArweave } from "@/resources";
-import {
-	NULL_ADDRESS,
-	MAX_INT,
-	MARKET_MASTER_ADDRESS__GOERLI,
-} from "@/constants";
-import * as Icons from "../../resources/icons";
+import { NULL_ADDRESS } from "@/constants";
 
 export function CreateCollectionForm() {
 	// General state
 	const { state } = useContext(AppContext);
 	const { wallets } = useWallets();
 	const [signer, setSigner] = useState<any>();
+	const [loading, setLoading] = useState<boolean>(false);
 
 	// Form state
 	const [title, setTitle] = useState<string>("");
@@ -25,8 +20,9 @@ export function CreateCollectionForm() {
 	const [mimeType, setMimeType] = useState<string>("");
 	const [description, setDescription] = useState<string>("");
 	const [tokenAddress, setTokenAddress] = useState<string>("");
-	const [minimumBalance, setMinimumBalance] = useState<string>("");
-	const [loading, setLoading] = useState<boolean>(false);
+	const [readType, setReadType] = useState<number>(0);
+	const [writeType, setWriteType] = useState<number>(1);
+	const [minimumBalance, setMinimumBalance] = useState<number>(0);
 
 	// Form errors
 	const [titleError, setTitleError] = useState<string>("");
@@ -53,12 +49,11 @@ export function CreateCollectionForm() {
 		// Set loading
 		setLoading(true);
 		// Run checks
-		let error = handleErrors(title, description);
+		let error = handleErrors(title);
 		// If correct,
 		if (!error && !!signer) {
 			try {
 				// Upload media
-				/** 
 				let metadata = await uploadDataToArweave({
 					title,
 					description,
@@ -67,61 +62,17 @@ export function CreateCollectionForm() {
 					creator: state.user.handle,
 					date: Date.now(),
 				});
-				let metadataURI = metadata.url;
-				console.log(metadata.url);
-				*/
+				// Execute TX.
 				let factory = getFactoryContractInstance(signer);
-				console.log("Factory: ", factory);
-				let params = {
-					_collectionName: title,
-					_collectionMetadataURI:
-						"https://arweave.net/tcaciz875SKQjqNw2yCwYj7OKtv7eDAeOVGaLr7ueyM",
-					_readType: 0,
-					_writeType: 1,
-					_collectionPermissions:
-						"0x0000000000000000000000000000000000000000",
-					_minimumBalance: 0,
-					_marketAddress: MARKET_MASTER_ADDRESS__GOERLI,
-					_supplyLimit: 10,
-					_tokenPrice: 0,
-					_isBonded: true,
-				};
-				let col = await createCollectionV2(params);
-				console.log(col);
-				return;
-				let tx = await factory.createCollection(params);
-				console.log("hereee");
+				let tx = await factory.createCollection(
+					title,
+					readType,
+					writeType,
+					NULL_ADDRESS,
+					minimumBalance,
+					metadata.url
+				);
 				let receipt = await tx.wait();
-				// return receipt.logs[0].address;
-				/**
-				 * 
-				 * 
-				 * {
-					_collectionName: title,
-					_collectionMetadataURI:
-						"https://arweave.net/tcaciz875SKQjqNw2yCwYj7OKtv7eDAeOVGaLr7ueyM",
-					_readType: 0,
-					_writeType: 1,
-					_collectionPermissions:
-						"0x0000000000000000000000000000000000000000",
-					_minimumBalance: 0,
-					_marketAddress: MARKET_MASTER_ADDRESS__GOERLI,
-					_supplyLimit: 10,
-					_tokenPrice: 0,
-					_isBonded: true,
-				}{
-						string _collectionName;
-						string _collectionMetadataURI;
-						uint8 _readType;
-						uint8 _writeType;
-						address _collectionPermissions;
-						uint _minimumBalance;
-						address _marketAddress;
-						uint _supplyLimit; 
-						uint _tokenPrice;
-						bool _isBonded;
-				 */
-
 				console.log("COLLECTION CREATED: ", receipt.logs[0].address);
 				resetInitialState();
 			} catch (e) {}
@@ -131,7 +82,7 @@ export function CreateCollectionForm() {
 	};
 
 	// Check errors before minting new colection
-	const handleErrors = (title: string, description: string) => {
+	const handleErrors = (title: string) => {
 		let titleError;
 		let imageError;
 		if (title?.length == 0) {
@@ -154,7 +105,7 @@ export function CreateCollectionForm() {
 		setImage("");
 		setLoading(false);
 		setTitleError("");
-		setMinimumBalance("");
+		setMinimumBalance(0);
 		setTokenAddress("");
 		setAddressError("");
 		setTitleError("");
@@ -229,27 +180,6 @@ export function CreateCollectionForm() {
 							className="h-32 p-2 bg-zinc-100 rounded-sm text-base font-lora font-light focus:outline-none"
 							onChange={(e) => setDescription(e.target.value)}
 						></textarea>
-					</label>
-				</div>
-				<div className="w-full mt-2">
-					<label className="w-full flex flex-col">
-						<p className="text-sm font-extrabold text-zinc-600 py-2">
-							Access Price
-						</p>
-						<input
-							type="text"
-							name="title"
-							value={title || ""}
-							placeholder="0.008"
-							className="h-14 pl-2 text-base bg-zinc-100 rounded-sm font-lora font-light focus:outline-none"
-							onChange={(e) => setTitle(e.target.value)}
-							onFocus={() => setTitleError("")}
-						></input>
-						<div className="flex flex-row items-center mt-1">
-							<p className="text-rose700 text-xs font-semibold">
-								{titleError}
-							</p>
-						</div>
 					</label>
 				</div>
 				<div className="w-full mt-2">
