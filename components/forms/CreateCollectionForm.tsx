@@ -5,10 +5,11 @@ import { useWallets } from "@privy-io/react-auth";
 import { getFactoryContractInstance } from "@/lib/contracts";
 import { uploadDataToArweave } from "@/resources";
 import { NULL_ADDRESS } from "@/constants";
+import { UserActionTypes } from "@/reducers/userReducer";
 
-export function CreateCollectionForm() {
+export function CreateCollectionForm(props: any) {
 	// General state
-	const { state } = useContext(AppContext);
+	const { state, dispatch } = useContext(AppContext);
 	const { wallets } = useWallets();
 	const [signer, setSigner] = useState<any>();
 	const [loading, setLoading] = useState<boolean>(false);
@@ -72,13 +73,21 @@ export function CreateCollectionForm() {
 					minimumBalance,
 					metadata.url
 				);
-				let receipt = await tx.wait();
-				console.log("COLLECTION CREATED: ", receipt.logs[0].address);
+				await tx.wait();
 				resetInitialState();
+				props.handleClose();
+				handleRefetch();
 			} catch (e) {}
 		} else {
 			setLoading(false);
 		}
+	};
+
+	const handleRefetch = () => {
+		dispatch({
+			type: UserActionTypes.FETCH,
+			payload: { fetch: true },
+		});
 	};
 
 	// Check errors before minting new colection

@@ -6,6 +6,7 @@ type Props = {
 	title: string;
 	src: string;
 	address: string;
+	handle: string;
 	item: any;
 };
 
@@ -35,7 +36,10 @@ export function CollectionCard(props: Props) {
 	}, []);
 
 	return (
-		<Link href={`/${address}`} style={{ textDecoration: "none" }}>
+		<Link
+			href={`${props.handle}/${item.tokenId}`}
+			style={{ textDecoration: "none" }}
+		>
 			<div
 				onMouseEnter={() => setRenderBin(true)}
 				onMouseLeave={() => setRenderBin(false)}

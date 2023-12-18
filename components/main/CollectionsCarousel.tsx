@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { CollectionCard } from "./CollectionCard";
 import { AppContext } from "../../context/context";
 import * as Icons from "../../resources/icons";
+import { UserActionTypes } from "@/reducers/userReducer";
 import useGetUserCollections from "@/hooks/getUserCollections";
 
 type Collection = {
@@ -23,9 +24,16 @@ export function CollectionsCarousel(props: CarouselProps) {
 	const { state, dispatch } = useContext(AppContext);
 	const { data, error, isLoading, mutate } = useGetUserCollections(handle);
 
+	// Simple use effect to refetch collections
 	useEffect(() => {
-		console.log(data);
-	}, [data]);
+		if (state.user.fetch) {
+			mutate();
+			dispatch({
+				type: UserActionTypes.FETCH,
+				payload: { fetch: false },
+			});
+		}
+	}, [state.user.fetch]);
 
 	if (isLoading) {
 		return (
@@ -62,6 +70,7 @@ export function CollectionsCarousel(props: CarouselProps) {
 						<CollectionCard
 							key={index}
 							item={item}
+							handle={props.handle}
 							title={item.title}
 							src={item.media[0].gateway}
 							address={item.address}

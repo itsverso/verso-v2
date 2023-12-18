@@ -89,7 +89,9 @@ const Profile: NextPage = (props: any) => {
 				/>
 			</Drawer>
 			<Drawer isOpen={openCreateDrawer} setIsOpen={setOpenCreateDrawer}>
-				<CreateCollectionForm />
+				<CreateCollectionForm
+					handleClose={() => setOpenCreateDrawer(false)}
+				/>
 			</Drawer>
 			<div className="w-full p-4 flex flex-col items-start">
 				{data.user.image ? (
@@ -111,9 +113,9 @@ const Profile: NextPage = (props: any) => {
 				<div className="h-14 w-full my-10 border-y border-zinc-300 ">
 					<div className="flex flex-row h-full items-center">
 						<p className="mr-10 font-light text-zinc-600">
-							Created
+							Collections
 						</p>
-						<p className="font-light text-zinc-600">Collected</p>
+						<p className="font-light text-zinc-600">About me</p>
 					</div>
 				</div>
 
