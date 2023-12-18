@@ -1,14 +1,22 @@
 import React, { useState, useCallback, useEffect, useContext } from "react";
+import { AppContext } from "@/context/context";
 import { Spinner } from "../common/Spinner";
-import { ethers } from "ethers";
+import { useWallets } from "@privy-io/react-auth";
+import { getFactoryContractInstance } from "@/lib/contracts";
+import { createCollectionV2 } from "@/lib/collections";
+import { uploadDataToArweave } from "@/resources";
+import {
+	NULL_ADDRESS,
+	MAX_INT,
+	MARKET_MASTER_ADDRESS__GOERLI,
+} from "@/constants";
 import * as Icons from "../../resources/icons";
 
-const ETHEREUM_NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
-
-type Props = {};
-
-export function CreateCollectionForm(props: Props) {
-	// General state.
+export function CreateCollectionForm() {
+	// General state
+	const { state } = useContext(AppContext);
+	const { wallets } = useWallets();
+	const [signer, setSigner] = useState<any>();
 
 	// Form state
 	const [title, setTitle] = useState<string>("");
@@ -16,76 +24,128 @@ export function CreateCollectionForm(props: Props) {
 	const [image, setImage] = useState<any>("");
 	const [mimeType, setMimeType] = useState<string>("");
 	const [description, setDescription] = useState<string>("");
-	let [tokenAddress, setTokenAddress] = useState<string>("");
+	const [tokenAddress, setTokenAddress] = useState<string>("");
 	const [minimumBalance, setMinimumBalance] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(false);
-	const [fireCreateCollection, setFireCreateCollection] =
-		useState<boolean>(false);
-	const [renderCommunitySettings, setRenderCommunitySettings] =
-		useState<boolean>(false);
-	const [isERC20, setisERC20] = useState<boolean>(true);
-	// Component/Form errors
+
+	// Form errors
 	const [titleError, setTitleError] = useState<string>("");
-	const [descriptionError, setDescriptionError] = useState<string>("");
 	const [imageError, setImageError] = useState<string>("");
 	const [addressError, setAddressError] = useState<string>("");
 	const [error, setError] = useState<string | null>(null);
 
+	// If wallets exists, sets wallet and signer
 	useEffect(() => {
-		if (fireCreateCollection) {
-			try {
-				handleCreateCollection(title, description, image);
-			} catch (error) {
-				setLoading(false);
-				setError(error as any);
-				setFireCreateCollection(false);
-			}
+		if (wallets[0]) {
+			let wallet = wallets[0];
+			getProviderAndSetSigner(wallet);
 		}
-	}, [title, description, image, fireCreateCollection]);
+	}, [wallets]);
 
+	// Get provider and set signer
+	const getProviderAndSetSigner = async (wallet: any) => {
+		let provider = await wallet.getEthersProvider();
+		setSigner(provider.getSigner());
+	};
+
+	// Run checks, upload media and create collection.
+	const handleCreateCollection = async () => {
+		// Set loading
+		setLoading(true);
+		// Run checks
+		let error = handleErrors(title, description);
+		// If correct,
+		if (!error && !!signer) {
+			try {
+				// Upload media
+				/** 
+				let metadata = await uploadDataToArweave({
+					title,
+					description,
+					image,
+					mimeType,
+					creator: state.user.handle,
+					date: Date.now(),
+				});
+				let metadataURI = metadata.url;
+				console.log(metadata.url);
+				*/
+				let factory = getFactoryContractInstance(signer);
+				console.log("Factory: ", factory);
+				let params = {
+					_collectionName: title,
+					_collectionMetadataURI:
+						"https://arweave.net/tcaciz875SKQjqNw2yCwYj7OKtv7eDAeOVGaLr7ueyM",
+					_readType: 0,
+					_writeType: 1,
+					_collectionPermissions:
+						"0x0000000000000000000000000000000000000000",
+					_minimumBalance: 0,
+					_marketAddress: MARKET_MASTER_ADDRESS__GOERLI,
+					_supplyLimit: 10,
+					_tokenPrice: 0,
+					_isBonded: true,
+				};
+				let col = await createCollectionV2(params);
+				console.log(col);
+				return;
+				let tx = await factory.createCollection(params);
+				console.log("hereee");
+				let receipt = await tx.wait();
+				// return receipt.logs[0].address;
+				/**
+				 * 
+				 * 
+				 * {
+					_collectionName: title,
+					_collectionMetadataURI:
+						"https://arweave.net/tcaciz875SKQjqNw2yCwYj7OKtv7eDAeOVGaLr7ueyM",
+					_readType: 0,
+					_writeType: 1,
+					_collectionPermissions:
+						"0x0000000000000000000000000000000000000000",
+					_minimumBalance: 0,
+					_marketAddress: MARKET_MASTER_ADDRESS__GOERLI,
+					_supplyLimit: 10,
+					_tokenPrice: 0,
+					_isBonded: true,
+				}{
+						string _collectionName;
+						string _collectionMetadataURI;
+						uint8 _readType;
+						uint8 _writeType;
+						address _collectionPermissions;
+						uint _minimumBalance;
+						address _marketAddress;
+						uint _supplyLimit; 
+						uint _tokenPrice;
+						bool _isBonded;
+				 */
+
+				console.log("COLLECTION CREATED: ", receipt.logs[0].address);
+				resetInitialState();
+			} catch (e) {}
+		} else {
+			setLoading(false);
+		}
+	};
+
+	// Check errors before minting new colection
 	const handleErrors = (title: string, description: string) => {
 		let titleError;
-		let descriptionError;
 		let imageError;
 		if (title?.length == 0) {
 			setTitleError("Title can't be empty");
 			titleError = true;
 		}
-		if (description?.length == 0 || !description) {
-			// setDescriptionError("Description can't be empty")
-			// descriptionError = true
-		}
 		if (fileName?.length == 0 || !fileName) {
 			setImageError("Image can't be empty");
 			imageError = true;
 		}
-		if (tokenAddress.length > 0 && !ethers.utils.isAddress(tokenAddress)) {
-			setAddressError("Invalid address format. Please double check.");
-		}
-		if (titleError || descriptionError || imageError || error) {
+		if (titleError || imageError || error) {
 			return true;
 		} else return false;
 	};
-
-	const handleCreateCollection = async (
-		title: string,
-		description: string,
-		image: string
-	) => {
-		setLoading(true);
-		setFireCreateCollection(false);
-		let error = handleErrors(title, description);
-
-		if (error) {
-			setLoading(false);
-		} else {
-			try {
-				resetInitialState();
-			} catch (e) {}
-		}
-	};
-
-	const createCollection = async (res: any) => {};
 
 	const resetInitialState = () => {
 		setTitle("");
@@ -98,7 +158,6 @@ export function CreateCollectionForm(props: Props) {
 		setTokenAddress("");
 		setAddressError("");
 		setTitleError("");
-		setDescriptionError("");
 		setImageError("");
 		setError("");
 	};
@@ -169,13 +228,7 @@ export function CreateCollectionForm(props: Props) {
 							placeholder="What will be your verse?"
 							className="h-32 p-2 bg-zinc-100 rounded-sm text-base font-lora font-light focus:outline-none"
 							onChange={(e) => setDescription(e.target.value)}
-							onFocus={() => setDescriptionError("")}
 						></textarea>
-						<div className="flex flex-row items-center mt-1">
-							<p className="text-rose700 text-xs font-semibold">
-								{descriptionError}
-							</p>
-						</div>
 					</label>
 				</div>
 				<div className="w-full mt-2">
@@ -246,7 +299,7 @@ export function CreateCollectionForm(props: Props) {
 				</div>
 				<div className="mt-6">
 					<button
-						onClick={() => {}}
+						onClick={handleCreateCollection}
 						disabled={ready ? false : true}
 						className={`h-14 w-full rounded-sm flex flex-col items-center justify-center
 												${
