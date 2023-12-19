@@ -1,12 +1,33 @@
 import { useEffect, useRef, useState } from "react";
 import { CollectionFeed } from "@/components/feeds/CollectionFeed";
 import { AddMediaButton } from "@/components/main/AddMediaButton";
-import { NextPage } from "next";
+import useGetCollectionTokens from "@/hooks/useGetCollectionTokens";
 
-const Collection: NextPage = () => {
+import { NextPage } from "next";
+import { GetStaticPaths } from "next";
+
+export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
+	return {
+		paths: [],
+		fallback: "blocking",
+	};
+};
+
+export async function getStaticProps({ params }: any) {
+	let id = params.collectionId;
+	return { props: { id } };
+}
+
+const Collection: NextPage = (props: any) => {
 	const [dragActive, setDragActive] = useState<boolean>(false);
 	const inputRef = useRef<any>(null);
 	const [files, setFiles] = useState<any>([]);
+
+	const { data, error, isLoading, mutate } = useGetCollectionTokens(props.id);
+
+	useEffect(() => {
+		console.log(data);
+	}, [data]);
 
 	return (
 		<main className="flex flex-col px-32 py-20 min-w-screen min-h-screen">

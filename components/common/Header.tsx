@@ -4,7 +4,7 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { UserDropDown } from "../main/UserDropDown";
 import { AppContext } from "@/context/context";
 import { UserActionTypes } from "@/reducers/userReducer";
-import useGetUserProfile from "@/hooks/getUserProfile";
+import useGetUserProfile from "@/hooks/useGetUserProfile";
 import * as Icons from "@/resources/icons";
 import Link from "next/link";
 

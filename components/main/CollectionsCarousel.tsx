@@ -3,7 +3,7 @@ import { CollectionCard } from "./CollectionCard";
 import { AppContext } from "../../context/context";
 import * as Icons from "../../resources/icons";
 import { UserActionTypes } from "@/reducers/userReducer";
-import useGetUserCollections from "@/hooks/getUserCollections";
+import useGetUserCollections from "@/hooks/useGetUserCollections";
 
 type Collection = {
 	address: string;

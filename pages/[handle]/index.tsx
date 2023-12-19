@@ -11,7 +11,7 @@ import * as Icons from "@/resources/icons";
 import { UpdateProfileDetailsForm } from "@/components/forms/UpdateProfileDetails";
 import { CreateCollectionForm } from "@/components/forms/CreateCollectionForm";
 import { CollectionsCarousel } from "@/components/main/CollectionsCarousel";
-import useGetUserProfile from "@/hooks/getUserProfile";
+import useGetUserProfile from "@/hooks/useGetUserProfile";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
 	return {
