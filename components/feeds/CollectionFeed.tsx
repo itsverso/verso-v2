@@ -1,13 +1,15 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { BlogPostCard } from "../main/BlogPostCard";
 import useWindowDimension from "@/hooks/useWindowDimensions";
+import useGetCollectionTokens from "@/hooks/useGetCollectionTokens";
 
 const Layout = dynamic(() => import("react-masonry-list"), {
 	ssr: false,
 });
 
 type CollectionFeedProps = {
+	id: any;
 	items: any[];
 };
 
@@ -18,6 +20,8 @@ type ImageItemProps = {
 
 function ImageItem(props: ImageItemProps) {
 	let { index, item } = props;
+
+	console.log("item: ", item);
 
 	return (
 		<div
@@ -30,7 +34,7 @@ function ImageItem(props: ImageItemProps) {
 				height={0}
 				sizes="100%"
 				style={{ width: "auto", height: "auto" }}
-				src={item}
+				src={item.media[0]?.gateway}
 				className={`w-full shadow-xl cursor-pointer object-cover`}
 			/>
 		</div>
@@ -49,7 +53,7 @@ export function CollectionFeed(props: CollectionFeedProps) {
 		<Layout
 			minWidth={40}
 			colCount={width < 700 ? 1 : 4}
-			items={props.items.map((item, index) => {
+			items={props?.items?.map((item, index) => {
 				if (item?.rawMetadata?.mimeType === "application/json") {
 					return <BlogPostCard />;
 				} else if (item?.rawMetadata?.mimeType?.includes("image")) {

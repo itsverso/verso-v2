@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { CollectionFeed } from "@/components/feeds/CollectionFeed";
 import { AddMediaButton } from "@/components/main/AddMediaButton";
 import useGetCollectionTokens from "@/hooks/useGetCollectionTokens";
-
+import { Drawer } from "@/components/common/Drawer";
+import { MintPictureForm } from "@/components/forms/MintPictureForm";
 import { NextPage } from "next";
 import { GetStaticPaths } from "next";
+import { Spinner } from "@/components/common/Spinner";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
 	return {
@@ -19,25 +21,48 @@ export async function getStaticProps({ params }: any) {
 }
 
 const Collection: NextPage = (props: any) => {
-	const [dragActive, setDragActive] = useState<boolean>(false);
-	const inputRef = useRef<any>(null);
-	const [files, setFiles] = useState<any>([]);
-
+	const [fireFetch, setFireFetch] = useState<boolean>(false);
+	const [openCreateDrawer, setOpenCreateDrawer] = useState<boolean>(false);
 	const { data, error, isLoading, mutate } = useGetCollectionTokens(props.id);
 
 	useEffect(() => {
-		console.log(data);
-	}, [data]);
+		if (fireFetch) {
+			mutate();
+			setFireFetch(false);
+		}
+		console.log("DATA: ", data);
+	}, [data, fireFetch]);
+
+	if (isLoading) {
+		return (
+			<main className="flex items-center justify-center min-w-screen min-h-screen">
+				<Spinner />
+			</main>
+		);
+	}
 
 	return (
 		<main className="flex flex-col px-32 py-20 min-w-screen min-h-screen">
-			<div className="w-full h-32 flex items-center justify-center">
-				<h1>Rebirth of Detroit</h1>
+			<Drawer isOpen={openCreateDrawer} setIsOpen={setOpenCreateDrawer}>
+				<MintPictureForm
+					address={data.address}
+					fireFetch={() => setFireFetch(true)}
+					onClickBack={() => setOpenCreateDrawer(false)}
+				/>
+			</Drawer>
+			<div className="-z-30 w-full h-32 flex flex-col items-center justify-center">
+				<h1 className="font-light z-0">{data?.metadata?.title}</h1>
+				<p className="text-zinc-600 mt-4">
+					created by {data?.moderators[0]?.handle}.verso
+				</p>
 			</div>
-			<div className="h-full w-full">
-				<CollectionFeed items={files} />
+			<div className="h-full w-full mt-10">
+				<CollectionFeed
+					id={props.id}
+					items={data?.tokens?.nfts || []}
+				/>
 			</div>
-			<AddMediaButton />
+			<AddMediaButton openCreate={() => setOpenCreateDrawer(true)} />
 		</main>
 	);
 };

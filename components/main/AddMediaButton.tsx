@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react";
 
 import { PencilIcon, PhotoIcon, PlusIcon } from "@heroicons/react/24/solid";
 
-export function AddMediaButton() {
+export function AddMediaButton(props: any) {
 	const [renderButtons, setRenderButtons] = useState<boolean>(false);
 
 	const handleRenderButtons = useCallback(() => {
@@ -14,9 +14,12 @@ export function AddMediaButton() {
 		<div className="fixed bottom-10 right-12 flex flex-col items-center">
 			{renderButtons ? (
 				<>
-					<div className="my-1 flex items-center justify-center  h-10 w-10 rounded-full bg-black hover:opacity-90 cursor-pointer shadow-2xl">
+					<button
+						onClick={() => props.openCreate()}
+						className="my-1 flex items-center justify-center  h-10 w-10 rounded-full bg-black hover:opacity-90 cursor-pointer shadow-2xl"
+					>
 						<PhotoIcon className="w-4 h-4 text-white" />
-					</div>
+					</button>
 
 					<div className="my-1 flex items-center justify-center  h-10 w-10 rounded-full bg-black hover:opacity-90 cursor-pointer shadow-2xl">
 						<PencilIcon className="w-4 h-4 text-white" />
