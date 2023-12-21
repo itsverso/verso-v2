@@ -10,7 +10,9 @@ const initialState = {
 		handle: undefined,
 		description: undefined,
 		image: undefined,
+		signer: undefined,
 		collections: [],
+		fetch: false,
 	},
 	app: {
 		loading: false,

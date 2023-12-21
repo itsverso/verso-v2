@@ -77,7 +77,7 @@ export function CollectionsCarousel(props: CarouselProps) {
 						/>
 					))}
 
-					{state.user.handle === state.user.handle ? (
+					{state.user.handle === handle ? (
 						<div
 							key={"#e4e4e7"}
 							onClick={() => props.openDrawer()}
