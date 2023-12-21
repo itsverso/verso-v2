@@ -2,11 +2,18 @@ import { useEffect } from "react";
 
 export default function Home() {
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-between p-24">
-			<div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-				<h1 className="font-light">Hello World</h1>
-				<p>JAJAJ</p>
-			</div>
+		<main className="flex min-h-screen flex-col items-center justify-center p-24">
+			<h1 className="font-light">Welcome to Verso.</h1>
+			<p className="mt-6">
+				Navigate to{" "}
+				<a
+					className="hover:underline cursor-pointer"
+					href="/create-profile"
+				>
+					/create-profile
+				</a>{" "}
+				to get started.
+			</p>
 		</main>
 	);
 }
