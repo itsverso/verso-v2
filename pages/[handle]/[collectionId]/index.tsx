@@ -51,16 +51,37 @@ const Collection: NextPage = (props: any) => {
 				/>
 			</Drawer>
 			<div className="-z-30 w-full h-32 flex flex-col items-center justify-center">
-				<h1 className="font-light z-0">{data?.metadata?.title}</h1>
+				<h1 className="font-hedvig font-light z-0">
+					{data?.metadata?.title}
+				</h1>
 				<p className="text-zinc-600 mt-4">
 					created by {data?.moderators[0]?.handle}.verso
 				</p>
 			</div>
 			<div className="h-full w-full mt-10">
-				<CollectionFeed
-					id={props.id}
-					items={data?.tokens?.nfts || []}
-				/>
+				{true ? (
+					<div className="w-full h-full grid grid-cols-4">
+						{data?.tokens?.nfts.map((item: any, index: number) => {
+							return (
+								<div
+									key={index}
+									className="w-full h-96 p-2 mb-10 flex justify-center"
+								>
+									<img
+										alt=""
+										src={item.media[0]?.gateway}
+										className={`w-full cursor-pointer object-contain`}
+									/>
+								</div>
+							);
+						})}
+					</div>
+				) : (
+					<CollectionFeed
+						id={props.id}
+						items={data?.tokens?.nfts || []}
+					/>
+				)}
 			</div>
 			<AddMediaButton openCreate={() => setOpenCreateDrawer(true)} />
 		</main>

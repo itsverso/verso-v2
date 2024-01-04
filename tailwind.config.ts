@@ -10,6 +10,7 @@ const config: Config = {
 		extend: {
 			fontFamily: {
 				lora: ["Lora", "serif"],
+				hedvig: ["Hedvig", "serif"],
 			},
 		},
 	},
