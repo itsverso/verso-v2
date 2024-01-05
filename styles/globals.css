@@ -8,7 +8,7 @@
 h1 {
 	@apply font-hedvig;
 	@apply text-4xl;
-	@apply lg:text-6xl;
+	@apply lg:text-4xl;
 	@apply text-zinc-800;
 }
 
@@ -26,9 +26,8 @@ h3 {
 }
 
 p {
-	@apply font-hedvig;
+	@apply font-sans;
 	@apply text-zinc-700;
-	@apply font-light;
 	@apply text-lg;
 }
 

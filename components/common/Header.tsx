@@ -5,10 +5,12 @@ import { UserDropDown } from "../main/UserDropDown";
 import { AppContext } from "@/context/context";
 import { UserActionTypes } from "@/reducers/userReducer";
 import useGetUserProfile from "@/hooks/useGetUserProfile";
+import { useRouter } from "next/router";
 import * as Icons from "@/resources/icons";
 import Link from "next/link";
 
 export function Header() {
+	const router = useRouter();
 	const { wallets } = useWallets();
 	const { state, dispatch } = useContext(AppContext);
 	const [top, setTop] = useState(true);
@@ -79,6 +81,10 @@ export function Header() {
 		);
 	}
 
+	if (router?.pathname === "/[handle]/[collectionId]/[tokenId]") {
+		return null;
+	}
+
 	return (
 		<div
 			className={`z-10 w-full h-20 lg:h-16 fixed top-0 flex flex-row bg-white ${
@@ -101,8 +107,8 @@ export function Header() {
 							<div className="flex flex-row justify-center">
 								<div className="flex items-center justify-center mr-8">
 									<Link href={`/create`}>
-										<p className="cursor-pointer hover:opacity-80">
-											create
+										<p className="cursor-pointer text-sm hover:opacity-80">
+											CREATE
 										</p>
 									</Link>
 								</div>

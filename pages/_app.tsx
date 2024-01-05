@@ -5,6 +5,7 @@ import { AppProvider } from "@/context/context";
 import { Header } from "@/components/common/Header";
 import { PrivyProvider } from "@privy-io/react-auth";
 import { optimismGoerli } from "viem/chains";
+import { GeistSans, GeistMono } from "geist/font";
 
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
@@ -33,8 +34,12 @@ function MyApp({ Component, pageProps }: AppProps) {
 						/>
 						<meta name="theme-color" content="#FFFFFF" />
 					</Head>
-					<Header />
-					<Component {...pageProps} />
+					<main
+						className={`${GeistSans.variable} ${GeistMono.variable}`}
+					>
+						<Header />
+						<Component {...pageProps} />
+					</main>
 				</PrivyProvider>
 			</AppProvider>
 		</>

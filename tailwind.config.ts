@@ -11,6 +11,8 @@ const config: Config = {
 			fontFamily: {
 				lora: ["Lora", "serif"],
 				hedvig: ["Hedvig", "serif"],
+				sans: ["var(--font-geist-sans)"],
+				mono: ["var(--font-geist-mono)"],
 			},
 		},
 	},

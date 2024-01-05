@@ -7,7 +7,6 @@ import { UserActionTypes } from "@/reducers/userReducer";
 import { AppContext } from "@/context/context";
 import { Spinner } from "@/components/common/Spinner";
 import { Drawer } from "@/components/common/Drawer";
-import * as Icons from "@/resources/icons";
 import { UpdateProfileDetailsForm } from "@/components/forms/UpdateProfileDetails";
 import { CreateCollectionForm } from "@/components/forms/CreateCollectionForm";
 import { CollectionsCarousel } from "@/components/main/CollectionsCarousel";

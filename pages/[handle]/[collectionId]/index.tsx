@@ -7,6 +7,8 @@ import { MintPictureForm } from "@/components/forms/MintPictureForm";
 import { NextPage } from "next";
 import { GetStaticPaths } from "next";
 import { Spinner } from "@/components/common/Spinner";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
 	return {
@@ -21,6 +23,7 @@ export async function getStaticProps({ params }: any) {
 }
 
 const Collection: NextPage = (props: any) => {
+	const router = useRouter();
 	const [fireFetch, setFireFetch] = useState<boolean>(false);
 	const [openCreateDrawer, setOpenCreateDrawer] = useState<boolean>(false);
 	const { data, error, isLoading, mutate } = useGetCollectionTokens(props.id);
@@ -50,12 +53,22 @@ const Collection: NextPage = (props: any) => {
 					onClickBack={() => setOpenCreateDrawer(false)}
 				/>
 			</Drawer>
-			<div className="-z-30 w-full h-32 flex flex-col items-center justify-center">
-				<h1 className="font-hedvig font-light z-0">
+			<div className="-z-30 w-full mt-10 px-4 flex flex-col">
+				<div className="flex flex-row items-center mb-4">
+					<div className="h-6 w-6 rounded-full bg-zinc-200"></div>
+					<p className="ml-2 text-xl text-gray-500 font-hedvig">
+						username.verso
+					</p>
+				</div>
+				<p className="font-hedvig font-light text-5xl z-0">
 					{data?.metadata?.title}
-				</h1>
-				<p className="text-zinc-600 mt-4">
-					created by {data?.moderators[0]?.handle}.verso
+				</p>
+				<p className="font-sans text-zinc-600 font-light max-w-2xl mt-2">
+					A collection of street photographs in colour and black &
+					white. A collection of street photographs in colour and
+					black & white. A collection of street photographs in colour
+					and black & white. A collection of street photographs in
+					colour and black & white.
 				</p>
 			</div>
 			<div className="h-full w-full mt-10">
@@ -63,8 +76,9 @@ const Collection: NextPage = (props: any) => {
 					<div className="w-full h-full grid grid-cols-4">
 						{data?.tokens?.nfts.map((item: any, index: number) => {
 							return (
-								<div
+								<Link
 									key={index}
+									href={`/${router.asPath}/${item.tokenId}`}
 									className="w-full h-96 p-2 mb-10 flex justify-center"
 								>
 									<img
@@ -72,7 +86,7 @@ const Collection: NextPage = (props: any) => {
 										src={item.media[0]?.gateway}
 										className={`w-full cursor-pointer object-contain`}
 									/>
-								</div>
+								</Link>
 							);
 						})}
 					</div>
