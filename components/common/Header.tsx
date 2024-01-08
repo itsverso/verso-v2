@@ -107,7 +107,7 @@ export function Header() {
 							<div className="flex flex-row justify-center">
 								<div className="flex items-center justify-center mr-8">
 									<Link href={`/create`}>
-										<p className="cursor-pointer text-sm hover:opacity-80">
+										<p className="cursor-pointer text-sm text-black opacity-60 hover:opacity-100">
 											CREATE
 										</p>
 									</Link>

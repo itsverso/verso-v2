@@ -78,7 +78,7 @@ const Profile: NextPage = (props: any) => {
 	}
 
 	return (
-		<main className="flex flex-row min-h-screen min-w-screen py-20 px-32">
+		<main className="h-screen w-screen flex flex-row px-24">
 			<Drawer isOpen={openUpdateDrawer} setIsOpen={setOpenUpdateDrawer}>
 				<UpdateProfileDetailsForm
 					side={true}
@@ -92,32 +92,33 @@ const Profile: NextPage = (props: any) => {
 					handleClose={() => setOpenCreateDrawer(false)}
 				/>
 			</Drawer>
-			<div className="w-full p-4 flex flex-col items-start">
+			<div className="w-1/4 h-full flex flex-col md:pt-32 md:pr-4">
 				{data.user.image ? (
 					<img
 						onClick={handleOpenUpdateDrawer}
-						className="h-20 w-20 rounded-md object-cover"
+						className="h-28 w-28 rounded-full object-cover"
 						src={data.user?.image}
 					/>
 				) : (
 					<div
 						onClick={handleOpenUpdateDrawer}
-						className="h-20 w-20 rounded-md object-cover bg-zinc-200"
+						className="h-28 w-28 rounded-full object-cover bg-zinc-200"
 					/>
 				)}
-				<p className="mt-6 text-3xl font-bold">{data.user.name}</p>
-				<p className="italic text-lg font-light text-zinc-600">
-					{data.user.handle}.verso
-				</p>
-				<div className="h-14 w-full my-10 border-y border-zinc-300 ">
-					<div className="flex flex-row h-full items-center">
-						<p className="mr-10 font-light text-zinc-600">
-							Collections
-						</p>
-						<p className="font-light text-zinc-600">About me</p>
-					</div>
-				</div>
+				<div className="w-full md:mt-8">
+					<p className="text-2xl font-hedvig text-black">
+						{data.user.name}
+					</p>
+					<p className="font-hedvig text-xl font-light text-black opacity-60">
+						@{data.user.handle}.verso
+					</p>
 
+					<p className="md:mt-4 text-3xl text-black font-hedvig">
+						{data.user.description}
+					</p>
+				</div>
+			</div>
+			<div className="w-3/4 h-full md:pt-28 md:pl-10">
 				<CollectionsCarousel
 					openDrawer={() => setOpenCreateDrawer(true)}
 					handle={props.handle}
@@ -130,3 +131,17 @@ const Profile: NextPage = (props: any) => {
 };
 
 export default Profile;
+
+/**
+ * 
+				<div className="h-14 w-full my-10 border-y border-zinc-300 ">
+					<div className="flex flex-row h-full items-center">
+						<p className="mr-10 font-light text-zinc-600">
+							Collections
+						</p>
+						<p className="font-light text-zinc-600">About me</p>
+					</div>
+				</div>
+
+				
+ */

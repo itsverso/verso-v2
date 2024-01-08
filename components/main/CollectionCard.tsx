@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { AppContext } from "../../context/context";
+import useGetCollectionTokens from "@/hooks/useGetCollectionTokens";
 import Link from "next/link";
 
 type Props = {
@@ -12,12 +13,14 @@ type Props = {
 
 export function CollectionCard(props: Props) {
 	const { title, src, address, item } = props;
+
 	const { state, dispatch } = useContext(AppContext);
 	const [compLoading, setcompLoading] = useState<boolean>(true);
 	const [RenderBin, setRenderBin] = useState<boolean>(false);
 	const [totalElements, setTotalElements] = useState<number>();
 
 	useEffect(() => {
+		console.log("item: ");
 		// fetchElements();
 	}, []);
 
@@ -43,23 +46,20 @@ export function CollectionCard(props: Props) {
 			<div
 				onMouseEnter={() => setRenderBin(true)}
 				onMouseLeave={() => setRenderBin(false)}
-				className={`relative max-w-72 cursor-pointer hover:opacity-90 ${
+				className={`relative w-full aspect-square cursor-pointer hover:opacity-90 ${
 					compLoading ? "" : null
 				}`}
 			>
 				<img
 					src={src}
 					onLoad={handleOnLoad}
-					className={`w-full h-40 lg:h-72 lg:w-72 object-cover object-center ${
+					className={`w-full aspect-square object-cover object-center ${
 						compLoading ? "bg-slate200" : null
 					}`}
 				/>
 
 				<div className="py-2">
-					<p className="font-lora text-sm lg:text-lg">{title}</p>
-					<p className="font-lora text-xs text-zinc500">
-						{totalElements} elements
-					</p>
+					<p className="text-sm lg:text-lg">{title}</p>
 				</div>
 			</div>
 		</Link>
