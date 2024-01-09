@@ -44,6 +44,7 @@ export default async function handler(
 	let isAddress = ethers.utils.isAddress(handle);
 	let Registry = getProfileContractInstance(InfuraProvider);
 
+	console.log("HERE");
 	// First we marke sure handle is not undefined
 	if (handle !== undefined || handle !== "undefined") {
 		// Either get ID from address
