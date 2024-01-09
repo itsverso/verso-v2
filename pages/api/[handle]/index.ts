@@ -39,14 +39,11 @@ export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse<Data>
 ) {
-	console.log("THERE!");
 	let id;
 	let handle = req.query.handle as string;
-	console.log("HERE", handle);
 	let isAddress = ethers.utils.isAddress(handle);
 	let Registry = getProfileContractInstance(InfuraProvider);
 
-	console.log("HERE");
 	// First we marke sure handle is not undefined
 	if (handle !== undefined || handle !== "undefined") {
 		// Either get ID from address
@@ -56,7 +53,6 @@ export default async function handler(
 		}
 		// OR get ID from handle
 		if (!isAddress) {
-			console.log("WE ARE HERE!");
 			let hexID = await Registry.getIdFromHandle(handle);
 			id = parseInt(hexID._hex);
 		}
