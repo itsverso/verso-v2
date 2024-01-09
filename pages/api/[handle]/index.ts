@@ -53,6 +53,7 @@ export default async function handler(
 		}
 		// OR get ID from handle
 		if (!isAddress) {
+			console.log("WE ARE HERE!");
 			let hexID = await Registry.getIdFromHandle(handle);
 			id = parseInt(hexID._hex);
 		}
