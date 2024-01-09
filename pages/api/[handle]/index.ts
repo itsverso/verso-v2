@@ -39,6 +39,7 @@ export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse<Data>
 ) {
+	console.log("THERE!");
 	let id;
 	let handle = req.query.handle as string;
 	console.log("HERE", handle);
