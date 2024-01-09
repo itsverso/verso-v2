@@ -44,7 +44,9 @@ const Profile: NextPage = (props: any) => {
 				payload: { fetch: true },
 			});
 		}
-	}, [fireFetch]);
+		console.log("DATA: ", data);
+		console.log("ERROR: ", error);
+	}, [fireFetch, data, error]);
 
 	const handleOpenUpdateDrawer = useCallback(() => {
 		// Check if user exists
