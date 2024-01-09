@@ -40,7 +40,7 @@ export default async function handler(
 
 	// Instantiate alchemy client
 	const settings = {
-		apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY,
+		apiKey: process.env.ALCHEMY_PRIVATE_KEY,
 		network:
 			process.env.NEXT_PUBLIC_DEV == "true"
 				? Network.OPT_GOERLI

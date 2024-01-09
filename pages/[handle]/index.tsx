@@ -70,9 +70,10 @@ const Profile: NextPage = (props: any) => {
 	}
 
 	if (error || data.error) {
+		console.log(error);
 		return (
 			<main className="flex flex-row items-center justify-center min-h-screen min-w-screen">
-				<p>Something went wrong: {data.message}</p>
+				<p>Something went wrong: {data?.message}</p>
 			</main>
 		);
 	}
