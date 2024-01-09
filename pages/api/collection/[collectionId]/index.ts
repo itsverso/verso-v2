@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getCollectionRegistryContractInstance } from "@/lib/contracts";
 import COLLECTION_ABI from "../../../../artifacts/contracts/collections/Collection.sol/Collection.json";
-import { alchemyClient } from "@/resources";
+import { Network, Alchemy } from "alchemy-sdk";
 import { MODERATOR_HASH } from "@/constants";
 import { ethers } from "ethers";
 
@@ -30,8 +30,23 @@ export default async function handler(
 	let address = await registry.collectionAddresses(id);
 
 	if (address !== NULL_ADDRESS) {
+		console.log("");
+		console.log("");
+		console.log("");
+		console.log("KEY: ", process.env.NEXT_PUBLIC_ALCHEMY_KEY as string);
+		console.log("");
+		console.log("");
+		console.log("");
 		// Instantiate Alchemy
-		const alchemy = alchemyClient();
+		// Instantiate alchemy client
+		const settings = {
+			apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY,
+			network:
+				process.env.NEXT_PUBLIC_DEV == "true"
+					? Network.OPT_GOERLI
+					: Network.OPT_MAINNET,
+		};
+		const alchemy = new Alchemy(settings);
 
 		const tokens = await alchemy.nft.getNftsForContract(address);
 

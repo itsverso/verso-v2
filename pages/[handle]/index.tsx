@@ -118,7 +118,7 @@ const Profile: NextPage = (props: any) => {
 					</p>
 				</div>
 			</div>
-			<div className="w-3/4 h-full md:py-28 md:pl-24 overflow-y-scroll no-scrollbar">
+			<div className="w-3/4 h-full md:py-44 md:pl-24 overflow-y-scroll no-scrollbar">
 				<CollectionsCarousel
 					openDrawer={() => setOpenCreateDrawer(true)}
 					handle={props.handle}
