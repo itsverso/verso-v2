@@ -145,7 +145,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 							</div>
 						) : null}
 
-						<div className="w-full mt-4 mb-5 flex flex-col">
+						<div className="relative w-full mt-4 mb-5 flex flex-col">
 							<div className="w-16 lg:w-20 h-16 lg:h-20 rounded-md flex flex-row bg-zinc-100">
 								<label className={`h-full w-full`}>
 									{!!image || props.user.image ? (
@@ -171,7 +171,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 							{!!image ? (
 								<div
 									onClick={handleRemovePic}
-									className="w-10 flex flex-row items-center justify-center cursor-pointer"
+									className="absolute top-0 left-20 w-10 flex flex-row items-center justify-center cursor-pointer"
 								>
 									<Icons.circledX color="gray" />
 								</div>

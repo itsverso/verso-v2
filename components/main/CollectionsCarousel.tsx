@@ -36,26 +36,7 @@ export function CollectionsCarousel(props: CarouselProps) {
 	}, [state.user.fetch]);
 
 	if (isLoading) {
-		return (
-			<div className="flex flex-col lg:flex-row items-center">
-				<div className="w-full grid grid-cols-1 md:grid-cols-2 gap-12">
-					{[1, 1, 1, 1].map((item: any, index: any) => (
-						<div
-							key={index}
-							className={`animate-pulse w-full aspect-square`}
-						>
-							<div
-								className={`w-full aspect-square sm:w-full lg:w-72 bg-slate-100`}
-							/>
-							<div className="h-20 py-2">
-								<div className="h-3 w-32 lg:w-44 rounded-md bg-slate-100 mt-3" />
-								<div className="h-1 w-20 lg:w-24 my-2 rounded-md bg-slate-100" />
-							</div>
-						</div>
-					))}
-				</div>
-			</div>
-		);
+		return <div></div>;
 	}
 
 	if (!error && data.collections) {
@@ -79,16 +60,6 @@ export function CollectionsCarousel(props: CarouselProps) {
 							address={item.address}
 						/>
 					))}
-
-					{state.user.handle === handle ? (
-						<div
-							key={"#e4e4e7"}
-							onClick={() => props.openDrawer()}
-							className={`lg:h-72 w-full flex flex-col items-center justify-center cursor-pointer hover:opacity-90 bg-zinc-100`}
-						>
-							<Icons.Plus color={"#e4e4e7"} size={"20"} />
-						</div>
-					) : null}
 				</div>
 			</div>
 		);

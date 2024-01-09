@@ -92,17 +92,17 @@ const Profile: NextPage = (props: any) => {
 					handleClose={() => setOpenCreateDrawer(false)}
 				/>
 			</Drawer>
-			<div className="w-1/4 h-full flex flex-col md:pt-32 md:pr-4">
+			<div className="w-1/4 h-full flex flex-col justify-center md:pr-4">
 				{data.user.image ? (
 					<img
 						onClick={handleOpenUpdateDrawer}
-						className="h-28 w-28 rounded-full object-cover"
+						className="h-28 w-28 rounded-full object-cover cursor-pointer"
 						src={data.user?.image}
 					/>
 				) : (
 					<div
 						onClick={handleOpenUpdateDrawer}
-						className="h-28 w-28 rounded-full object-cover bg-zinc-200"
+						className="h-28 w-28 rounded-full cursor-pointer bg-zinc-200"
 					/>
 				)}
 				<div className="w-full md:mt-8">
@@ -118,7 +118,7 @@ const Profile: NextPage = (props: any) => {
 					</p>
 				</div>
 			</div>
-			<div className="w-3/4 h-full md:pt-28 md:pl-10">
+			<div className="w-3/4 h-full md:py-28 md:pl-24 overflow-y-scroll no-scrollbar">
 				<CollectionsCarousel
 					openDrawer={() => setOpenCreateDrawer(true)}
 					handle={props.handle}

@@ -8,11 +8,13 @@ import { optimismGoerli } from "viem/chains";
 import { GeistSans, GeistMono } from "geist/font";
 
 function MyApp({ Component, pageProps }: AppProps) {
+	const privy_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID as string;
+
 	return (
 		<>
 			<AppProvider>
 				<PrivyProvider
-					appId="clpispdty00ycl80fpueukbhl"
+					appId={privy_ID}
 					createPrivyWalletOnLogin={true}
 					config={{
 						defaultChain: optimismGoerli,

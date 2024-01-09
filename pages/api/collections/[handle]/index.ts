@@ -47,8 +47,7 @@ export default async function handler(
 				: Network.OPT_MAINNET,
 	};
 	const alchemy = new Alchemy(settings);
-	// Get address param and fetch collections
-
+	// Get address param and fetch collection
 	const nftsForOwner = await alchemy.nft.getNftsForOwner(owner, {
 		contractAddresses: [COLLECTION_REGISTRY_ADDRESS__GOERLI],
 	});

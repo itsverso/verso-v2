@@ -155,10 +155,10 @@ export function CreateCollectionForm(props: any) {
 	if (true) {
 		return (
 			<div className="w-full h-full flex flex-col justify-center bg-white lg:py-20 px-8">
-				<h1 className="text-5xl mb-10">Create Collection</h1>
+				<h1 className="text-5xl mb-10 font-light">Create Collection</h1>
 				<div className="w-full">
 					<label className="w-full flex flex-col">
-						<p className="text-sm font-extrabold text-zinc-600 py-2">
+						<p className="text-sm font-semibold text-zinc-600 py-2">
 							Title
 						</p>
 						<input
@@ -179,7 +179,7 @@ export function CreateCollectionForm(props: any) {
 				</div>
 				<div className="w-full mt-2">
 					<label className="w-full flex flex-col">
-						<p className="text-sm font-extrabold text-zinc-600 py-2">
+						<p className="text-sm font-semibold text-zinc-600 py-2">
 							Description
 						</p>
 						<textarea
@@ -198,7 +198,7 @@ export function CreateCollectionForm(props: any) {
 						}`}
 					>
 						<label className="h-full w-full flex flex-col absolute">
-							<p className="text-sm font-extrabold text-zinc-600 py-2">
+							<p className="text-sm font-semibold text-zinc-600 py-2">
 								Cover Picture
 							</p>
 							<div className="flex flex-col items-center bg-zinc-100 rounded-sm justify-center h-20 cursor-pointer bg-zinc100 overflow-hidden pt-8 pb-8">

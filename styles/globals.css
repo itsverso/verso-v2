@@ -5,6 +5,42 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+	--foreground-rgb: 0, 0, 0;
+	--background-start-rgb: 255, 255, 255;
+	--background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--foreground-rgb: 0, 0, 0;
+		--background-start-rgb: 255, 255, 255;
+		--background-end-rgb: 255, 255, 255;
+	}
+}
+
+@layer utilities {
+	/* Hide scrollbar for Chrome, Safari and Opera */
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+	/* Hide scrollbar for IE, Edge and Firefox */
+	.no-scrollbar {
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+	}
+}
+
+body {
+	color: rgb(var(--foreground-rgb));
+	background: linear-gradient(
+			to bottom,
+			transparent,
+			rgb(var(--background-end-rgb))
+		)
+		rgb(var(--background-start-rgb));
+}
+
 h1 {
 	@apply font-hedvig;
 	@apply text-4xl;
@@ -29,33 +65,4 @@ p {
 	@apply font-sans;
 	@apply text-zinc-700;
 	@apply text-lg;
-}
-
-:root {
-	--foreground-rgb: 0, 0, 0;
-	--background-start-rgb: 255, 255, 255;
-	--background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-	:root {
-		--foreground-rgb: 0, 0, 0;
-		--background-start-rgb: 255, 255, 255;
-		--background-end-rgb: 255, 255, 255;
-	}
-}
-
-body {
-	color: rgb(var(--foreground-rgb));
-	background: linear-gradient(
-			to bottom,
-			transparent,
-			rgb(var(--background-end-rgb))
-		)
-		rgb(var(--background-start-rgb));
-}
-
-h1 {
-	font-size: 3.8rem;
-	font-weight: bold;
 }

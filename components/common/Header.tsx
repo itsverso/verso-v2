@@ -105,9 +105,9 @@ export function Header() {
 					<div>
 						{authenticated ? (
 							<div className="flex flex-row justify-center">
-								<div className="flex items-center justify-center mr-8">
+								<div className="flex items-center justify-center mr-6">
 									<Link href={`/create`}>
-										<p className="cursor-pointer text-sm text-black opacity-60 hover:opacity-100">
+										<p className="cursor-pointer text-sm bg-black px-4 py-2 text-white tracking-wide hover:opacity-80">
 											CREATE
 										</p>
 									</Link>

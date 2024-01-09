@@ -32,11 +32,14 @@ export default async function handler(
 	if (address !== NULL_ADDRESS) {
 		// Instantiate Alchemy
 		const alchemy = alchemyClient();
+
 		const tokens = await alchemy.nft.getNftsForContract(address);
+
 		const metadata = await alchemy.nft.getNftMetadata(
 			COLLECTION_REGISTRY_ADDRESS__GOERLI,
 			id
 		);
+
 		const moderators = await getCollectionModerators(address);
 
 		// Send results
