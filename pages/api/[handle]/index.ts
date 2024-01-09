@@ -41,6 +41,7 @@ export default async function handler(
 ) {
 	let id;
 	let handle = req.query.handle as string;
+	console.log("HERE", handle);
 	let isAddress = ethers.utils.isAddress(handle);
 	let Registry = getProfileContractInstance(InfuraProvider);
 
