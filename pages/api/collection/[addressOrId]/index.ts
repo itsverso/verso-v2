@@ -24,11 +24,26 @@ export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse<Data>
 ) {
-	// First, get collection address from registry
-	let id = req.query.collectionId as string;
+	// Initiate params
+	let id;
+	let address;
+	let collection = req.query.addressOrId as string;
 	let registry = getCollectionRegistryContractInstance(InfuraProvider);
-	let address = await registry.collectionAddresses(id);
 
+	// Set collection address and registry ID.
+	if (ethers.utils.isAddress(collection)) {
+		// If collection param is address
+		// Set address and get ID.
+		address = collection;
+		id = await registry.addressToTokenID(collection);
+	} else {
+		// Else, if is ID,
+		// Get address and set ID.
+		id = collection;
+		address = await registry.collectionAddresses(id);
+	}
+
+	// If address is not null, proceed.
 	if (address !== NULL_ADDRESS) {
 		// Instantiate Alchemy
 		const settings = {
@@ -39,14 +54,14 @@ export default async function handler(
 					: Network.OPT_MAINNET,
 		};
 		const alchemy = new Alchemy(settings);
-
+		// Get collection tokens
 		const tokens = await alchemy.nft.getNftsForContract(address);
-
+		// Get collection metadata
 		const metadata = await alchemy.nft.getNftMetadata(
 			COLLECTION_REGISTRY_ADDRESS__GOERLI,
 			id
 		);
-
+		// Get collection moderators
 		const moderators = await getCollectionModerators(address);
 
 		// Send results

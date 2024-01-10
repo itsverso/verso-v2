@@ -33,7 +33,6 @@ const Collection: NextPage = (props: any) => {
 			mutate();
 			setFireFetch(false);
 		}
-		console.log("DATA: ", data);
 	}, [data, fireFetch]);
 
 	const handleUserRedirect = () => {
@@ -91,7 +90,7 @@ const Collection: NextPage = (props: any) => {
 							return (
 								<Link
 									key={index}
-									href={`/${router.asPath}/${item.tokenId}`}
+									href={`${router.asPath}/${item.tokenId}`}
 									className="w-full h-96 p-4 mb-10 flex flex-col items-center justify-center"
 								>
 									<img

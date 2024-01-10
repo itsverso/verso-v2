@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { AppContext } from "@/context/context";
 import { Spinner } from "../common/Spinner";
 import { useWallets } from "@privy-io/react-auth";
@@ -6,11 +6,13 @@ import { getFactoryContractInstance } from "@/lib/contracts";
 import { uploadDataToArweave } from "@/resources";
 import { NULL_ADDRESS } from "@/constants";
 import { UserActionTypes } from "@/reducers/userReducer";
+import { useRouter } from "next/router";
 
 export function CreateCollectionForm(props: any) {
 	// General state
-	const { state, dispatch } = useContext(AppContext);
+	const router = useRouter();
 	const { wallets } = useWallets();
+	const { state, dispatch } = useContext(AppContext);
 	const [signer, setSigner] = useState<any>();
 	const [loading, setLoading] = useState<boolean>(false);
 
@@ -74,16 +76,19 @@ export function CreateCollectionForm(props: any) {
 					metadata.url
 				);
 				let receipt = await tx.wait();
-				console.log(receipt);
-				console.log(receipt.logs);
-				console.log(receipt.logs[0].address);
+				// Redirect and reset
+				handleRedirect(receipt.logs[0].address);
 				resetInitialState();
-				props.handleClose();
 				handleRefetch();
+				props.handleClose();
 			} catch (e) {}
 		} else {
 			setLoading(false);
 		}
+	};
+
+	const handleRedirect = (collectionAddress: string) => {
+		router.push(`/${state.user.handle}/${collectionAddress}`);
 	};
 
 	const handleRefetch = () => {
@@ -120,34 +125,6 @@ export function CreateCollectionForm(props: any) {
 		setImageError("");
 		setError("");
 	};
-
-	const handleImageUpload = useCallback((e: any) => {
-		e.preventDefault();
-		let file = e.target.files[0];
-		if (file.name) {
-			setMimeType(file.type);
-			setFileName(file.name);
-		} else {
-			setFileName("unknown");
-		}
-
-		if (file.size > 3300000) {
-			setError("File too big. 2mb maximum.");
-		} else if (file.size < 3300000) {
-			setError(null);
-		}
-
-		if (!!file) {
-			setImageError("");
-			let reader = new FileReader();
-			reader.onload = () => {
-				const srcData = reader.result as string;
-				var data = srcData?.split(",")[1];
-				setImage(data);
-			};
-			reader.readAsDataURL(file);
-		}
-	}, []);
 
 	const ready = true;
 
@@ -215,6 +192,34 @@ export function CreateCollectionForm(props: any) {
 }
 
 /**
+ * 
+ * const handleImageUpload = useCallback((e: any) => {
+		e.preventDefault();
+		let file = e.target.files[0];
+		if (file.name) {
+			setMimeType(file.type);
+			setFileName(file.name);
+		} else {
+			setFileName("unknown");
+		}
+
+		if (file.size > 3300000) {
+			setError("File too big. 2mb maximum.");
+		} else if (file.size < 3300000) {
+			setError(null);
+		}
+
+		if (!!file) {
+			setImageError("");
+			let reader = new FileReader();
+			reader.onload = () => {
+				const srcData = reader.result as string;
+				var data = srcData?.split(",")[1];
+				setImage(data);
+			};
+			reader.readAsDataURL(file);
+		}
+	}, []);
  *
  *<div className="w-full mt-2">
 					<div
