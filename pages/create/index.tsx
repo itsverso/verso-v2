@@ -16,7 +16,7 @@ const Create: NextPage = () => {
 	}
 
 	return (
-		<main className="flex flex-row min-h-screen md:px-72 lg:px-96">
+		<main className="flex flex-col justify-center min-h-screen md:px-32 lg:px-52 xl:px-96">
 			<CreateCollectionForm />
 		</main>
 	);

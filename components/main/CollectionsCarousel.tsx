@@ -56,7 +56,6 @@ export function CollectionsCarousel(props: CarouselProps) {
 							item={item}
 							handle={props.handle}
 							title={item.title}
-							src={item.media[0].gateway}
 							address={item.address}
 						/>
 					))}

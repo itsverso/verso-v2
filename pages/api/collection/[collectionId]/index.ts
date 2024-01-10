@@ -30,15 +30,7 @@ export default async function handler(
 	let address = await registry.collectionAddresses(id);
 
 	if (address !== NULL_ADDRESS) {
-		console.log("");
-		console.log("");
-		console.log("");
-		console.log("KEY: ", process.env.ALCHEMY_PRIVATE_KEY as string);
-		console.log("");
-		console.log("");
-		console.log("");
 		// Instantiate Alchemy
-		// Instantiate alchemy client
 		const settings = {
 			apiKey: process.env.ALCHEMY_PRIVATE_KEY,
 			network:

@@ -36,6 +36,11 @@ const Collection: NextPage = (props: any) => {
 		console.log("DATA: ", data);
 	}, [data, fireFetch]);
 
+	const handleUserRedirect = () => {
+		console.log("click");
+		router.push(`/${data?.moderators[0]?.handle}`);
+	};
+
 	if (isLoading) {
 		return (
 			<main className="flex items-center justify-center min-w-screen min-h-screen">
@@ -53,22 +58,30 @@ const Collection: NextPage = (props: any) => {
 					onClickBack={() => setOpenCreateDrawer(false)}
 				/>
 			</Drawer>
-			<div className="-z-30 w-full mt-10 px-4 flex flex-col">
-				<div className="flex flex-row items-center mb-4">
-					<div className="h-6 w-6 rounded-full bg-zinc-200"></div>
-					<p className="ml-2 text-xl text-gray-500 font-hedvig">
-						username.verso
-					</p>
+			<div className="w-full mt-10 px-4 flex flex-col">
+				<div className="flex flex-row items-center mb-2 z-20">
+					<div className="h-6 w-6 rounded-full bg-zinc-200">
+						{data?.moderators[0]?.image ? (
+							<img
+								className="w-full h-full rounded-full object-cover"
+								src={data?.moderators[0]?.image}
+							/>
+						) : null}
+					</div>
+					<div
+						className="cursor-pointer"
+						onClick={() => handleUserRedirect()}
+					>
+						<p className="ml-2 mt-1 text-xl text-gray-500 font-hedvig">
+							{data?.moderators[0]?.handle}.verso
+						</p>
+					</div>
 				</div>
-				<p className="font-hedvig font-light text-5xl z-0">
+				<p className="font-hedvig font-light text-5xl">
 					{data?.metadata?.title}
 				</p>
 				<p className="font-sans text-zinc-600 font-light max-w-2xl mt-2">
-					A collection of street photographs in colour and black &
-					white. A collection of street photographs in colour and
-					black & white. A collection of street photographs in colour
-					and black & white. A collection of street photographs in
-					colour and black & white.
+					{data?.metadata?.description}
 				</p>
 			</div>
 			<div className="h-full w-full mt-10">

@@ -73,7 +73,10 @@ export function CreateCollectionForm(props: any) {
 					minimumBalance,
 					metadata.url
 				);
-				await tx.wait();
+				let receipt = await tx.wait();
+				console.log(receipt);
+				console.log(receipt.logs);
+				console.log(receipt.logs[0].address);
 				resetInitialState();
 				props.handleClose();
 				handleRefetch();
@@ -97,10 +100,6 @@ export function CreateCollectionForm(props: any) {
 		if (title?.length == 0) {
 			setTitleError("Title can't be empty");
 			titleError = true;
-		}
-		if (fileName?.length == 0 || !fileName) {
-			setImageError("Image can't be empty");
-			imageError = true;
 		}
 		if (titleError || imageError || error) {
 			return true;
@@ -154,11 +153,11 @@ export function CreateCollectionForm(props: any) {
 
 	if (true) {
 		return (
-			<div className="w-full h-full flex flex-col justify-center bg-white lg:py-20 px-8">
-				<h1 className="text-5xl mb-10 font-light">Create Collection</h1>
+			<div className="w-full h-full flex flex-col justify-center bg-white px-8">
+				<h1 className="text-4xl mb-10 font-light">Create Collection</h1>
 				<div className="w-full">
 					<label className="w-full flex flex-col">
-						<p className="text-sm font-semibold text-zinc-600 py-2">
+						<p className="text-base font-hedvig text-zinc-600 py-2">
 							Title
 						</p>
 						<input
@@ -166,7 +165,7 @@ export function CreateCollectionForm(props: any) {
 							name="title"
 							value={title || ""}
 							placeholder="Rebirth of Detroit"
-							className="h-14 pl-2 text-base bg-zinc-100 font-lora rounded-sm font-light focus:outline-none"
+							className="h-14 pl-2 text-base bg-zinc-100 font-sans rounded-sm font-light focus:outline-none"
 							onChange={(e) => setTitle(e.target.value)}
 							onFocus={() => setTitleError("")}
 						></input>
@@ -179,19 +178,45 @@ export function CreateCollectionForm(props: any) {
 				</div>
 				<div className="w-full mt-2">
 					<label className="w-full flex flex-col">
-						<p className="text-sm font-semibold text-zinc-600 py-2">
+						<p className="text-base font-hedvig text-zinc-600 py-2">
 							Description
 						</p>
 						<textarea
 							name="description"
 							value={description || ""}
 							placeholder="What will be your verse?"
-							className="h-32 p-2 bg-zinc-100 rounded-sm text-base font-lora font-light focus:outline-none"
+							className="h-32 p-2 bg-zinc-100 rounded-sm text-base font-sans font-light focus:outline-none"
 							onChange={(e) => setDescription(e.target.value)}
 						></textarea>
 					</label>
 				</div>
-				<div className="w-full mt-2">
+
+				<div className="mt-6">
+					<button
+						onClick={handleCreateCollection}
+						disabled={ready ? false : true}
+						className={`h-14 w-full rounded-sm flex flex-col items-center justify-center
+												${
+													ready
+														? "cursor-pointer hover:opacity-90 bg-teal-400"
+														: "bg-teal-400 opacity-70"
+												} `}
+					>
+						{loading ? (
+							<Spinner color="zinc-800" size="8" />
+						) : (
+							<p className="font-hedvig text-xl">Create</p>
+						)}
+					</button>
+				</div>
+			</div>
+		);
+	}
+}
+
+/**
+ *
+ *<div className="w-full mt-2">
 					<div
 						className={`flex items-center justify-center w-full relative ${
 							imageError ? "mb-20" : "mb-24"
@@ -236,25 +261,4 @@ export function CreateCollectionForm(props: any) {
 						</div>
 					) : null}
 				</div>
-				<div className="mt-6">
-					<button
-						onClick={handleCreateCollection}
-						disabled={ready ? false : true}
-						className={`h-14 w-full rounded-sm flex flex-col items-center justify-center
-												${
-													ready
-														? "cursor-pointer hover:opacity-90 bg-teal-400"
-														: "bg-teal-400 opacity-70"
-												} `}
-					>
-						{loading ? (
-							<Spinner color="zinc-800" size="8" />
-						) : (
-							<p className="">Create Collection</p>
-						)}
-					</button>
-				</div>
-			</div>
-		);
-	}
-}
+ */

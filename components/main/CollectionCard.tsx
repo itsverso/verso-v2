@@ -5,14 +5,13 @@ import Link from "next/link";
 
 type Props = {
 	title: string;
-	src: string;
 	address: string;
 	handle: string;
 	item: any;
 };
 
 export function CollectionCard(props: Props) {
-	const { title, src, address, item } = props;
+	const { title, address, item } = props;
 	const { data, error, isLoading, mutate } = useGetCollectionTokens(
 		item.tokenId
 	);
@@ -93,7 +92,6 @@ export function CollectionCard(props: Props) {
 					</div>
 				) : (
 					<img
-						src={src}
 						onLoad={handleOnLoad}
 						className={`w-full aspect-square object-cover object-center ${
 							compLoading ? "bg-slate200" : null
