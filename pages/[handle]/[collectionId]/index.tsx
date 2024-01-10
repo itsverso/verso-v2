@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useContext, useState } from "react";
+import { AppContext } from "@/context/context";
 import { CollectionFeed } from "@/components/feeds/CollectionFeed";
 import { AddMediaButton } from "@/components/main/AddMediaButton";
 import useGetCollectionTokens from "@/hooks/useGetCollectionTokens";
@@ -36,9 +37,10 @@ const Collection: NextPage = (props: any) => {
 	}, [data, fireFetch]);
 
 	const handleUserRedirect = () => {
-		console.log("click");
 		router.push(`/${data?.moderators[0]?.handle}`);
 	};
+
+	const setFeaturedAndRedirect = useCallback(() => {}, []);
 
 	if (isLoading) {
 		return (

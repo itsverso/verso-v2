@@ -16,6 +16,7 @@ const initialState = {
 	},
 	app: {
 		loading: false,
+		featuredItem: undefined,
 	},
 };
 

@@ -45,6 +45,7 @@ export type ProfileType = {
 
 export type AppType = {
 	loading: boolean;
+	featuredItem: any | undefined;
 };
 
 export type InitialStateType = {

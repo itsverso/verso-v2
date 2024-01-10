@@ -1,11 +1,35 @@
 import { useCallback, useEffect } from "react";
 import { NextPage } from "next";
+import { GetStaticPaths } from "next";
+import useGetTokenDetails from "@/hooks/useGetTokenDetails";
 import { Info } from "@/resources/icons";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 
-const TokenId: NextPage = () => {
+export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
+	return {
+		paths: [],
+		fallback: "blocking",
+	};
+};
+
+export async function getStaticProps({ params }: any) {
+	let id = params.tokenId;
+	let collection = params.collectionId;
+	return { props: { id, collection } };
+}
+
+const TokenId: NextPage = (props: any) => {
+	const { collection, id } = props;
 	const router = useRouter();
+	const { data, error, isLoading, mutate } = useGetTokenDetails(
+		collection,
+		id
+	);
+
+	useEffect(() => {
+		console.log(data);
+	}, [data]);
 
 	const handleRedirectBack = useCallback(() => {
 		router.back();
@@ -16,7 +40,7 @@ const TokenId: NextPage = () => {
 			<div className="w-2/3 p-10 h-screen flex items-center justify-center bg-zinc-100">
 				<img
 					className="h-full object-contain shadow-md"
-					src="https://images.unsplash.com/photo-1704027115927-9f67ab4e39dc?q=80&w=2864&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+					src={data?.token?.media[0]?.gateway}
 				/>
 			</div>
 			<div className="relative flex flex-col justify-between w-1/3 h-screen px-10 pt-28 pb-10">
@@ -34,14 +58,10 @@ const TokenId: NextPage = () => {
 						<XMarkIcon color="#646464" />
 					</button>
 					<p className="text-4xl font-hedvig">
-						On the streets where we live
+						{data?.token?.rawMetadata?.title}
 					</p>
 					<p className="mt-4 text-zinc-600 font-sans">
-						Normally these tiny insects ruined photographs, but this
-						bird showed them whats up. Normally these tiny insects
-						ruined photographs, but this bird showed them whats up.
-						Normally these tiny insects ruined photographs, but this
-						bird showed them whats up.
+						{data?.token?.rawMetadata?.description}
 					</p>
 				</div>
 				<div className="">
