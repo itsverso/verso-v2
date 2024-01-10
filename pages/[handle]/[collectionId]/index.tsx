@@ -72,8 +72,8 @@ const Collection: NextPage = (props: any) => {
 						className="cursor-pointer"
 						onClick={() => handleUserRedirect()}
 					>
-						<p className="ml-2 mt-1 text-xl text-gray-500 font-hedvig">
-							{data?.moderators[0]?.handle}.verso
+						<p className="ml-2 mt-1 text-2xl text-black opacity-70 hover:opacity-80 font-hedvig">
+							@{data?.moderators[0]?.handle}
 						</p>
 					</div>
 				</div>
