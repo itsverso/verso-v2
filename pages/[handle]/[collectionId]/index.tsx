@@ -1,6 +1,4 @@
-import { useCallback, useEffect, useContext, useState } from "react";
-import { AppContext } from "@/context/context";
-import { CollectionFeed } from "@/components/feeds/CollectionFeed";
+import { useEffect, useState } from "react";
 import { AddMediaButton } from "@/components/main/AddMediaButton";
 import useGetCollectionTokens from "@/hooks/useGetCollectionTokens";
 import { Drawer } from "@/components/common/Drawer";
@@ -39,8 +37,6 @@ const Collection: NextPage = (props: any) => {
 	const handleUserRedirect = () => {
 		router.push(`/${data?.moderators[0]?.handle}`);
 	};
-
-	const setFeaturedAndRedirect = useCallback(() => {}, []);
 
 	if (isLoading) {
 		return (
