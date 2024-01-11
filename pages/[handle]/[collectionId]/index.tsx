@@ -86,33 +86,26 @@ const Collection: NextPage = (props: any) => {
 				</p>
 			</div>
 			<div className="h-full w-full mt-10">
-				{true ? (
-					<div className="w-full h-full grid grid-cols-4">
-						{data?.tokens?.nfts.map((item: any, index: number) => {
-							return (
-								<Link
-									key={index}
-									href={`${router.asPath}/${item.tokenId}`}
-									className="w-full h-96 p-4 mb-10 flex flex-col items-center justify-center"
-								>
-									<img
-										alt=""
-										src={item.media[0]?.gateway}
-										className={`h-full cursor-pointer object-contain`}
-									/>
-									<p className="text-white hover:text-zinc-600">
-										title
-									</p>
-								</Link>
-							);
-						})}
-					</div>
-				) : (
-					<CollectionFeed
-						id={props.id}
-						items={data?.tokens?.nfts || []}
-					/>
-				)}
+				<div className="w-full h-full grid grid-cols-4">
+					{data?.tokens?.nfts.map((item: any, index: number) => {
+						return (
+							<Link
+								key={index}
+								href={`${router.asPath}/${item.tokenId}`}
+								className="w-full h-96 p-4 mb-10 flex flex-col items-center justify-center"
+							>
+								<img
+									alt=""
+									src={item?.media[0]?.gateway}
+									className={`h-full cursor-pointer object-contain`}
+								/>
+								<p className="text-white hover:text-zinc-600">
+									title
+								</p>
+							</Link>
+						);
+					})}
+				</div>
 			</div>
 			<AddMediaButton openCreate={() => setOpenCreateDrawer(true)} />
 		</main>

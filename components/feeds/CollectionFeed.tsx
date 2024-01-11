@@ -34,7 +34,7 @@ function ImageItem(props: ImageItemProps) {
 				height={0}
 				sizes="100%"
 				style={{ width: "auto", height: "auto" }}
-				src={item.media[0]?.gateway}
+				src={item?.media[0]?.gateway}
 				className={`w-full shadow-xl cursor-pointer object-cover`}
 			/>
 		</div>
