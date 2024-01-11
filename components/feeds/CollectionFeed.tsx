@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 import { BlogPostCard } from "../main/BlogPostCard";
 import useWindowDimension from "@/hooks/useWindowDimensions";
-import useGetCollectionTokens from "@/hooks/useGetCollectionTokens";
 
 const Layout = dynamic(() => import("react-masonry-list"), {
 	ssr: false,
