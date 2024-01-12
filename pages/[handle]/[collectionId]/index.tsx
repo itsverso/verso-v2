@@ -50,7 +50,7 @@ const Collection: NextPage = (props: any) => {
 		<main className="flex flex-col px-32 py-20 min-w-screen min-h-screen">
 			<Drawer isOpen={openCreateDrawer} setIsOpen={setOpenCreateDrawer}>
 				<MintPictureForm
-					address={data.address}
+					address={data?.address}
 					fireFetch={() => setFireFetch(true)}
 					onClickBack={() => setOpenCreateDrawer(false)}
 				/>
