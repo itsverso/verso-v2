@@ -75,7 +75,7 @@ export function Header() {
 					className="h-full w-full text-sm font-light"
 					onClick={login}
 				>
-					<p className="text-white font-light text-sm">Log in</p>
+					<p className="text-white font-light text-sm">Connect</p>
 				</button>
 			</div>
 		);
