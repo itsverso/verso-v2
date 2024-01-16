@@ -111,6 +111,35 @@ const TokenId: NextPage = (props: any) => {
 		setProtocolEarningsArray(newProtocolArray);
 	};
 
+	const executeSell = () => {
+		if (tokenSupply < 2) return;
+		// Basics
+		let newPriceArray = priceArray;
+		let newCreatorArray = creatorEarningsArray;
+		let newProtocolArray = protocolEarningsArray;
+		let newPrice = getSellPriceAfterFee(1);
+		let newTokenSupply = tokenSupply - 1;
+		// Calculations
+		let creatorFee = newPrice * creatorFeePercent;
+		let protocolFee = newPrice * protocolFeePercent;
+		let newPoolAmount = poolAmount - (newPrice + creatorFee + protocolFee);
+		let creatorEarning =
+			creatorEarningsArray[creatorEarningsArray.length - 1] + creatorFee;
+		let protocolEarning =
+			protocolEarningsArray[protocolEarningsArray.length - 1] +
+			protocolFee;
+
+		// Set state.
+		newPriceArray.push(newPrice);
+		newCreatorArray.push(creatorEarning);
+		newProtocolArray.push(protocolEarning);
+		setPriceArray(newPriceArray);
+		setTokenSupply(newTokenSupply);
+		setPoolAmount(newPoolAmount);
+		setCreatorEarningsArray(newCreatorArray);
+		setProtocolEarningsArray(newProtocolArray);
+	};
+
 	const parseEthOutput = (output: number) => {
 		return (output / 1000000000000000000).toFixed(4);
 	};
@@ -125,6 +154,16 @@ const TokenId: NextPage = (props: any) => {
 	const getBuyPriceAfterFee = useCallback(
 		(amount: number) => {
 			let price = getPrice(tokenSupply, amount);
+			let protocolFee = price * protocolFeePercent;
+			let creatorFee = price * creatorFeePercent;
+			return price + protocolFee + creatorFee;
+		},
+		[tokenSupply]
+	);
+
+	const getSellPriceAfterFee = useCallback(
+		(amount: number) => {
+			let price = getPrice(tokenSupply - amount, amount);
 			let protocolFee = price * protocolFeePercent;
 			let creatorFee = price * creatorFeePercent;
 			return price + protocolFee + creatorFee;
@@ -180,12 +219,12 @@ const TokenId: NextPage = (props: any) => {
 					<p className="mt-4 text-zinc-600 font-sans">
 						{data?.token?.rawMetadata?.description}
 					</p>
+				</div>
+				<div className="">
 					<p className="mt-4">
 						Collected{" "}
 						<span className="font-bold">{tokenSupply}</span> times
 					</p>
-				</div>
-				<div className="">
 					<div className="w-full h-16 bg-zinc-100 my-4 p-4 flex flex-col center justify-center">
 						<p className="text-sm">Current Price</p>
 						<p className="text-base font-bold">
@@ -241,7 +280,7 @@ const TokenId: NextPage = (props: any) => {
 							</p>
 						</button>
 						<button
-							onClick={() => executeBuy()}
+							onClick={() => executeSell()}
 							className="w-1/2 h-16 bg-white border-2 border-black flex flex-col items-center justify-center"
 						>
 							<p className="">
