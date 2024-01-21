@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model collections {
+  id           String    @id @db.VarChar
+  created_at   DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at   DateTime? @db.Timestamp(6)
+  metadata_uri String?   @db.VarChar
+  metadata     Json?     @db.Json
+  user_id      String    @db.VarChar
+  users        users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  posts        posts[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model posts {
+  created_at    DateTime    @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime    @default(now()) @db.Timestamp(6)
+  collection_id String      @db.VarChar
+  token_id      BigInt
+  metadata_uri  String?     @db.VarChar
+  metadata      Json?       @db.Json
+  deleted_at    DateTime?   @db.Timestamp(6)
+  user_id       String      @db.VarChar
+  collections   collections @relation(fields: [collection_id], references: [id], onDelete: Cascade)
+  users         users       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([collection_id, token_id, user_id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model profiles {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  user_id     String   @db.VarChar
+  updated_at  DateTime @default(now()) @db.Timestamp(6)
+  metadataURI String   @db.VarChar
+  metadata    Json     @db.Json
+  users       users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model users {
+  id          String        @id @db.VarChar
+  created_at  DateTime      @default(now()) @db.Timestamptz(6)
+  collections collections[]
+  posts       posts[]
+  profiles    profiles[]
+}
