@@ -49,7 +49,7 @@ export function CollectionsCarousel(props: CarouselProps) {
 						</p>
 					</div>
 				) : null}
-				<div className="w-full grid grid-cols-2 lg:grid md:grid-cols-2 gap-6 lg:gap-12">
+				<div className="w-full grid grid-cols-2 lg:grid md:grid-cols-3 gap-6 lg:gap-12">
 					{data.collections.ownedNfts.map((item: any, index: any) => (
 						<CollectionCard
 							key={index}

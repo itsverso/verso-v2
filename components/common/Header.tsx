@@ -106,10 +106,10 @@ export function Header() {
 						{authenticated ? (
 							<div className="flex flex-row justify-center">
 								{state.user.handle ? (
-									<div className="flex items-center justify-center mr-6">
+									<div className="flex items-center justify-center h-10 w-32 bg-black rounded-md hover:opacity-80 mr-6">
 										<Link href={`/create`}>
-											<p className="cursor-pointer text-sm bg-black px-4 py-2 text-white tracking-wide hover:opacity-80">
-												CREATE
+											<p className="cursor-pointer text-sm text-white tracking-wide ">
+												New Collection
 											</p>
 										</Link>
 									</div>

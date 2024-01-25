@@ -11,6 +11,8 @@ export function UserDropDown(props: any) {
 	const [balance, setBalance] = useState<string>("");
 	const [visible, setIsVisible] = useState<boolean>(false);
 	const [hasCopied, setHasCopied] = useState<boolean>(false);
+	const [walletHover, setWalletHover] = useState<boolean>(false);
+	const [balanceHover, setBalanceHover] = useState<boolean>(false);
 
 	// Set user address
 	// and fetch balance
@@ -36,6 +38,9 @@ export function UserDropDown(props: any) {
 		}
 	};
 
+	// Handle wallet hover
+	const handleWalletHover = async () => {};
+
 	// Copy address to clipboard
 	const handleClickOnCopy = async () => {
 		navigator.clipboard.writeText(address);
@@ -58,7 +63,12 @@ export function UserDropDown(props: any) {
 							src={props.user?.image}
 						/>
 					) : (
-						<div className="h-10 w-10 rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500" />
+						<img
+							className="h-10 w-10 rounded-full object-cover"
+							src={
+								"https://i.postimg.cc/mZHqZJQ0/Ellipse-1elipse.png"
+							}
+						/>
 					)}
 				</div>
 			</button>
@@ -89,39 +99,69 @@ export function UserDropDown(props: any) {
 											src={props.user?.image}
 										/>
 									) : (
-										<div className="h-12 w-12 rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500" />
+										<img
+											className="h-12 w-12 rounded-full object-cover"
+											src={
+												"https://i.postimg.cc/mZHqZJQ0/Ellipse-1elipse.png"
+											}
+										/>
 									)}
 								</div>
 							</div>
 						</div>
 					</div>
 				</Link>
-				<button onClick={handleClickOnCopy} className="h-12 p-2">
+				<button
+					className="h-12 p-2"
+					onClick={handleClickOnCopy}
+					onMouseEnter={() => setWalletHover(true)}
+					onMouseLeave={() => setWalletHover(false)}
+				>
 					<div className="flex flex-row items-center justify-between py-1 px-2 rounded-md hover:bg-gray-200">
 						<p className="text-base">Wallet</p>
 
 						<div className="flex flex-row items-center">
-							<p className="text-base text-gray-500 hover:text-gray-800 mr-4">
+							<p
+								className={`text-base  ${
+									walletHover
+										? "text-gray-900 mr-2"
+										: "text-gray-500"
+								}`}
+							>
 								{address.slice(0, 6) +
 									"..." +
 									address.slice(36, 42)}
 							</p>
 							<div>
-								{hasCopied ? (
-									<Icons.CopyFull size="4" />
-								) : (
-									<Icons.Copy size="4" />
-								)}
+								{walletHover ? (
+									<div>
+										{hasCopied ? (
+											<Icons.CopyFull size="4" />
+										) : (
+											<Icons.Copy size="4" />
+										)}
+									</div>
+								) : null}
 							</div>
 						</div>
 					</div>
 				</button>
 
-				<div className="h-12 p-2">
-					<div className="h-full flex flex-row items-center justify-between py-1 px-2 rounded-md hover:bg-gray-200 ">
+				<div
+					className="h-12 p-2"
+					onMouseEnter={() => setBalanceHover(true)}
+					onMouseLeave={() => setBalanceHover(false)}
+				>
+					<div className="h-full flex flex-row items-center justify-between py-1 px-2 rounded-md hover:bg-gray-200">
 						<p className="text-base">Balance</p>
 						<div className="flex flex-row">
-							<p className="text-base text-gray-500 hover:text-gray-800">
+							<p
+								className={`text-base  ${
+									balanceHover
+										? "text-gray-900"
+										: "text-gray-500"
+								}`}
+							>
 								{balance + " ETH"}
 							</p>
 						</div>
