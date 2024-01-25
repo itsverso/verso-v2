@@ -31,10 +31,14 @@ export function UserDropDown(props: any) {
 	// Get wallet balance, only triggered on mount.
 	const getWalletBalance = async (wallet: any) => {
 		if (props?.wallet?.address) {
-			let provider = await wallet.getEthersProvider();
-			let bigNumber = await provider.getBalance(props?.wallet?.address);
-			let balance = ethers.utils.formatEther(bigNumber);
-			setBalance(balance.slice(0, 5));
+			try {
+				let provider = await wallet.getEthersProvider();
+				let bigNumber = await provider.getBalance(
+					props?.wallet?.address
+				);
+				let balance = ethers.utils.formatEther(bigNumber);
+				setBalance(balance.slice(0, 5));
+			} catch (e) {}
 		}
 	};
 

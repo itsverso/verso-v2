@@ -2,6 +2,8 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { NextPage } from "next";
 import { GetStaticPaths } from "next";
 import { ethers } from "ethers";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 
 import { UserActionTypes } from "@/reducers/userReducer";
 import { AppContext } from "@/context/context";
@@ -28,11 +30,27 @@ export async function getStaticProps({ params }: any) {
 
 const Profile: NextPage = (props: any) => {
 	// Component state
-	let [fireFetch, setFireFetch] = useState<boolean>(false);
+	let router = useRouter();
+	let params = useSearchParams();
 	let { state, dispatch } = useContext(AppContext);
+	let [fireFetch, setFireFetch] = useState<boolean>(false);
+	let [collectionsView, setCollectionsView] = useState<boolean | undefined>(
+		undefined
+	);
 	let [openUpdateDrawer, setOpenUpdateDrawer] = useState<boolean>(false);
 	let [openCreateDrawer, setOpenCreateDrawer] = useState<boolean>(false);
 	let { data, error, isLoading, mutate } = useGetUserProfile(props.handle);
+
+	// Set right view based on param.
+	// If not set, collection view is default.
+	useEffect(() => {
+		let hasParam = params.has("collections");
+		if (hasParam) {
+			let param = params.get("collections");
+			if (param == "true") setCollectionsView(true);
+			else setCollectionsView(false);
+		} else setCollectionsView(true);
+	}, [params]);
 
 	// If profile is updated
 	// refetch both locally and globally
@@ -49,6 +67,7 @@ const Profile: NextPage = (props: any) => {
 		console.log("ERROR: ", error);
 	}, [fireFetch, data, error]);
 
+	// Open edit profile drawer
 	const handleOpenUpdateDrawer = useCallback(() => {
 		// Check if user exists
 		if (data?.user && data?.user?.handle == props.handle) {
@@ -59,10 +78,15 @@ const Profile: NextPage = (props: any) => {
 		}
 	}, [data, state.user]);
 
+	// Close edit profile drawer
 	const handleCloseUpdateDrawer = useCallback(() => {
 		setFireFetch(true);
 		setOpenUpdateDrawer(false);
 	}, []);
+
+	const handleSwitchView = () => {
+		router.push(`/${props.handle}?collections=${!collectionsView}`);
+	};
 
 	if (isLoading) {
 		return (
@@ -101,56 +125,79 @@ const Profile: NextPage = (props: any) => {
 					{data.user.image ? (
 						<img
 							onClick={handleOpenUpdateDrawer}
-							className="h-20 w-20 rounded-full object-cover cursor-pointer"
+							className="h-20 w-20 rounded-full object-cover"
 							src={data.user?.image}
 						/>
 					) : (
 						<div
 							onClick={handleOpenUpdateDrawer}
-							className="h-20 w-20 rounded-full cursor-pointer bg-zinc-200"
+							className="h-20 w-20 rounded-full bg-zinc-200"
 						/>
 					)}
 					<div className="w-full md:mt-8">
-						<p className="text-2xl font-hedvig text-gray-500">
-							{data.user.name}
-						</p>
-						<p className="font-hedvig text-xl font-light text-black opacity-60">
-							{data.user.handle}.verso
-						</p>
-						<p className="md:mt-4 text-3xl text-black font-hedvig">
+						<div className="flex flex-row items-center">
+							<p className="text-2xl font-hedvig text-gray-600">
+								{data.user.name}
+							</p>
+							<div className="w-1 h-1 rounded-full bg-gray-800 mx-2" />
+							<p className="mt-1 text-2xl font-hedvig text-gray-600">
+								@
+							</p>
+							<p className="text-2xl font-hedvig text-gray-600">
+								{data.user.handle}.verso
+							</p>
+						</div>
+
+						<p className="text-3xl text-black font-hedvig mt-1">
 							{data.user.description}
 						</p>
 					</div>
 				</div>
-				<div className="w-full h-16 my-6 flex items-center justify-between ">
+				<div className="w-full h-16 my-6 flex items-center justify-between">
 					<div className="flex flex-row items-center">
-						<button className="h-10 px-2 flex items-center justify-center hover:opacity-80 bg-gray-200 rounded-md">
-							<p className="text-black">Collections</p>
+						<button
+							onClick={handleSwitchView}
+							disabled={collectionsView}
+							className={`h-10 px-3 flex items-center justify-center ${
+								collectionsView
+									? "bg-gray-200 rounded-md text-black"
+									: "text-gray-400 hover:bg-gray-50 rounded-md"
+							} `}
+						>
+							<p>Collections</p>
 						</button>
-						<button className="h-10 px-2 ml-2 flex items-center justify-center hover:opacity-80 rounded-md">
-							<p className="text-gray-600">Latest items</p>
+						<button
+							onClick={handleSwitchView}
+							disabled={!collectionsView}
+							className={`h-10 px-3 ml-4 flex items-center text-red-600 justify-center ${
+								!collectionsView
+									? "bg-gray-200 rounded-md "
+									: "hover:bg-gray-50 rounded-md"
+							} `}
+						>
+							<p>Latest items</p>
 						</button>
 					</div>
 					<div className=" h-full flex flex-row items-center justify-end">
-						<button className="w-10 h-10 rounded-md m-1 border border-gray-400 flex items-center justify-center">
+						<button className="w-10 h-10 rounded-md m-1 border border-gray-400 hover:opacity-70 flex items-center justify-center">
 							<img
 								src={"./SR_logo.png"}
 								className="w-8 h-8 object-contain"
 							/>
 						</button>
-						<button className="w-10 h-10 rounded-md m-1 border border-gray-400 flex items-center justify-center">
+						<button className="w-10 h-10 rounded-md m-1 border border-gray-400 hover:opacity-70 flex items-center justify-center">
 							<img
 								src={"./foundation-logo.jpeg"}
 								className="rounded-md object-contain"
 							/>
 						</button>
-						<button className="w-10 h-10 rounded-md m-1 mr-0 border border-gray-400 flex items-center justify-center">
+						<button className="w-10 h-10 rounded-md m-1 mr-0 border border-gray-400 hover:opacity-70 flex items-center justify-center">
 							<World size="6" />
 						</button>
 					</div>
 				</div>
 			</div>
-			<div className="w-full h-full mt-5">
+			<div className="w-full mt-5 pb-24">
 				<CollectionsCarousel
 					openDrawer={() => setOpenCreateDrawer(true)}
 					handle={props.handle}
