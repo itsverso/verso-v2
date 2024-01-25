@@ -120,7 +120,7 @@ const Profile: NextPage = (props: any) => {
 					handleClose={() => setOpenCreateDrawer(false)}
 				/>
 			</Drawer>
-			<div className="w-full h-full flex flex-col">
+			<div className="w-full flex flex-col">
 				<div className="w-1/2 h-full flex flex-col justify-center md:pr-4 ">
 					{data.user.image ? (
 						<img
@@ -160,22 +160,38 @@ const Profile: NextPage = (props: any) => {
 							disabled={collectionsView}
 							className={`h-10 px-3 flex items-center justify-center ${
 								collectionsView
-									? "bg-gray-200 rounded-md text-black"
-									: "text-gray-400 hover:bg-gray-50 rounded-md"
+									? "bg-gray-200 rounded-md"
+									: "hover:bg-gray-50 rounded-md"
 							} `}
 						>
-							<p>Collections</p>
+							<p
+								className={
+									collectionsView
+										? "text-black"
+										: "text-gray-500"
+								}
+							>
+								Collections
+							</p>
 						</button>
 						<button
 							onClick={handleSwitchView}
 							disabled={!collectionsView}
-							className={`h-10 px-3 ml-4 flex items-center text-red-600 justify-center ${
+							className={`h-10 px-3 ml-4 flex items-center justify-center ${
 								!collectionsView
 									? "bg-gray-200 rounded-md "
 									: "hover:bg-gray-50 rounded-md"
 							} `}
 						>
-							<p>Latest items</p>
+							<p
+								className={
+									!collectionsView
+										? "text-black"
+										: "text-gray-500"
+								}
+							>
+								Latest items
+							</p>
 						</button>
 					</div>
 					<div className=" h-full flex flex-row items-center justify-end">
@@ -191,9 +207,19 @@ const Profile: NextPage = (props: any) => {
 								className="rounded-md object-contain"
 							/>
 						</button>
-						<button className="w-10 h-10 rounded-md m-1 mr-0 border border-gray-400 hover:opacity-70 flex items-center justify-center">
+						<button className="w-10 h-10 rounded-md m-1 border border-gray-400 hover:opacity-70 flex items-center justify-center">
 							<World size="6" />
 						</button>
+						{state.user.handle == props.handle ? (
+							<div>
+								<button
+									onClick={() => handleOpenUpdateDrawer()}
+									className="h-10 w-32 rounded-md border border-gray-400 m-1"
+								>
+									<p>Edit Profile</p>
+								</button>
+							</div>
+						) : null}
 					</div>
 				</div>
 			</div>

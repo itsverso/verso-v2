@@ -70,7 +70,7 @@ export function Header() {
 
 	function LoginButton() {
 		return (
-			<div className="h-10 w-20 rounded-md bg-zinc-800 flex items-center justify-center hover:opacity-90">
+			<div className="h-10 w-20 rounded-sm bg-zinc-800 flex items-center justify-center hover:opacity-90">
 				<button
 					className="h-full w-full text-sm font-light"
 					onClick={login}
@@ -108,8 +108,8 @@ export function Header() {
 								{state.user.handle ? (
 									<div className="flex items-center justify-center h-10 w-32 bg-black rounded-md hover:opacity-80 mr-6">
 										<Link href={`/create`}>
-											<p className="cursor-pointer text-sm text-white tracking-wide ">
-												New Collection
+											<p className="cursor-pointer text-sm text-white font-light tracking-wide ">
+												New collection
 											</p>
 										</Link>
 									</div>
