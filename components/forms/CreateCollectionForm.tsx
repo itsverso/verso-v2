@@ -126,23 +126,25 @@ export function CreateCollectionForm(props: any) {
 		setError("");
 	};
 
-	const ready = true;
+	const ready = title.length > 0;
 
 	if (true) {
 		return (
 			<div className="w-full h-full flex flex-col justify-center bg-white px-8">
-				<h1 className="text-4xl mb-10 font-bold font-sans">
-					Create Collection
+				<h1 className="text-4xl mb-10 font-hedvig">
+					Create collection
 				</h1>
 				<div className="w-full">
 					<label className="w-full flex flex-col">
-						<p className="text-lg py-2">Title</p>
+						<p className="text-base py-2 font-medium text-gray-500">
+							Title*
+						</p>
 						<input
 							type="text"
 							name="title"
 							value={title || ""}
-							placeholder=""
-							className="h-14 pl-2 text-base bg-zinc-100 font-sans rounded-md font-light focus:outline-none"
+							placeholder="Name your collection..."
+							className="h-14 pl-4 text-lg border-2 border-gray-200 font-sans rounded-md font-light focus:outline-none"
 							onChange={(e) => setTitle(e.target.value)}
 							onFocus={() => setTitleError("")}
 						></input>
@@ -155,12 +157,14 @@ export function CreateCollectionForm(props: any) {
 				</div>
 				<div className="w-full mt-2">
 					<label className="w-full flex flex-col">
-						<p className="text-lg py-2">Description</p>
+						<p className="text-base py-2 font-medium text-gray-500">
+							Description
+						</p>
 						<textarea
 							name="description"
 							value={description || ""}
-							placeholder=""
-							className="h-28 p-2 bg-zinc-100 rounded-md font-sans text-base font-light focus:outline-none"
+							placeholder="Describe your new collection..."
+							className="h-28 p-4 border-2 border-gray-200 rounded-md font-sans text-lg font-light focus:outline-none"
 							onChange={(e) => setDescription(e.target.value)}
 						></textarea>
 					</label>
@@ -171,27 +175,26 @@ export function CreateCollectionForm(props: any) {
 						onClick={handleCreateCollection}
 						disabled={ready ? false : true}
 						className={`h-14 w-full rounded-md flex flex-col items-center justify-center
-												${
-													ready
-														? "cursor-pointer hover:opacity-90 bg-black"
-														: "bg-gray-800 opacity-70"
-												} `}
+							${ready ? "cursor-pointer hover:opacity-90 bg-gray-800" : "bg-gray-100"} `}
 					>
 						{loading ? (
 							<Spinner color="zinc-800" size="8" />
 						) : (
-							<p className="text-xl font-light tracking-wide text-white">
-								Create
+							<p
+								className={`text-lg font-light tracking-wide ${
+									ready ? "text-white" : "text-gray-500"
+								} `}
+							>
+								Create collection
 							</p>
 						)}
 					</button>
 				</div>
-				<p className="mt-10 text-center ">
+				<p className="mt-4 text-center">
 					<span className="font-bold">Note:</span> Verso makes it easy
-					to create NFT collections that you own following the ERC1155
-					standard. Proceeding, you will be creating a new NFT
-					contract on Ethereum via Optimism and you will be set as the
-					owner.
+					to create NFT collections following the ERC1155 standard.
+					Proceeding, you will be creating a new NFT contract and you
+					will be set as the owner.
 				</p>
 			</div>
 		);

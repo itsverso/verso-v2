@@ -192,7 +192,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 								// Name
 							}
 							<label className="h-full w-full flex flex-col">
-								<p className="text-sm font-hedvig text-accent6 py-2">
+								<p className="text-base font-hedvig text-accent6 py-2">
 									Name
 								</p>
 								<input
@@ -211,7 +211,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 								// Description
 							}
 							<label className="h-full w-full flex flex-col">
-								<p className="text-sm font-hedvig text-accent6 py-2">
+								<p className="text-base font-hedvig text-accent6 py-2">
 									Description
 								</p>
 								<textarea
@@ -231,7 +231,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 								// Personal website
 							}
 							<label className="h-full w-full flex flex-col">
-								<p className="text-sm font-hedvig text-accent6 py-2">
+								<p className="text-base font-hedvig text-accent6 py-2">
 									Personal Website
 								</p>
 								<input
@@ -251,7 +251,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 								// Foundation url (optional)
 							}
 							<label className="h-full w-full flex flex-col">
-								<p className="text-sm font-hedvig text-accent6 py-2">
+								<p className="text-base font-hedvig text-accent6 py-2">
 									Foundation Profile
 								</p>
 								<input
@@ -273,7 +273,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 								// SuperRare url (optional)
 							}
 							<label className="h-full w-full flex flex-col">
-								<p className="text-sm font-hedvig text-accent6 py-2">
+								<p className="text-base font-hedvig text-accent6 py-2">
 									SuperRare Profile
 								</p>
 								<input
