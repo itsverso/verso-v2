@@ -84,16 +84,14 @@ export default async function handler(
 			let metadataURI = profile.metadataURI;
 			if (metadataURI.length > 10) {
 				let profileData = await fetch(metadataURI);
-				let { name, description, image } = await profileData.json();
+				let data = await profileData.json();
 				// let { collections } = await fetchCollections(profile.collections);
 				res.status(200).json({
 					error: false,
 					message: "success",
 					user: {
 						handle,
-						name,
-						description,
-						image,
+						...data,
 						// collections,
 						metadataURI,
 					},

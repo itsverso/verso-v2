@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AppContext } from "@/context/context";
 import { AddMediaButton } from "@/components/main/AddMediaButton";
 import useGetCollectionTokens from "@/hooks/useGetCollectionTokens";
 import { Drawer } from "@/components/common/Drawer";
@@ -7,6 +8,7 @@ import { NextPage } from "next";
 import { GetStaticPaths } from "next";
 import { Spinner } from "@/components/common/Spinner";
 import { useRouter } from "next/router";
+import { ImageItem } from "@/components/main/ImageItem";
 import Link from "next/link";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
@@ -18,11 +20,13 @@ export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
 
 export async function getStaticProps({ params }: any) {
 	let id = params.collectionId;
-	return { props: { id } };
+	let handle = params.handle;
+	return { props: { id, handle } };
 }
 
 const Collection: NextPage = (props: any) => {
 	const router = useRouter();
+	const { state } = useContext(AppContext);
 	const [fireFetch, setFireFetch] = useState<boolean>(false);
 	const [openCreateDrawer, setOpenCreateDrawer] = useState<boolean>(false);
 	const { data, error, isLoading, mutate } = useGetCollectionTokens(props.id);
@@ -85,25 +89,24 @@ const Collection: NextPage = (props: any) => {
 				<div className="w-full h-full grid grid-cols-4">
 					{data?.tokens?.nfts.map((item: any, index: number) => {
 						return (
-							<Link
-								key={index}
-								href={`${router.asPath}/${item.tokenId}`}
-								className="w-full h-96 p-4 mb-10 flex flex-col items-center justify-center"
-							>
-								<img
-									alt=""
-									src={item?.media[0]?.gateway}
-									className={`h-full cursor-pointer object-contain`}
-								/>
-								<p className="text-white hover:text-zinc-600">
-									title
-								</p>
-							</Link>
+							<ImageItem
+								item={item}
+								index={index}
+								src={item?.media[0]?.gateway}
+								route={`${router.asPath}/${item.tokenId}`}
+							/>
 						);
 					})}
 				</div>
 			</div>
-			<AddMediaButton openCreate={() => setOpenCreateDrawer(true)} />
+			{
+				// Only display button if user is owner.
+				state.user.handle == props.handle ? (
+					<AddMediaButton
+						openCreate={() => setOpenCreateDrawer(true)}
+					/>
+				) : null
+			}
 		</main>
 	);
 };

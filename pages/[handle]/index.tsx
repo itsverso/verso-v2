@@ -129,10 +129,7 @@ const Profile: NextPage = (props: any) => {
 							src={data.user?.image}
 						/>
 					) : (
-						<div
-							onClick={handleOpenUpdateDrawer}
-							className="h-20 w-20 rounded-full bg-zinc-200"
-						/>
+						<div onClick={handleOpenUpdateDrawer} className="" />
 					)}
 					<div className="w-full md:mt-8">
 						<div className="flex flex-row items-center">
@@ -195,21 +192,40 @@ const Profile: NextPage = (props: any) => {
 						</button>
 					</div>
 					<div className=" h-full flex flex-row items-center justify-end">
-						<button className="w-10 h-10 rounded-md m-1 border border-gray-400 hover:opacity-70 flex items-center justify-center">
-							<img
-								src={"./SR_logo.png"}
-								className="w-8 h-8 object-contain"
-							/>
-						</button>
-						<button className="w-10 h-10 rounded-md m-1 border border-gray-400 hover:opacity-70 flex items-center justify-center">
-							<img
-								src={"./foundation-logo.jpeg"}
-								className="rounded-md object-contain"
-							/>
-						</button>
-						<button className="w-10 h-10 rounded-md m-1 border border-gray-400 hover:opacity-70 flex items-center justify-center">
-							<World size="6" />
-						</button>
+						{data.user.superRare ? (
+							<a
+								target="_blank"
+								href={data.user.superRare}
+								className="w-10 h-10 rounded-md m-1 border border-gray-400 hover:opacity-70 flex items-center justify-center"
+							>
+								<img
+									src={"./SR_logo.png"}
+									className="w-8 h-8 object-contain"
+								/>
+							</a>
+						) : null}
+						{data.user.foundation ? (
+							<a
+								target="_blank"
+								href={data.user.foundation}
+								className="w-10 h-10 rounded-md m-1 border border-gray-400 hover:opacity-70 flex items-center justify-center"
+							>
+								<img
+									src={"./foundation-logo.jpeg"}
+									className="rounded-md object-contain"
+								/>
+							</a>
+						) : null}
+						{data.user.website ? (
+							<a
+								target="_blank"
+								href={data.user.website}
+								className="w-10 h-10 rounded-md m-1 border border-gray-400 hover:opacity-70 flex items-center justify-center"
+							>
+								<World size="6" />
+							</a>
+						) : null}
+
 						{state.user.handle == props.handle ? (
 							<div>
 								<button

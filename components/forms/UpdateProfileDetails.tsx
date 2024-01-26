@@ -27,6 +27,10 @@ export function UpdateProfileDetailsForm(props: Props) {
 	const [mimeType, setMimeType] = useState<string>("");
 	const [name, setName] = useState<string | null>(null);
 	const [description, setDescription] = useState<string | null>();
+	const [website, setWebsite] = useState<string | null>();
+	const [foundation, setFoundation] = useState<string | null>();
+	const [superRare, setSuperRare] = useState<string | null>();
+
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState<boolean>(false);
 
@@ -59,6 +63,9 @@ export function UpdateProfileDetailsForm(props: Props) {
 			image,
 			name: name || props.user.name,
 			description: description || props.user?.description,
+			website: website || props.user?.website,
+			foundation: foundation || props.user?.foundation,
+			superRare: superRare || props.user?.superrare,
 			handle: props.user?.handle,
 			mimeType: mimeType,
 			hasChanged: imageHasChanged,
@@ -66,31 +73,34 @@ export function UpdateProfileDetailsForm(props: Props) {
 		return res.url;
 	};
 
-	// Handle name input
-	const handleNameInput = useCallback(
-		(e: any) => {
+	// Handle text inputs with a switch.
+	const handleInputs = useCallback(
+		(e: any, type: string) => {
 			e.preventDefault();
-			if (error) {
-				setError(null);
+			switch (type) {
+				case "name":
+					setName(e.target.value);
+					return;
+				case "description":
+					setDescription(e.target.value);
+					return;
+				case "website":
+					setWebsite(e.target.value);
+					return;
+				case "foundation":
+					setFoundation(e.target.value);
+					return;
+				case "superRare":
+					setSuperRare(e.target.value);
+					return;
+				default:
+					return;
 			}
-			setName(e.target.value);
 		},
 		[error]
 	);
 
-	// Handle description
-	const handleDescriptionInput = useCallback(
-		(e: any) => {
-			e.preventDefault();
-			if (error) {
-				setError(null);
-			}
-			setDescription(e.target.value);
-		},
-		[error]
-	);
-
-	// Convert file to base64 and set in state
+	// Convert file to base64 and set in state.
 	const handleImageUpload = useCallback((e: any) => {
 		e.preventDefault();
 		let file = e.target.files[0];
@@ -123,12 +133,12 @@ export function UpdateProfileDetailsForm(props: Props) {
 		<div>
 			<main>
 				<div
-					className={`overflow-hidden h-screen w-full flex flex-col pt-24 lg:pt-30 bg-white ${
+					className={`overflow-y-scroll h-screen w-full flex flex-col pt-24 lg:pt-10 bg-white ${
 						props.side ? "" : "md:px-64"
 					}`}
 				>
 					<div className="flex flex-col px-6">
-						<h1 className="font-lora font-light text-zinc-800 text-2xl md:text-3xl mb-4 sm:mb-8">
+						<h1 className="font-hedvig font-light text-zinc-800 text-2xl md:text-3xl mb-4 sm:mb-8">
 							Update Profile
 						</h1>
 
@@ -146,7 +156,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 						) : null}
 
 						<div className="relative w-full mt-4 mb-5 flex flex-col">
-							<div className="w-16 lg:w-20 h-16 lg:h-20 rounded-md flex flex-row bg-zinc-100">
+							<div className="w-16 lg:w-20 h-16 lg:h-20 rounded-full flex flex-row bg-zinc-100">
 								<label className={`h-full w-full`}>
 									{!!image || props.user.image ? (
 										<div>
@@ -154,7 +164,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 												src={
 													preview || props.user.image
 												}
-												className="w-16 lg:w-20 h-16 lg:h-20 rounded-md object-cover object-center"
+												className="w-16 lg:w-20 h-16 lg:h-20 rounded-full object-cover object-center"
 											/>
 										</div>
 									) : null}
@@ -182,7 +192,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 								// Name
 							}
 							<label className="h-full w-full flex flex-col">
-								<p className="text-sm font-lora text-accent6 py-2">
+								<p className="text-sm font-hedvig text-accent6 py-2">
 									Name
 								</p>
 								<input
@@ -190,8 +200,8 @@ export function UpdateProfileDetailsForm(props: Props) {
 									name="name"
 									value={name || ""}
 									placeholder={props.user?.name || ""}
-									className="h-12 px-4 font-light font-lora text-zinc-500 bg-zinc-100 text-sm focus:outline-none"
-									onChange={handleNameInput}
+									className="h-12 px-4 font-light font-hedvig text-zinc-500 bg-zinc-100 text-sm focus:outline-none"
+									onChange={(e) => handleInputs(e, "name")}
 								></input>
 							</label>
 						</div>
@@ -201,16 +211,83 @@ export function UpdateProfileDetailsForm(props: Props) {
 								// Description
 							}
 							<label className="h-full w-full flex flex-col">
-								<p className="text-sm font-lora text-accent6 py-2">
+								<p className="text-sm font-hedvig text-accent6 py-2">
 									Description
 								</p>
 								<textarea
 									name="description"
 									value={description || ""}
 									placeholder={props.user?.description || ""}
-									className="h-24 p-4 font-light font-lora text-zinc-500 bg-zinc-100 text-sm focus:outline-none"
-									onChange={handleDescriptionInput}
+									className="h-24 p-4 font-light font-hedvig text-zinc-500 bg-zinc-100 text-sm focus:outline-none"
+									onChange={(e) =>
+										handleInputs(e, "description")
+									}
 								></textarea>
+							</label>
+						</div>
+
+						<div className="w-full mb-4">
+							{
+								// Personal website
+							}
+							<label className="h-full w-full flex flex-col">
+								<p className="text-sm font-hedvig text-accent6 py-2">
+									Personal Website
+								</p>
+								<input
+									type="text"
+									name="website"
+									value={website || ""}
+									placeholder={
+										props.user?.website || "optional"
+									}
+									className="h-12 px-4 font-light font-hedvig text-zinc-500 bg-zinc-100 text-sm focus:outline-none"
+									onChange={(e) => handleInputs(e, "website")}
+								></input>
+							</label>
+						</div>
+						<div className="w-full mb-4">
+							{
+								// Foundation url (optional)
+							}
+							<label className="h-full w-full flex flex-col">
+								<p className="text-sm font-hedvig text-accent6 py-2">
+									Foundation Profile
+								</p>
+								<input
+									type="text"
+									name="foundation"
+									value={foundation || ""}
+									placeholder={
+										props.user?.foundation || "optional"
+									}
+									className="h-12 px-4 font-light font-hedvig text-zinc-500 bg-zinc-100 text-sm focus:outline-none"
+									onChange={(e) =>
+										handleInputs(e, "foundation")
+									}
+								></input>
+							</label>
+						</div>
+						<div className="w-full mb-4">
+							{
+								// SuperRare url (optional)
+							}
+							<label className="h-full w-full flex flex-col">
+								<p className="text-sm font-hedvig text-accent6 py-2">
+									SuperRare Profile
+								</p>
+								<input
+									type="text"
+									name="superrare"
+									value={superRare || ""}
+									placeholder={
+										props.user?.superRare || "optional"
+									}
+									className="h-12 px-4 font-light font-hedvig text-zinc-500 bg-zinc-100 text-sm focus:outline-none"
+									onChange={(e) =>
+										handleInputs(e, "superRare")
+									}
+								></input>
 							</label>
 						</div>
 						<div className="w-full mt-6">
