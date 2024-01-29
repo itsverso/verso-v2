@@ -133,19 +133,16 @@ const Profile: NextPage = (props: any) => {
 					)}
 					<div className="w-full md:mt-8">
 						<div className="flex flex-row items-center">
-							<p className="text-2xl font-hedvig text-gray-600">
+							<p className="text-xl font-hedvig text-gray-600">
 								{data.user.name}
 							</p>
 							<div className="w-1 h-1 rounded-full bg-gray-800 mx-2" />
-							<p className="mt-1 text-2xl font-hedvig text-gray-600">
-								@
-							</p>
-							<p className="text-2xl font-hedvig text-gray-600">
-								{data.user.handle}.verso
+							<p className="text-xl font-hedvig text-gray-600">
+								@{data.user.handle}.verso
 							</p>
 						</div>
 
-						<p className="text-3xl text-black font-hedvig mt-1">
+						<p className="text-2xl text-black font-hedvig mt-1">
 							{data.user.description}
 						</p>
 					</div>
@@ -238,14 +235,16 @@ const Profile: NextPage = (props: any) => {
 						) : null}
 					</div>
 				</div>
+				<div className="border-b border-gray-200"></div>
 			</div>
 			<div className="w-full mt-5 pb-24">
-				<CollectionsCarousel
-					openDrawer={() => setOpenCreateDrawer(true)}
-					handle={props.handle}
-					collections={[]}
-					onClick={() => null}
-				/>
+				{
+					<CollectionsCarousel
+						openDrawer={() => setOpenCreateDrawer(true)}
+						isOwner={state.user.handle == props.handle}
+						handle={props.handle}
+					/>
+				}
 			</div>
 		</main>
 	);

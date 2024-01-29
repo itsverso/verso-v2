@@ -9,7 +9,6 @@ import { GetStaticPaths } from "next";
 import { Spinner } from "@/components/common/Spinner";
 import { useRouter } from "next/router";
 import { ImageItem } from "@/components/main/ImageItem";
-import Link from "next/link";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
 	return {
@@ -73,15 +72,15 @@ const Collection: NextPage = (props: any) => {
 						className="cursor-pointer"
 						onClick={() => handleUserRedirect()}
 					>
-						<p className="ml-2 mt-1 text-2xl text-black opacity-70 hover:opacity-80 font-hedvig">
+						<p className="ml-2 mt-1 text-xl text-gray-600 hover:opacity-80 font-hedvig">
 							@{data?.moderators[0]?.handle}
 						</p>
 					</div>
 				</div>
-				<p className="font-hedvig font-light text-5xl">
+				<p className="font-hedvig font-light text-4xl ">
 					{data?.metadata?.title}
 				</p>
-				<p className="font-sans text-zinc-600 font-light max-w-2xl mt-2">
+				<p className="font-sans text-lg text-zinc-600 font-light max-w-3xl mt-2">
 					{data?.metadata?.description}
 				</p>
 			</div>

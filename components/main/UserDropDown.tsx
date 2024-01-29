@@ -67,12 +67,7 @@ export function UserDropDown(props: any) {
 							src={props.user?.image}
 						/>
 					) : (
-						<img
-							className="h-10 w-10 rounded-full object-cover"
-							src={
-								"https://i.postimg.cc/mZHqZJQ0/Ellipse-1elipse.png"
-							}
-						/>
+						<div className="h-10 w-10 rounded-full object-cover bg-gradient-to-r from-gray-200 via-gray-400 to-gray-600"></div>
 					)}
 				</div>
 			</button>
@@ -103,12 +98,7 @@ export function UserDropDown(props: any) {
 											src={props.user?.image}
 										/>
 									) : (
-										<img
-											className="h-12 w-12 rounded-full object-cover"
-											src={
-												"https://i.postimg.cc/mZHqZJQ0/Ellipse-1elipse.png"
-											}
-										/>
+										<div className="h-12 w-12 rounded-full object-cover bg-gradient-to-r from-gray-200 via-gray-400 to-gray-600" />
 									)}
 								</div>
 							</div>

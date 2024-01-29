@@ -6,6 +6,17 @@ import { Header } from "@/components/common/Header";
 import { PrivyProvider } from "@privy-io/react-auth";
 import { optimismGoerli } from "viem/chains";
 import { GeistSans, GeistMono } from "geist/font";
+import localFont from "next/font/local";
+
+const hedvig = localFont({
+	src: [
+		{
+			path: "../public/fonts/HedvigLettersSerif-Regular-VariableFont_opsz.ttf",
+			weight: "400",
+		},
+	],
+	variable: "--font-hedvig",
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
 	const privy_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID as string;
@@ -37,7 +48,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 						<meta name="theme-color" content="#FFFFFF" />
 					</Head>
 					<main
-						className={`${GeistSans.variable} ${GeistMono.variable}`}
+						className={`${GeistSans.variable} ${GeistMono.variable} ${hedvig.variable}`}
 					>
 						<Header />
 						<Component {...pageProps} />

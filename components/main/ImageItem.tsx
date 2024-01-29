@@ -30,9 +30,7 @@ export const ImageItem = (props: Props) => {
 			<div className="h-10">
 				{mouseOver ? (
 					<div className="relative flex flex-row justify-center">
-						<p className="text-gray-600 font-light">
-							{item.rawMetadata.title}
-						</p>
+						<p className="text-gray-600 font-light"></p>
 					</div>
 				) : null}
 			</div>
