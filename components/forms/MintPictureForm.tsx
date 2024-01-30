@@ -37,7 +37,7 @@ export function MintPictureForm(props: Props) {
 	const handleErrors = () => {
 		let imageError;
 		if (fileName?.length == 0 || !fileName) {
-			setImageError("Image can't be empty");
+			setImageError("Image can't be empty.");
 			imageError = true;
 		}
 		if (imageError) return true;

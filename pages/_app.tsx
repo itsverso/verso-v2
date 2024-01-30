@@ -9,6 +9,17 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { createUser } from "@/resources/users/createUser";
 import { UserProvider } from "@/context/user-context";
+import localFont from "next/font/local";
+
+const hedvig = localFont({
+  src: [
+    {
+      path: "../public/fonts/HedvigLettersSerif-Regular-VariableFont_opsz.ttf",
+      weight: "400",
+    },
+  ],
+  variable: "--font-hedvig",
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   const onWalletSuccess = async (user: User, isNewUser: boolean) => {
@@ -50,7 +61,9 @@ function MyApp({ Component, pageProps }: AppProps) {
               />
               <meta name="theme-color" content="#FFFFFF" />
             </Head>
-            <main className={`${GeistSans.variable} ${GeistMono.variable}`}>
+            <main
+              className={`${GeistSans.variable} ${GeistMono.variable} ${hedvig.variable}`}
+            >
               <Header />
               <Component {...pageProps} />
             </main>
