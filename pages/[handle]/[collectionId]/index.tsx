@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AppContext } from "@/context/context";
 import { AddMediaButton } from "@/components/main/AddMediaButton";
 import useGetCollectionTokens from "@/hooks/useGetCollectionTokens";
 import { Drawer } from "@/components/common/Drawer";
@@ -7,105 +8,103 @@ import { NextPage } from "next";
 import { GetStaticPaths } from "next";
 import { Spinner } from "@/components/common/Spinner";
 import { useRouter } from "next/router";
-import Link from "next/link";
+import { ImageItem } from "@/components/main/ImageItem";
+import { useUser } from "@/context/user-context";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
-	return {
-		paths: [],
-		fallback: "blocking",
-	};
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
 };
 
 export async function getStaticProps({ params }: any) {
-	let id = params.collectionId;
-	return { props: { id } };
+  let id = params.collectionId;
+  let handle = params.handle;
+  return { props: { id, handle } };
 }
 
 const Collection: NextPage = (props: any) => {
-	const router = useRouter();
-	const [fireFetch, setFireFetch] = useState<boolean>(false);
-	const [openCreateDrawer, setOpenCreateDrawer] = useState<boolean>(false);
-	const { data, error, isLoading, mutate } = useGetCollectionTokens(props.id);
+  const router = useRouter();
+  const { state } = useContext(AppContext);
+  const user = useUser();
+  const [fireFetch, setFireFetch] = useState<boolean>(false);
+  const [openCreateDrawer, setOpenCreateDrawer] = useState<boolean>(false);
+  const { data, isLoading, mutate } = useGetCollectionTokens(props.id);
 
-	useEffect(() => {
-		if (fireFetch) {
-			mutate();
-			setFireFetch(false);
-		}
-	}, [data, fireFetch]);
+  useEffect(() => {
+    if (fireFetch) {
+      mutate();
+      setFireFetch(false);
+    }
+  }, [data, fireFetch]);
 
-	const handleUserRedirect = () => {
-		router.push(`/${data?.moderators[0]?.handle}`);
-	};
+  const handleUserRedirect = () => {
+    router.push(`/${data?.moderators[0]?.handle}`);
+  };
 
-	if (isLoading) {
-		return (
-			<main className="flex items-center justify-center min-w-screen min-h-screen">
-				<Spinner />
-			</main>
-		);
-	}
+  if (isLoading) {
+    return (
+      <main className="flex items-center justify-center min-w-screen min-h-screen">
+        <Spinner />
+      </main>
+    );
+  }
 
-	return (
-		<main className="flex flex-col px-32 py-20 min-w-screen min-h-screen">
-			<Drawer isOpen={openCreateDrawer} setIsOpen={setOpenCreateDrawer}>
-				<MintPictureForm
-					address={data?.address}
-					fireFetch={() => setFireFetch(true)}
-					onClickBack={() => setOpenCreateDrawer(false)}
-				/>
-			</Drawer>
-			<div className="w-full mt-10 px-4 flex flex-col">
-				<div className="flex flex-row items-center mb-2 z-20">
-					<div className="h-6 w-6 rounded-full bg-zinc-200">
-						{data?.moderators[0]?.image ? (
-							<img
-								className="w-full h-full rounded-full object-cover"
-								src={data?.moderators[0]?.image}
-							/>
-						) : null}
-					</div>
-					<div
-						className="cursor-pointer"
-						onClick={() => handleUserRedirect()}
-					>
-						<p className="ml-2 mt-1 text-2xl text-black opacity-70 hover:opacity-80 font-hedvig">
-							@{data?.moderators[0]?.handle}
-						</p>
-					</div>
-				</div>
-				<p className="font-hedvig font-light text-5xl">
-					{data?.metadata?.title}
-				</p>
-				<p className="font-sans text-zinc-600 font-light max-w-2xl mt-2">
-					{data?.metadata?.description}
-				</p>
-			</div>
-			<div className="h-full w-full mt-10">
-				<div className="w-full h-full grid grid-cols-4">
-					{data?.tokens?.nfts.map((item: any, index: number) => {
-						return (
-							<Link
-								key={index}
-								href={`${router.asPath}/${item.tokenId}`}
-								className="w-full h-96 p-4 mb-10 flex flex-col items-center justify-center"
-							>
-								<img
-									alt=""
-									src={item?.media[0]?.gateway}
-									className={`h-full cursor-pointer object-contain`}
-								/>
-								<p className="text-white hover:text-zinc-600">
-									title
-								</p>
-							</Link>
-						);
-					})}
-				</div>
-			</div>
-			<AddMediaButton openCreate={() => setOpenCreateDrawer(true)} />
-		</main>
-	);
+  return (
+    <main className="flex flex-col px-32 py-20 min-w-screen min-h-screen">
+      <Drawer isOpen={openCreateDrawer} setIsOpen={setOpenCreateDrawer}>
+        <MintPictureForm
+          address={data?.address}
+          fireFetch={() => setFireFetch(true)}
+          onClickBack={() => setOpenCreateDrawer(false)}
+        />
+      </Drawer>
+      <div className="w-full mt-10 px-4 flex flex-col">
+        <div className="flex flex-row items-center mb-2 z-20">
+          <div className="h-6 w-6 rounded-full bg-zinc-200">
+            {data?.moderators[0]?.image ? (
+              <img
+                className="w-full h-full rounded-full object-cover"
+                src={data?.moderators[0]?.image}
+              />
+            ) : null}
+          </div>
+          <div className="cursor-pointer" onClick={() => handleUserRedirect()}>
+            <p className="ml-2 mt-1 text-xl text-gray-600 hover:opacity-80 font-hedvig">
+              @{data?.moderators[0]?.handle}
+            </p>
+          </div>
+        </div>
+        <p className="font-hedvig font-light text-4xl ">
+          {data?.metadata?.title}
+        </p>
+        <p className="font-sans text-lg text-zinc-600 font-light max-w-3xl mt-2">
+          {data?.metadata?.description}
+        </p>
+      </div>
+      <div className="h-full w-full mt-10">
+        <div className="w-full h-full grid grid-cols-4">
+          {data?.tokens?.nfts.map((item: any, index: number) => {
+            return (
+              <ImageItem
+                item={item}
+                index={index}
+                src={item?.media[0]?.gateway}
+                route={`${router.asPath}/${item.tokenId}`}
+              />
+            );
+          })}
+        </div>
+      </div>
+      {
+        // Only display button if user is owner.
+        user?.profile?.metadata.handle == props.handle ? (
+          <AddMediaButton openCreate={() => setOpenCreateDrawer(true)} />
+        ) : null
+      }
+    </main>
+  );
 };
 
 export default Collection;

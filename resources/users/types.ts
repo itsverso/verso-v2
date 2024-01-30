@@ -6,5 +6,8 @@ export interface Profile {
     handle: string;
     description?: string;
     image?: string;
+    website?: string;
+    foundation?: string;
+    superRare?: string;
   };
 }

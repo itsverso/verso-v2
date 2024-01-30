@@ -11,7 +11,7 @@ export function FormButton(props: Props) {
 	return (
 		<button
 			onClick={props.onClick}
-			className={`h-14 border w-full mb-10
+			className={`h-12 w-full rounded-md
                 ${
 					props.loading
 						? "bg-zinc-200 cursor-default"
@@ -24,7 +24,7 @@ export function FormButton(props: Props) {
 					<Spinner color="" size={"6"} />
 				</div>
 			) : (
-				<p className="text-base font-lora text-white">{props.text}</p>
+				<p className="text-lg font-light text-white">{props.text}</p>
 			)}
 		</button>
 	);

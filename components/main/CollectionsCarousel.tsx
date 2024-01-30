@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import { CollectionCard } from "./CollectionCard";
-import { AppContext } from "../../context/context";
 import useGetUserCollections from "@/hooks/useGetUserCollections";
-import { useUser } from "@/context/user-context";
+import { EmptyUserGrid } from "./EmptyUserGrid";
 
 type Collection = {
   address: string;
@@ -13,14 +12,13 @@ type Collection = {
 
 type CarouselProps = {
   handle: string;
-  collections: Collection[];
+  isOwner: boolean;
   openDrawer: () => void;
-  onClick: () => void;
 };
 
 export function CollectionsCarousel(props: CarouselProps) {
   const { handle } = props;
-  const { data, error, isLoading, mutate } = useGetUserCollections(handle);
+  const { data, error, isLoading } = useGetUserCollections(handle);
 
   if (isLoading) {
     return <div></div>;
@@ -29,24 +27,23 @@ export function CollectionsCarousel(props: CarouselProps) {
   if (!error && data.collections) {
     return (
       <div className="w-full flex flex-col lg:flex-row items-center">
-        {props.collections.length ? (
-          <div className="h-full w-full flex items-center justify-center pt-6">
-            <p className="text-zinc500 text-base">
-              This user has no collections yet.
-            </p>
+        {data.collections.ownedNfts.length == 0 ? (
+          <div>
+            <EmptyUserGrid isOwner={props.isOwner} />
           </div>
-        ) : null}
-        <div className="w-full grid grid-cols-2 lg:grid md:grid-cols-2 gap-6 lg:gap-12">
-          {data.collections.ownedNfts.map((item: any, index: any) => (
-            <CollectionCard
-              key={index}
-              item={item}
-              handle={props.handle}
-              title={item.title}
-              address={item.address}
-            />
-          ))}
-        </div>
+        ) : (
+          <div className="w-full grid grid-cols-2 lg:grid md:grid-cols-3 gap-6 lg:gap-12 mt-6">
+            {data.collections.ownedNfts.map((item: any, index: any) => (
+              <CollectionCard
+                key={index}
+                item={item}
+                handle={props.handle}
+                title={item.title}
+                address={item.address}
+              />
+            ))}
+          </div>
+        )}
       </div>
     );
   }

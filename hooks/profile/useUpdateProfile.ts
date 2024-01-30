@@ -19,6 +19,9 @@ const useUpdateProfile = () => {
         name: string;
         description: string;
         image?: string;
+        website?: string;
+        foundation?: string;
+        superRare?: string;
       }
     ): Promise<Profile> => {
       const { name, description, image } = metadata;

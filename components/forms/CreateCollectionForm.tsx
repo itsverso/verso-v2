@@ -120,21 +120,21 @@ export function CreateCollectionForm(props: any) {
     setError("");
   };
 
-  const ready = true;
+  const ready = title.length > 0;
 
   if (true) {
     return (
       <div className="w-full h-full flex flex-col justify-center bg-white px-8">
-        <h1 className="text-4xl mb-10 font-light">Create Collection</h1>
+        <h1 className="text-4xl mb-10 font-hedvig">Create collection</h1>
         <div className="w-full">
           <label className="w-full flex flex-col">
-            <p className="text-base font-hedvig text-zinc-600 py-2">Title</p>
+            <p className="text-base py-2 font-medium text-gray-500">Title*</p>
             <input
               type="text"
               name="title"
               value={title || ""}
-              placeholder="Rebirth of Detroit"
-              className="h-14 pl-2 text-base bg-zinc-100 font-sans rounded-sm font-light focus:outline-none"
+              placeholder="Name your collection..."
+              className="h-14 pl-4 text-lg border-2 border-gray-200 font-sans rounded-md font-light focus:outline-none"
               onChange={(e) => setTitle(e.target.value)}
               onFocus={() => setTitleError("")}
             ></input>
@@ -147,14 +147,14 @@ export function CreateCollectionForm(props: any) {
         </div>
         <div className="w-full mt-2">
           <label className="w-full flex flex-col">
-            <p className="text-base font-hedvig text-zinc-600 py-2">
+            <p className="text-base py-2 font-medium text-gray-500">
               Description
             </p>
             <textarea
               name="description"
               value={description || ""}
-              placeholder="What will be your verse?"
-              className="h-32 p-2 bg-zinc-100 rounded-sm text-base font-sans font-light focus:outline-none"
+              placeholder="Describe your new collection..."
+              className="h-28 p-4 border-2 border-gray-200 rounded-md font-sans text-lg font-light focus:outline-none"
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
           </label>
@@ -164,20 +164,27 @@ export function CreateCollectionForm(props: any) {
           <button
             onClick={handleCreateCollection}
             disabled={ready ? false : true}
-            className={`h-14 w-full rounded-sm flex flex-col items-center justify-center
-												${
-                          ready
-                            ? "cursor-pointer hover:opacity-90 bg-teal-400"
-                            : "bg-teal-400 opacity-70"
-                        } `}
+            className={`h-14 w-full rounded-md flex flex-col items-center justify-center
+							${ready ? "cursor-pointer hover:opacity-90 bg-gray-800" : "bg-gray-100"} `}
           >
             {loading ? (
               <Spinner color="zinc-800" size="8" />
             ) : (
-              <p className="font-hedvig text-xl">Create</p>
+              <p
+                className={`text-lg font-light tracking-wide ${
+                  ready ? "text-white" : "text-gray-500"
+                } `}
+              >
+                Create collection
+              </p>
             )}
           </button>
         </div>
+        <p className="mt-4 text-center">
+          <span className="font-bold">Note:</span> Verso makes it easy to create
+          NFT collections following the ERC1155 standard. Proceeding, you will
+          be creating a new NFT contract and you will be set as the owner.
+        </p>
       </div>
     );
   }

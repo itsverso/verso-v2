@@ -31,7 +31,7 @@ export function CollectionCard(props: Props) {
 			className={`relative w-full aspect-square cursor-pointer hover:opacity-90`}
 		>
 			<div className="w-full h-full flex flex-row">
-				<div className="h-full w-1/2 bg-zinc-100">
+				<div className="h-full w-1/2 bg-zinc-100 border-r-4 border-white">
 					{data?.tokens?.nfts[0] ? (
 						<img
 							src={data?.tokens?.nfts[0]?.media[0]?.gateway}
@@ -40,7 +40,7 @@ export function CollectionCard(props: Props) {
 					) : null}
 				</div>
 				<div className="flex flex-col w-1/2 h-full">
-					<div className="w-full h-1/2 bg-zinc-300">
+					<div className="w-full h-1/2 bg-zinc-100 border-b-4 border-white">
 						{data?.tokens?.nfts[1] ? (
 							<img
 								src={data?.tokens?.nfts[1]?.media[0]?.gateway}
@@ -48,7 +48,7 @@ export function CollectionCard(props: Props) {
 							/>
 						) : null}
 					</div>
-					<div className="w-full h-1/2 bg-zinc-200">
+					<div className="w-full h-1/2 bg-zinc-100">
 						{data?.tokens?.nfts[2] ? (
 							<img
 								src={data?.tokens?.nfts[2]?.media[0]?.gateway}

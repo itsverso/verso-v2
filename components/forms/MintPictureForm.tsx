@@ -8,7 +8,7 @@ import { uploadDataToArweave } from "@/resources";
 import { FormButton } from "../common/FormButton";
 import { FILE_SIZE } from "../../constants";
 import { useRouter } from "next/router";
-import { ArrowLeftIcon } from "@heroicons/react/24/solid";
+import { XMarkIcon, PhotoIcon } from "@heroicons/react/24/solid";
 import { getCollectionInstance } from "@/lib/contracts";
 import { MARKET_MASTER_ADDRESS__GOERLI } from "../../constants";
 import { useUser } from "@/context/user-context";
@@ -37,7 +37,7 @@ export function MintPictureForm(props: Props) {
   const handleErrors = () => {
     let imageError;
     if (fileName?.length == 0 || !fileName) {
-      setImageError("Image can't be empty");
+      setImageError("Image can't be empty.");
       imageError = true;
     }
     if (imageError) return true;
@@ -142,66 +142,76 @@ export function MintPictureForm(props: Props) {
   }, []);
 
   return (
-    <div className="bg-white h-screen">
-      <div
-        className={`w-full h-full py-4 ${
-          props.onClickBack ? "px-6" : "lg:px-96"
-        }`}
-      >
-        {props.onClickBack ? (
-          <div onClick={props.onClickBack} className="pt-2 pb-8">
-            <ArrowLeftIcon className="w-6 h-6 text-black" />
-          </div>
-        ) : null}
+    <div className="flex flex-col bg-white h-screen">
+      <div className="w-full h-24 flex items-center justify-between px-6 bg-[#FAFAFA]">
+        <div>
+          <h1 className="font-hedvig text-2xl md:text-2xl">New Verso</h1>
+        </div>
+        <div>
+          <button
+            onClick={() => props.onClickBack()}
+            className="h-10 w-10 rounded-md bg-white border border-gray-200"
+          >
+            <div className="flex items-center justify-center p-2">
+              <XMarkIcon />
+            </div>
+          </button>
+        </div>
+      </div>
 
-        <h1 className="text-zinc-800 font-lora font-light text-2xl md:text-3xl mb-4">
-          New Verso
-        </h1>
-
-        <div className="w-full h-full flex flex-col ">
+      <div className={`w-full h-full flex flex-col justify-between py-4 px-6 `}>
+        <div className="w-full flex flex-col">
           <div className="">
             <label className="w-full flex flex-col">
-              <p className="text-sm font-lora text-accent6 py-2">Title</p>
+              <p className="text-sm py-2 font-medium text-gray-500">Title</p>
               <input
                 type="text"
                 name="title"
                 value={title}
-                placeholder="optional"
-                className="h-12 lg:h-14 px-2 font-light placeholder:italic font-lora text-zinc-700 text-sm bg-zinc-100 focus:outline-none"
+                placeholder="Name your verso..."
+                className="h-12 pl-4 text-base border-2 border-gray-200 placeholder:text-sm font-sans rounded-md font-light focus:outline-none"
                 onChange={(e) => setTitle(e.target.value)}
               ></input>
             </label>
           </div>
 
           <div className="">
-            <label className="w-full flex flex-col">
-              <p className="text-sm font-lora text-accent6 py-2">Description</p>
+            <label className="w-full flex flex-col mt-4">
+              <p className="text-sm py-2 font-medium text-gray-500">
+                Description
+              </p>
 
               <textarea
                 name="description"
                 value={description}
-                placeholder="optional"
-                className="h-20 pt-2 px-2 font-light placeholder:italic font-lora text-zinc-700 text-sm bg-zinc-100 focus:outline-none"
+                placeholder="Describe your verso..."
+                className="h-28 p-4 border-2 border-gray-200 rounded-md font-sans text-base placeholder:text-sm font-light focus:outline-none"
                 onChange={(e) => setDescription(e.target.value)}
               ></textarea>
             </label>
           </div>
 
           <div className={``}>
-            <label className="h-full w-full flex flex-col">
-              <p className="text-sm font-lora text-accent6 py-2">Media *</p>
-              <div className="flex flex-col items-center justify-center cursor-pointer font-light font-lora text-zinc-700 text-sm bg-zinc-100 focus:outline-none">
+            <label className="h-full w-full flex flex-col mt-4">
+              <p className="text-sm py-2 font-medium text-gray-500">Media *</p>
+              <div
+                className={`h-16 cursor-pointer border-2 ${
+                  imageError ? "border-rose-300" : "border-gray-200"
+                } rounded-md focus:outline-none`}
+              >
                 {!fileName ? (
-                  <div className="py-2">
-                    <p className="font-lora text-xs text-center text-zinc-800 font-semibold">
-                      Click to upload
-                    </p>
-                    <p className="font-lora text-xs text-center text-zinc-600">
-                      PNG, JPG or JPGE{" "}
-                    </p>
-                    <p className="font-lora text-xs text-center text-zinc-800 font-semibold">
-                      3MB max
-                    </p>
+                  <div className="h-full flex flex-row items-center px-2">
+                    <div className="w-12 h-12 rounded-md bg-gray-200 flex items-center justify-center">
+                      <div className="h-6 w-6">
+                        <PhotoIcon color="#666666" />
+                      </div>
+                    </div>
+                    <div className="flex flex-col pl-6 py-2">
+                      <p className="text-sm font-medium">
+                        Click to upload media (3mb max.)
+                      </p>
+                      <p className="text-xs text-gray-500">3MB limit</p>
+                    </div>
                   </div>
                 ) : (
                   <p className="text-zinc-800 text-xs font-semibold py-6">
@@ -209,6 +219,9 @@ export function MintPictureForm(props: Props) {
                   </p>
                 )}
               </div>
+              {imageError ? (
+                <p className="text-rose-700 text-xs mt-2 mb-4">{imageError}</p>
+              ) : null}
               <input
                 id="dropzone-file"
                 type="file"
@@ -218,20 +231,13 @@ export function MintPictureForm(props: Props) {
               />
             </label>
           </div>
-
-          <div className="">
-            {imageError ? (
-              <p className="text-rose-700 text-xs font-semibold font-lora mb-4">
-                {imageError}
-              </p>
-            ) : null}
-
-            <FormButton
-              text={"Mint Verso"}
-              loading={loading}
-              onClick={handleMintverso}
-            />
-          </div>
+        </div>
+        <div className="">
+          <FormButton
+            text={"Mint Verso"}
+            loading={loading}
+            onClick={handleMintverso}
+          />
         </div>
       </div>
     </div>
