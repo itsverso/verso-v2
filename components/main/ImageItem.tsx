@@ -13,18 +13,18 @@ export const ImageItem = (props: Props) => {
 	const [mouseOver, setMouseOver] = useState<boolean>();
 
 	return (
-		<div className="flex flex-col mb-10">
+		<div className="flex flex-col mb-6 md:mb-10">
 			<Link
 				key={index}
 				href={route}
 				onMouseEnter={() => setMouseOver(true)}
 				onMouseLeave={() => setMouseOver(false)}
-				className="w-full h-96 p-4 relative flex flex-col items-center justify-center"
+				className="w-full md:h-96 md:p-4 flex md:flex-col md:items-center md:justify-center"
 			>
 				<img
 					alt=""
 					src={src}
-					className={`h-full cursor-pointer object-contain`}
+					className={`w-full md:h-full cursor-pointer object-contain`}
 				/>
 			</Link>
 		</div>
