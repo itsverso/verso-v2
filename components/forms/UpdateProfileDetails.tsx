@@ -23,14 +23,14 @@ export function UpdateProfileDetailsForm(props: Props) {
   const [description, setDescription] = useState<string>(
     props.profile.metadata.description ?? ""
   );
-  const [website, setWebsite] = useState<string>(
-    props.profile.metadata.website ?? ""
+  const [website, setWebsite] = useState<string | undefined>(
+    props.profile.metadata.website ?? undefined
   );
-  const [foundation, setFoundation] = useState<string>(
-    props.profile.metadata.foundation ?? ""
+  const [foundation, setFoundation] = useState<string | undefined>(
+    props.profile.metadata.foundation ?? undefined
   );
-  const [superRare, setSuperRare] = useState<string>(
-    props.profile.metadata.superRare ?? ""
+  const [superRare, setSuperRare] = useState<string | undefined>(
+    props.profile.metadata.superRare ?? undefined
   );
 
   const { error, loading, updateProfile } = useUpdateProfile();
@@ -41,6 +41,9 @@ export function UpdateProfileDetailsForm(props: Props) {
       name,
       description,
       image,
+      foundation,
+      superRare,
+      website,
     });
 
     props.onUpdateComplete();

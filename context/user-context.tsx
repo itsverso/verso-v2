@@ -26,16 +26,16 @@ const initialUser: User = {
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, dispatch] = useReducer(userReducer, initialUser);
   const { wallets } = useWallets();
-  const { authenticated } = usePrivy();
+  const { authenticated, ready, logout } = usePrivy();
 
   useEffect(() => {
-    if (wallets[0] && authenticated) {
+    if (wallets[0] && authenticated && ready) {
       const wallet = wallets[0];
       dispatch({ type: UserActionTypes.SET_WALLET, payload: { wallet } });
     } else {
       dispatch({ type: UserActionTypes.SET_WALLET, payload: { wallet: null } });
     }
-  }, [wallets, authenticated]);
+  }, [wallets, authenticated, ready, logout]);
 
   // If wallet, get profile
   useEffect(() => {

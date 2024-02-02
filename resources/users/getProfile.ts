@@ -29,6 +29,9 @@ export const getUserProfile = async (wallet: string): Promise<Profile> => {
         handle: (data.metadata as any).handle ?? "",
         description: (data.metadata as any).description,
         image: (data.metadata as any).image,
+        website: (data.metadata as any).website,
+        foundation: (data.metadata as any).foundation,
+        superRare: (data.metadata as any).superRare,
       },
     };
   } catch (error: any) {

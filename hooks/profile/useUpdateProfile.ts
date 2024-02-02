@@ -24,7 +24,8 @@ const useUpdateProfile = () => {
         superRare?: string;
       }
     ): Promise<Profile> => {
-      const { name, description, image } = metadata;
+      const { name, description, image, foundation, superRare, website } =
+        metadata;
 
       if (!name && !description && !image) {
         return profile;
@@ -33,7 +34,10 @@ const useUpdateProfile = () => {
       if (
         name === profile.metadata.name &&
         description === profile.metadata.description &&
-        image === profile.metadata.image
+        image === profile.metadata.image &&
+        foundation === profile.metadata.foundation &&
+        superRare === profile.metadata.superRare &&
+        website === profile.metadata.website
       ) {
         return profile;
       }
