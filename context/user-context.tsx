@@ -26,17 +26,7 @@ const initialUser: User = {
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, dispatch] = useReducer(userReducer, initialUser);
   const { wallets } = useWallets();
-  const { ready, authenticated, user: privyUser } = usePrivy();
-
-  // Simple use effect to get wallet
-  // useEffect(() => {
-  //   // If user and wallets exists
-  //   if (ready && authenticated && wallets) {
-  //     // we set the user wallet
-  //     // setWallet(wallets[0]);
-  //     console.log(wallets);
-  //   }
-  // }, [ready, authenticated, wallets]);
+  const { authenticated } = usePrivy();
 
   useEffect(() => {
     if (wallets[0] && authenticated) {
