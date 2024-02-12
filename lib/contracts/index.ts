@@ -5,14 +5,22 @@ import COLLECTION_FACTORY_ABI from "../../artifacts/contracts/collections/factor
 import COLLECTION_REGISTRY_ABI from "../../artifacts/contracts/collections/CollectionRegistry.sol/CollectionRegistry.json";
 
 import {
+	PROFILE_REGISTRY_ADDRESS__MAINNET,
 	PROFILE_REGISTRY_ADDRESS__GOERLI,
 	COLLECTION_FACTORY_ADDRESS__GOERLI,
 	COLLECTION_REGISTRY_ADDRESS__GOERLI,
 } from "../../constants";
 
 export const getProfileContractInstance = (signer: any) => {
+	console.log(process.env.NEXT_PUBLIC_NETWORK as string);
+	let REGISTRY_ADDRESS =
+		(process.env.NEXT_PUBLIC_NETWORK as string) == "GOERLI"
+			? PROFILE_REGISTRY_ADDRESS__GOERLI
+			: PROFILE_REGISTRY_ADDRESS__MAINNET;
+
+	console.log(REGISTRY_ADDRESS);
 	return new ethers.Contract(
-		PROFILE_REGISTRY_ADDRESS__GOERLI as string,
+		REGISTRY_ADDRESS as string,
 		PROFILE_REGISTRY_ABI.abi,
 		signer
 	);

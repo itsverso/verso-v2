@@ -7,6 +7,7 @@ import Head from "next/head";
 import { useWallets, usePrivy } from "@privy-io/react-auth";
 import { Spinner } from "@/components/common/Spinner";
 import { uploadDataToArweave } from "@/resources";
+import { InfuraProvider } from "@/constants";
 
 const CreateProfile: NextPage = () => {
 	// Global state hooks
@@ -59,7 +60,8 @@ const CreateProfile: NextPage = () => {
 	// Check if address already has profile
 	const checkIfAddressHasProfile = async () => {
 		let address = wallet.address;
-		let contractInstance = getProfileContractInstance(signer);
+		let contractInstance = getProfileContractInstance(InfuraProvider);
+		console.log("HERE: ", address);
 		let response = await contractInstance.addressToProfileID(address);
 		let id = parseInt(response._hex);
 		if (id == 0) setError(null);
@@ -87,21 +89,28 @@ const CreateProfile: NextPage = () => {
 			let profileUrl = await uploadProfileToArweave(name, handle);
 			await mintProfile(profileUrl.url);
 		}
-		router.push(`/${handle}`);
 	};
 
 	// Execute minting
 	const mintProfile = async (metadata: string) => {
 		try {
+			console.log(1);
 			let address = wallet.address;
+			console.log(2);
 			let contractInstance = getProfileContractInstance(signer);
+			console.log(3);
 			let register = await contractInstance.registerProfile(
 				address,
 				handle,
 				metadata
 			);
+			console.log(4);
 			await register.wait();
+			router.push(`/${handle}`);
 		} catch (e) {
+			setError(
+				"Sorry, something went worng. Please try again or get in touch."
+			);
 			setIsLoading(false);
 			console.log(e);
 		}

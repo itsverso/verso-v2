@@ -25,12 +25,19 @@ export const COLLECTION_REGISTRY_IMPLEMENTATION_ADDRESS__GOERLI =
 	"0xCF07f7BA3861192c145c53EA979E04FA9fAb8A24"; // Do not use this one, it's just the implementation.
 export const COLLECTION_REGISTRY_ADDRESS__GOERLI =
 	"0x1FC1bAFEF0A2D8C1203d0D11aBA4FDFC5Ffd5081";
-
 // PROFILE REGISTRY
 export const PROFILE_REGISTRY_ADDRESS__GOERLI =
 	process.env.NEXT_PUBLIC_PROFILE_REGISTRY_ADDRESSS__GOERLI;
 
+// Contract Addresses: MAINNET
+export const PROFILE_REGISTRY_ADDRESS__MAINNET = "";
+
 export const InfuraProvider = new ethers.providers.InfuraProvider(
 	"optimism-goerli",
 	process.env.INFURA_PRIVATE_KEY
+);
+
+export const AlchemyProvider = new ethers.providers.AlchemyProvider(
+	"optimism-goerli",
+	process.env.ALCHEMY_PRIVATE_KEY
 );
