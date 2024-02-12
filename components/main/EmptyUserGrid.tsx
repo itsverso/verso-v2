@@ -12,9 +12,9 @@ export function EmptyUserGrid(props: any) {
 		router.push("/create");
 	};
 	return (
-		<div className="w-full gird grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-12 mt-6">
+		<div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-12 mt-6">
 			{width > 600 ? <CollectionPlaceholder /> : null}
-			<div className={`relative w-full aspect-square`}>
+			<div className={`relative w-full aspect-square my-6`}>
 				<div className="w-full h-full p-20 flex flex-col items-center justify-center bg-[#EAFFEB]">
 					{props.isOwner ? (
 						<>
