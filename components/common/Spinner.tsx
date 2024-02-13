@@ -10,7 +10,7 @@ export const Spinner = (props: Props) => {
 
 	return (
 		<div
-			className={`w-4 h-4 fill-zinc-800 border-zinc-800 border-2 border-dashed rounded-full animate-spin`}
+			className={`w-4 h-4 fill-${color} border-${color} border-2 border-dashed rounded-full animate-spin`}
 		/>
 	);
 };

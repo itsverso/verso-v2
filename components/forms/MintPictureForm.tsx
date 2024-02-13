@@ -6,11 +6,14 @@ import { ethers } from "ethers";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { uploadDataToArweave } from "@/resources";
 import { FormButton } from "../common/FormButton";
-import { FILE_SIZE } from "../../constants";
+import { FILE_SIZE, MAX_INT, NULL_ADDRESS } from "../../constants";
 import { useRouter } from "next/router";
 import { XMarkIcon, PhotoIcon } from "@heroicons/react/24/solid";
 import { getCollectionInstance } from "@/lib/contracts";
-import { MARKET_MASTER_ADDRESS__GOERLI } from "../../constants";
+import {
+	MARKET_MASTER_ADDRESS__GOERLI,
+	SIMPLE_MARKET_ADDRESS__GOERLI,
+} from "../../constants";
 
 type Props = {
 	onClickBack: any;
@@ -87,12 +90,12 @@ export function MintPictureForm(props: Props) {
 			let mint = await collection.create(
 				metadata.url,
 				state.user.address,
-				"0x0000000000000000000000000000000000000000",
-				MARKET_MASTER_ADDRESS__GOERLI,
-				"100000000000000000",
+				NULL_ADDRESS,
+				SIMPLE_MARKET_ADDRESS__GOERLI,
+				MAX_INT,
 				0,
 				true,
-				true
+				false
 			);
 
 			let receipt = await mint.wait();

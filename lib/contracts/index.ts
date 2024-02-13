@@ -12,13 +12,11 @@ import {
 } from "../../constants";
 
 export const getProfileContractInstance = (signer: any) => {
-	console.log(process.env.NEXT_PUBLIC_NETWORK as string);
 	let REGISTRY_ADDRESS =
 		(process.env.NEXT_PUBLIC_NETWORK as string) == "GOERLI"
 			? PROFILE_REGISTRY_ADDRESS__GOERLI
 			: PROFILE_REGISTRY_ADDRESS__MAINNET;
 
-	console.log(REGISTRY_ADDRESS);
 	return new ethers.Contract(
 		REGISTRY_ADDRESS as string,
 		PROFILE_REGISTRY_ABI.abi,

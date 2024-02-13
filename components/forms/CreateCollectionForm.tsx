@@ -67,6 +67,7 @@ export function CreateCollectionForm(props: any) {
 				});
 				// Execute TX.
 				let factory = getFactoryContractInstance(signer);
+				console.log("We here");
 				let tx = await factory.createCollection(
 					title,
 					readType,
@@ -178,7 +179,7 @@ export function CreateCollectionForm(props: any) {
 							${ready ? "cursor-pointer hover:opacity-90 bg-gray-800" : "bg-gray-100"} `}
 					>
 						{loading ? (
-							<Spinner color="zinc-800" size="8" />
+							<Spinner color="zinc-white" size="8" />
 						) : (
 							<p
 								className={`text-lg font-light tracking-wide ${
