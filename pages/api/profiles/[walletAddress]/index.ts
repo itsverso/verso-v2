@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { APIResponse } from "../../types";
 import { profiles } from "@prisma/client";
-import { getProfile } from "./getProfile";
 import { updateProfile } from "./updateProfile";
 
 interface APIRequest extends NextApiRequest {
@@ -33,9 +32,11 @@ export default async function handler(
     return;
   }
 
-  if (req.method === "GET") {
-    return getProfile(walletAddress, res);
-  } else if (req.method === "PATCH") {
+  if (req.method === "PATCH") {
     return updateProfile(walletAddress, req.body, res);
+  } else {
+    return res
+      .status(405)
+      .json({ message: "Method not allowed, please use PATCH" });
   }
 }

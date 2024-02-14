@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url               = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -38,13 +38,14 @@ model posts {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model profiles {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id          String   @id(map: "profiles_pkey1") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   created_at  DateTime @default(now()) @db.Timestamptz(6)
   user_id     String   @db.VarChar
   updated_at  DateTime @default(now()) @db.Timestamp(6)
   metadataURI String   @db.VarChar
   metadata    Json     @db.Json
-  users       users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  handle      String   @unique @db.VarChar
+  users       users    @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "public_profiles_user_id_fkey")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.

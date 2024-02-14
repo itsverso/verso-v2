@@ -1,12 +1,12 @@
 import type { NextApiResponse } from "next";
 import { getProfileContractInstance } from "@/lib/contracts";
 import { InfuraProvider } from "@/constants";
-import { APIResponse } from "../../types";
+import { APIResponse } from "../types";
 import { profiles } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { Profile } from "@/resources/users/types";
 
-export async function getProfile(
+export async function getProfileByWalletAddress(
   walletAddress: string,
   res: NextApiResponse<APIResponse<profiles>>
 ) {
@@ -62,6 +62,7 @@ export async function getProfile(
       user_id: walletAddress,
       metadataURI: metadataURI,
       metadata,
+      handle: metadata.handle,
     },
   });
 

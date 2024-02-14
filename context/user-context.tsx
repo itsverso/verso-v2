@@ -1,5 +1,5 @@
 import { ActionMap } from "@/reducers/types";
-import { getUserProfile } from "@/resources/users/getProfile";
+import { getUserProfileByWalletAddress } from "@/resources/users/getProfile";
 import { Profile } from "@/resources/users/types";
 import { ConnectedWallet, usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect } from "react";
@@ -26,16 +26,16 @@ const initialUser: User = {
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, dispatch] = useReducer(userReducer, initialUser);
   const { wallets } = useWallets();
-  const { authenticated, ready } = usePrivy();
+  const { ready } = usePrivy();
 
   useEffect(() => {
-    if (wallets[0] && authenticated && ready) {
+    if (wallets[0] && ready) {
       const wallet = wallets[0];
       dispatch({ type: UserActionTypes.SET_WALLET, payload: { wallet } });
     } else {
       dispatch({ type: UserActionTypes.SET_WALLET, payload: { wallet: null } });
     }
-  }, [wallets, authenticated, ready]);
+  }, [wallets, ready]);
 
   // If wallet, get profile
   useEffect(() => {
@@ -50,7 +50,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       });
 
       try {
-        const profile = await getUserProfile(user.wallet.address);
+        const profile = await getUserProfileByWalletAddress(
+          user.wallet.address
+        );
 
         dispatch({
           type: UserActionTypes.SET_PROFILE,

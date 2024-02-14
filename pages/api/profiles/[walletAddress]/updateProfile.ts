@@ -53,6 +53,7 @@ export async function updateProfile(
       user_id: walletAddress,
       metadataURI: body.metadataUrl,
       metadata: body.metadata,
+      handle: body.metadata.handle,
     },
   });
 

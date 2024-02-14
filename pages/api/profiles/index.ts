@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/prisma";
 import { profiles } from "@prisma/client";
 import { APIResponse } from "../types";
+import { getProfileByHandle } from "./getProfileByHandle";
+import { getProfileByWalletAddress } from "./getProfileByWalletAddress";
 
 interface APIRequest extends NextApiRequest {
   body: {
@@ -12,16 +14,29 @@ interface APIRequest extends NextApiRequest {
     };
     metadataUrl?: string;
   };
+  query: {
+    walletAddress?: string;
+    handle?: string;
+  };
 }
 
 export default async function handler(
   req: APIRequest,
   res: NextApiResponse<APIResponse<profiles>>
 ) {
-  if (req.method !== "POST") {
-    return res
-      .status(405)
-      .json({ message: "Method not allowed, please use POST" });
+  if (req.method === "GET") {
+    if (req.query.handle?.length) {
+      return getProfileByHandle(req.query.handle, res);
+    }
+
+    if (req.query.walletAddress?.length) {
+      return getProfileByWalletAddress(req.query.walletAddress, res);
+    }
+
+    return res.status(405).json({
+      message:
+        "Method not allowed, please either define walletAddress or handle in the query params",
+    });
   }
 
   const { walletAddress, metadata, metadataUrl } = req.body;
@@ -70,6 +85,7 @@ export default async function handler(
       user_id: walletAddress,
       metadataURI: metadataUrl,
       metadata,
+      handle: metadata.handle,
     },
   });
 

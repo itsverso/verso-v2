@@ -3,9 +3,21 @@ import { Profile } from "./types";
 
 const URL = process.env.NEXT_PUBLIC_BASE_URL + `/profiles`;
 
-export const getUserProfile = async (wallet: string): Promise<Profile> => {
+export const getUserProfileByWalletAddress = async (
+  wallet: string
+): Promise<Profile> => {
+  return getUserProfile(`${URL}?walletAddress=${wallet}`);
+};
+
+export const getUserProfileByhandle = async (
+  handle: string
+): Promise<Profile> => {
+  return getUserProfile(`${URL}?handle=${handle}`);
+};
+
+const getUserProfile = async (url: string): Promise<Profile> => {
   try {
-    const response = await fetch(`${URL}/${wallet}`, {
+    const response = await fetch(`${url}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -22,7 +34,7 @@ export const getUserProfile = async (wallet: string): Promise<Profile> => {
     const data: profiles = jsonResponse.data;
 
     return {
-      walletAddress: wallet,
+      walletAddress: data.user_id,
       metadataURI: data.metadataURI,
       metadata: {
         name: (data.metadata as any).name ?? "",
