@@ -39,8 +39,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 					embeddedWallets: {
 						createOnLogin: "users-without-wallets",
 					},
-					defaultChain: optimismSepolia,
-					supportedChains: [optimismSepolia],
+					defaultChain: optimismGoerli,
+					supportedChains: [optimismGoerli],
 					loginMethods: ["email", "wallet"],
 					appearance: {
 						theme: "light",
