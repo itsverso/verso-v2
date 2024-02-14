@@ -5,7 +5,6 @@ import COLLECTION_FACTORY_ABI from "../../artifacts/contracts/collections/factor
 import COLLECTION_REGISTRY_ABI from "../../artifacts/contracts/collections/CollectionRegistry.sol/CollectionRegistry.json";
 
 import {
-	PROFILE_REGISTRY_ADDRESS__SEPOLIA,
 	PROFILE_REGISTRY_ADDRESS__GOERLI,
 	COLLECTION_FACTORY_ADDRESS__GOERLI,
 	COLLECTION_REGISTRY_ADDRESS__GOERLI,
