@@ -8,7 +8,7 @@ import { UserContext } from "@/context/user-context";
 
 export function Header() {
   const router = useRouter();
-  const { connectWallet } = usePrivy();
+  const { login } = usePrivy();
   const user = useContext(UserContext);
   const [top, setTop] = useState(true);
 
@@ -62,7 +62,7 @@ export function Header() {
             <div className="h-10 w-20 rounded-sm bg-zinc-800 flex items-center justify-center hover:opacity-90">
               <button
                 className="h-full w-full text-sm font-light"
-                onClick={connectWallet}
+                onClick={login}
               >
                 <p className="text-white font-light text-sm">Connect</p>
               </button>
