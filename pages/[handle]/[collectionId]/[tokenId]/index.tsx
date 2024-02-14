@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useContext } from "react";
 import { NextPage } from "next";
 import { GetStaticPaths } from "next";
 import useGetTokenDetails from "@/hooks/useGetTokenDetails";
@@ -6,6 +6,12 @@ import useGetUserProfile from "@/hooks/useGetUserProfile";
 import { Info } from "@/resources/icons";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
+import { AppContext } from "@/context/context";
+import {
+	getCollectionInstance,
+	getMarketContractInstance,
+} from "@/lib/contracts";
+import { InfuraProvider } from "@/constants";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
 	return {
@@ -57,6 +63,7 @@ const CreatorCard = (props: any) => {
 const TokenId: NextPage = (props: any) => {
 	const { collection, id } = props;
 	const router = useRouter();
+	const { state } = useContext(AppContext);
 	const { data, error, isLoading, mutate } = useGetTokenDetails(
 		collection,
 		id
@@ -70,7 +77,24 @@ const TokenId: NextPage = (props: any) => {
 		router.back();
 	}, []);
 
-	const executeBuy = () => {
+	const executeBuy = async () => {
+		if (data && !isLoading) {
+			let { signer, address } = state.user;
+			let market = getMarketContractInstance(data.market, InfuraProvider);
+			let price = await market.getBuyPrice(collection, id, 1);
+			let collectionContract = getCollectionInstance(collection, signer);
+			let buy = await collectionContract.collect(
+				id,
+				address,
+				1,
+				address,
+				{
+					value: price,
+				}
+			);
+
+			let receipt = await buy.wait();
+		}
 		console.log("buy");
 	};
 
