@@ -7,67 +7,76 @@ import { prisma } from "@/lib/prisma";
 import { Profile } from "@/resources/users/types";
 
 export async function getProfileByWalletAddress(
-  walletAddress: string,
-  res: NextApiResponse<APIResponse<profiles>>
+	walletAddress: string,
+	res: NextApiResponse<APIResponse<profiles>>
 ) {
-  const profile = await prisma.profiles.findFirst({
-    where: {
-      user_id: walletAddress,
-    },
-  });
+	console.log("HELLOOOOOOOOO");
 
-  if (profile) {
-    res.status(200).json({
-      message: "success",
-      data: profile,
-    });
+	const profile = await prisma.profiles.findFirst({
+		where: {
+			user_id: walletAddress,
+		},
+	});
 
-    return;
-  }
+	console.log("HEEEY: ", profile);
 
-  const profilesContract = getProfileContractInstance(InfuraProvider);
-  const profileId = await profilesContract.addressToProfileID(walletAddress);
-  const profileInChain = await profilesContract.getProfileByID(profileId);
+	if (profile) {
+		res.status(200).json({
+			message: "success",
+			data: profile,
+		});
 
-  if (!profileInChain) {
-    res.status(404).json({
-      message: "profile not found",
-    });
-  }
+		return;
+	}
 
-  let metadata: Profile["metadata"];
-  let metadataURI: string;
+	const profilesContract = getProfileContractInstance(InfuraProvider);
+	const profileId = await profilesContract.addressToProfileID(walletAddress);
+	const profileInChain = await profilesContract.getProfileByID(profileId);
 
-  try {
-    metadataURI = profileInChain[1];
-    const metadataResponse = await fetch(metadataURI, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+	if (!profileInChain) {
+		res.status(404).json({
+			message: "profile not found",
+		});
+	}
 
-    metadata = await metadataResponse.json();
-  } catch (error: any) {
-    res.status(404).json({
-      message: "profile not found",
-    });
+	let metadata: Profile["metadata"];
+	let metadataURI: string;
 
-    return;
-  }
+	try {
+		metadataURI = profileInChain[1];
+		const metadataResponse = await fetch(metadataURI, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
 
-  // Store profile in database when it doesn't exist
-  const newProfile = await prisma.profiles.create({
-    data: {
-      user_id: walletAddress,
-      metadataURI: metadataURI,
-      metadata,
-      handle: metadata.handle,
-    },
-  });
+		metadata = await metadataResponse.json();
+	} catch (error: any) {
+		res.status(404).json({
+			message: "profile not found",
+		});
+		return;
+	}
 
-  res.status(200).json({
-    message: "profile created",
-    data: newProfile,
-  });
+	let data = {
+		user_id: walletAddress,
+		metadataURI: metadataURI,
+		metadata,
+		handle: metadata.handle,
+	};
+
+	try {
+		// Store profile in database when it doesn't exist
+		const newProfile = await prisma.profiles.create({
+			data,
+		});
+	} catch (e) {
+		console.log(e);
+	}
+
+	res.status(200).json({
+		message: "profile created",
+		data: data as any,
+	});
 }
