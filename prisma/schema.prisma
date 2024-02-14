@@ -10,12 +10,12 @@ datasource db {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model collections {
-  id           String    @id @db.VarChar
+  id           String    @id @default("") @db.VarChar
   created_at   DateTime  @default(now()) @db.Timestamptz(6)
   updated_at   DateTime  @default(now()) @db.Timestamp(6)
   deleted_at   DateTime? @db.Timestamp(6)
-  metadata_uri String?   @db.VarChar
-  metadata     Json?     @db.Json
+  metadata_uri String    @db.VarChar
+  metadata     Json      @db.Json
   user_id      String    @db.VarChar
   users        users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   posts        posts[]
