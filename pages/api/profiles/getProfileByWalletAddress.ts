@@ -52,8 +52,21 @@ export async function getProfileByWalletAddress(
     res.status(404).json({
       message: "profile not found",
     });
-
     return;
+  }
+
+  const user = await prisma.users.findUnique({
+    where: {
+      id: walletAddress,
+    },
+  });
+
+  if (!user) {
+    await prisma.users.create({
+      data: {
+        id: walletAddress,
+      },
+    });
   }
 
   // Store profile in database when it doesn't exist
