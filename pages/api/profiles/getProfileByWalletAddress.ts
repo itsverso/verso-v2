@@ -67,7 +67,6 @@ export async function getProfileByWalletAddress(
   });
 
   res.status(200).json({
-    message: "profile created",
     data: newProfile,
   });
 }

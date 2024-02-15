@@ -26,16 +26,23 @@ const initialUser: User = {
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, dispatch] = useReducer(userReducer, initialUser);
   const { wallets } = useWallets();
-  const { ready, authenticated } = usePrivy();
+  const { ready, authenticated, user: privyUser } = usePrivy();
 
   useEffect(() => {
-    if (wallets[0] && ready && authenticated) {
-      const wallet = wallets[0];
+    const wallet = wallets.find(
+      (wallet) => wallet.address === privyUser?.wallet?.address
+    );
+
+    if (wallet) {
       dispatch({ type: UserActionTypes.SET_WALLET, payload: { wallet } });
     } else {
       dispatch({ type: UserActionTypes.SET_WALLET, payload: { wallet: null } });
+      dispatch({
+        type: UserActionTypes.SET_PROFILE,
+        payload: { profile: null },
+      });
     }
-  }, [wallets, ready, authenticated]);
+  }, [wallets, ready, authenticated, privyUser]);
 
   // If wallet, get profile
   useEffect(() => {
@@ -64,10 +71,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         });
       } catch (e) {
         dispatch({
+          type: UserActionTypes.SET_PROFILE,
+          payload: { profile: null },
+        });
+        dispatch({
           type: UserActionTypes.SET_LOADING,
           payload: { loading: false },
         });
-        throw e;
       }
     })();
   }, [user?.wallet]);

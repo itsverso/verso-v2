@@ -29,8 +29,9 @@ export async function getProfileByHandle(
   const profileId = await profilesContract.getIdFromHandle(handle);
   const id = parseInt(profileId._hex);
   const profileInChain = await profilesContract.getProfileByID(id);
+  const walletAddress = await profilesContract.ownerOf(id);
 
-  if (!profileInChain) {
+  if (!profileInChain || !walletAddress) {
     res.status(404).json({
       message: "profile not found",
     });
@@ -57,18 +58,31 @@ export async function getProfileByHandle(
     return;
   }
 
+  const user = await prisma.users.findUnique({
+    where: {
+      id: walletAddress,
+    },
+  });
+
+  if (!user) {
+    await prisma.users.create({
+      data: {
+        id: walletAddress,
+      },
+    });
+  }
+
   // Store profile in database when it doesn't exist
-  // const newProfile = await prisma.profiles.create({
-  //   data: {
-  //     user_id: profileInChain,
-  //     metadataURI: metadataURI,
-  //     metadata,
-  //     handle: metadata.handle,
-  //   },
-  // });
+  const newProfile = await prisma.profiles.create({
+    data: {
+      user_id: walletAddress,
+      metadataURI: metadataURI,
+      metadata,
+      handle: metadata.handle,
+    },
+  });
 
   res.status(200).json({
-    message: "profile created",
-    data: profile!,
+    data: newProfile,
   });
 }
