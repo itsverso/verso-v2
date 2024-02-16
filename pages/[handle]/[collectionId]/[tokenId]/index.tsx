@@ -2,7 +2,6 @@ import { useCallback, useContext, useState } from "react";
 import { NextPage } from "next";
 import { GetStaticPaths } from "next";
 import useGetTokenDetails from "@/hooks/useGetTokenDetails";
-import { Info } from "@/resources/icons";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 import { useUser } from "@/context/user-context";
