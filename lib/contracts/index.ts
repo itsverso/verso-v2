@@ -9,27 +9,42 @@ import {
 	PROFILE_REGISTRY_ADDRESS__GOERLI,
 	COLLECTION_FACTORY_ADDRESS__GOERLI,
 	COLLECTION_REGISTRY_ADDRESS__GOERLI,
+	PROFILE_REGISTRY_ADDRESS__MAINNNET,
+	COLLECTION_FACTORY_ADDRESS__MAINNET,
+	COLLECTION_REGITSRY_ADDRESS__MAINNET,
 } from "../../constants";
 
 export const getProfileContractInstance = (signer: any) => {
+	let address =
+		process.env.NEXT_PUBLIC_DEV == "true"
+			? PROFILE_REGISTRY_ADDRESS__GOERLI
+			: PROFILE_REGISTRY_ADDRESS__MAINNNET;
 	return new ethers.Contract(
-		PROFILE_REGISTRY_ADDRESS__GOERLI as string,
+		address as string,
 		PROFILE_REGISTRY_ABI.abi,
 		signer
 	);
 };
 
 export const getFactoryContractInstance = (signer: any) => {
+	let address =
+		process.env.NEXT_PUBLIC_DEV == "true"
+			? COLLECTION_FACTORY_ADDRESS__GOERLI
+			: COLLECTION_FACTORY_ADDRESS__MAINNET;
 	return new ethers.Contract(
-		COLLECTION_FACTORY_ADDRESS__GOERLI as string,
+		address as string,
 		COLLECTION_FACTORY_ABI.abi,
 		signer
 	);
 };
 
 export const getCollectionRegistryContractInstance = (signer: any) => {
+	let address =
+		process.env.NEXT_PUBLIC_DEV == "true"
+			? COLLECTION_REGISTRY_ADDRESS__GOERLI
+			: COLLECTION_REGITSRY_ADDRESS__MAINNET;
 	return new ethers.Contract(
-		COLLECTION_REGISTRY_ADDRESS__GOERLI as string,
+		address as string,
 		COLLECTION_REGISTRY_ABI.abi,
 		signer
 	);
