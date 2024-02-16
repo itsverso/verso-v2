@@ -20,6 +20,8 @@ export function CollectionsCarousel(props: CarouselProps) {
 	const { handle } = props;
 	const { data, error, isLoading } = useGetUserCollections(handle);
 
+	console.log("data: ", data);
+
 	if (isLoading) {
 		return <div></div>;
 	}
