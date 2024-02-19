@@ -37,7 +37,6 @@ const Collection: NextPage = (props: any) => {
 			mutate();
 			setFireFetch(false);
 		}
-		console.log("Data: ", data);
 	}, [data, fireFetch]);
 
 	const handleUserRedirect = () => {

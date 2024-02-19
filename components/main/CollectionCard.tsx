@@ -16,11 +16,6 @@ export function CollectionCard(props: Props) {
 		item.tokenId
 	);
 
-	useEffect(() => {
-		console.log("item: ", data);
-		console.log("error: ", error);
-	}, [data]);
-
 	const handleCollectionRedirect = useCallback(() => {
 		router.push(`/${props.handle}/${data?.address}`);
 	}, [data]);

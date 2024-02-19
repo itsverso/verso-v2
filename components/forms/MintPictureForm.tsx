@@ -69,7 +69,6 @@ export function MintPictureForm(props: Props) {
 				isPrivate,
 				timestamp,
 			});
-			console.log(metadata);
 			await mintNewVerso(metadata);
 			// let newTokenID = await mintNewVerso(metadata);
 			// handleRedirect(newTokenID as string, props.address);
@@ -105,7 +104,6 @@ export function MintPictureForm(props: Props) {
 			);
 
 			let receipt = await mint.wait();
-			console.log("receipt: ", receipt);
 		} catch (e) {
 			setError(e as any);
 			setLoading(false);

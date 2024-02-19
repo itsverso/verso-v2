@@ -20,7 +20,6 @@ export const updateProfile = async (
 		...metadata,
 	};
 
-	console.log(newMetadata);
 	const profileMetadataUrl = await uploadDataToArweave({
 		...newMetadata,
 		image: newMetadata.image?.split(",")[1],
