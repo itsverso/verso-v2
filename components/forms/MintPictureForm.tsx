@@ -93,7 +93,6 @@ export function MintPictureForm(props: Props) {
 					? MARKET_MASTER_ADDRESS__GOERLI
 					: SIMPLE_MARKET_ADDRESS__MAINNET;
 			let collection = getCollectionInstance(props.address, signer);
-
 			let mint = await collection.create(
 				metadata.url, // url
 				props.address, // receipient

@@ -27,12 +27,15 @@ export default async function handler(
 		if (body.image && haschanged) {
 			const image = body.image;
 			const buffer = Buffer.from(image, "base64");
+			console.log("Mimetpe: ", body.mimeType);
+			console.log("Ima: ", image);
 			const tags = {
 				tags: [{ name: "Content-Type", value: body.mimeType }],
 			};
 			const id = await uploadToArweave(buffer, tags);
 			imageUrl = `https://arweave.net/${id}`;
 		}
+		console.log(`Here? :`, imageUrl);
 
 		const dataToUpload = haschanged
 			? { ...body, image: imageUrl }

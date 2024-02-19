@@ -20,6 +20,15 @@ interface APIRequest extends NextApiRequest {
 	};
 }
 
+export const config = {
+	api: {
+		responseLimit: false,
+		bodyParser: {
+			sizeLimit: "4mb",
+		},
+	},
+};
+
 export default async function handler(
 	req: APIRequest,
 	res: NextApiResponse<APIResponse<profiles>>
