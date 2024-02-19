@@ -10,6 +10,7 @@ import { Spinner } from "@/components/common/Spinner";
 import { useRouter } from "next/router";
 import { ImageItem } from "@/components/main/ImageItem";
 import { useUser } from "@/context/user-context";
+import { PlusIcon } from "@heroicons/react/24/solid";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
 	return {
@@ -105,9 +106,14 @@ const Collection: NextPage = (props: any) => {
 			{
 				// Only display button if user is owner.
 				user?.profile?.metadata.handle == props.handle ? (
-					<AddMediaButton
-						openCreate={() => setOpenCreateDrawer(true)}
-					/>
+					<div className="fixed bottom-10 right-12 flex flex-col items-center">
+						<button
+							onClick={() => setOpenCreateDrawer(true)}
+							className="my-1 flex items-center justify-center  h-14 w-14 rounded-full bg-black hover:opacity-90 cursor-pointer shadow-2xl"
+						>
+							<PlusIcon className="w-6 h-6 text-white" />
+						</button>
+					</div>
 				) : null
 			}
 		</main>
