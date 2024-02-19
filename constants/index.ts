@@ -43,7 +43,10 @@ export const COLLECTION_IMPLEMENTATION_ADDRESS__MAINNET =
 export const COLLECTION_FACTORY_ADDRESS__MAINNET =
 	"0x81ea935108Cac9A6146f3145F04eaD5e02AB2Bf4";
 
+export const network =
+	process.env.NEXT_PUBLIC_DEV == "true" ? "optimism-goerli" : "optimism";
+
 export const InfuraProvider = new ethers.providers.InfuraProvider(
-	"optimism-goerli",
+	network,
 	process.env.INFURA_PRIVATE_KEY
 );

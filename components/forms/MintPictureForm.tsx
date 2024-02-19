@@ -6,7 +6,12 @@ import { ethers } from "ethers";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { uploadDataToArweave } from "@/resources";
 import { FormButton } from "../common/FormButton";
-import { FILE_SIZE, MAX_INT, NULL_ADDRESS } from "../../constants";
+import {
+	FILE_SIZE,
+	MAX_INT,
+	NULL_ADDRESS,
+	SIMPLE_MARKET_ADDRESS__MAINNET,
+} from "../../constants";
 import { useRouter } from "next/router";
 import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { getCollectionInstance } from "@/lib/contracts";
@@ -83,14 +88,17 @@ export function MintPictureForm(props: Props) {
 		try {
 			const provider = await user.wallet.getEthersProvider();
 			const signer = provider.getSigner();
-
+			const MARKET_ADDRESS =
+				process.env.NEXT_PUBLIC_DEV == "true"
+					? MARKET_MASTER_ADDRESS__GOERLI
+					: SIMPLE_MARKET_ADDRESS__MAINNET;
 			let collection = getCollectionInstance(props.address, signer);
 
 			let mint = await collection.create(
 				metadata.url, // url
-				user.wallet.address, // receipient
+				props.address, // receipient
 				NULL_ADDRESS, // permissions
-				MARKET_MASTER_ADDRESS__GOERLI, // market address
+				MARKET_ADDRESS, // market address
 				"1000000000000", // supply limit
 				0, // token price
 				true, // isListed

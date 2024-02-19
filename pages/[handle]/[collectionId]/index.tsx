@@ -37,6 +37,7 @@ const Collection: NextPage = (props: any) => {
 			mutate();
 			setFireFetch(false);
 		}
+		console.log("Data: ", data);
 	}, [data, fireFetch]);
 
 	const handleUserRedirect = () => {
@@ -89,14 +90,16 @@ const Collection: NextPage = (props: any) => {
 			<div className="h-full w-full mt-10">
 				<div className="w-full h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 					{data?.tokens?.nfts.map((item: any, index: number) => {
-						return (
-							<ImageItem
-								item={item}
-								index={index}
-								src={item?.media[0]?.gateway}
-								route={`${router.asPath}/${item.tokenId}`}
-							/>
-						);
+						if (!item.metadataError) {
+							return (
+								<ImageItem
+									item={item}
+									index={index}
+									src={item?.media[0]?.gateway}
+									route={`${router.asPath}/${item.tokenId}`}
+								/>
+							);
+						}
 					})}
 				</div>
 			</div>

@@ -65,6 +65,7 @@ export function CreateCollectionForm(props: any) {
 					creator: user?.profile?.metadata.handle,
 					date: Date.now(),
 				});
+				console.log("metadata: ", metadata);
 				// Execute TX.
 				let factory = getFactoryContractInstance(signer);
 				let tx = await factory.createCollection(
