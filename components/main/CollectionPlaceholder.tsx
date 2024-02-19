@@ -4,7 +4,7 @@ type Props = {};
 
 export function CollectionPlaceholder(props: Props) {
 	return (
-		<div className={`relative w-full aspect-square`}>
+		<div className={`relative w-full aspect-square my-6`}>
 			<div className="w-full h-full flex flex-row">
 				<div className="h-full w-1/2 bg-zinc-100 border-r-4 border-white"></div>
 				<div className="flex flex-col w-1/2 h-full">

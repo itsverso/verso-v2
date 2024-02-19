@@ -1,13 +1,11 @@
-import { useEffect, useContext } from "react";
 import { NextPage } from "next";
-import { Info } from "@/resources/icons";
-import { AppContext } from "@/context/context";
 import { CreateCollectionForm } from "@/components/forms/CreateCollectionForm";
+import { useUser } from "@/context/user-context";
 
 const Create: NextPage = () => {
-	let { state, dispatch } = useContext(AppContext);
+	const user = useUser();
 
-	if (!state.user.handle) {
+	if (!user?.profile) {
 		return (
 			<main className="flex flex-row min-h-screen min-w-screen items-center justify-center">
 				<p>Only registered users can create</p>

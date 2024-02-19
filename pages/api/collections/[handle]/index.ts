@@ -1,7 +1,10 @@
 // "https://arweave.net/onaWXNLR8_fZ_f1WqH1PBVGDq0KSXH1dMuX-rwQtxQk";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Network, Alchemy } from "alchemy-sdk";
-import { COLLECTION_REGISTRY_ADDRESS__GOERLI } from "@/constants";
+import {
+	COLLECTION_REGISTRY_ADDRESS__GOERLI,
+	COLLECTION_REGITSRY_ADDRESS__MAINNET,
+} from "@/constants";
 import { ethers } from "ethers";
 import { getProfileContractInstance } from "@/lib/contracts";
 import { InfuraProvider } from "@/constants";
@@ -40,16 +43,25 @@ export default async function handler(
 
 	// Instantiate alchemy client
 	const settings = {
-		apiKey: process.env.ALCHEMY_PRIVATE_KEY,
+		apiKey:
+			process.env.NEXT_PUBLIC_DEV == "true"
+				? process.env.ALCHEMY_PRIVATE_KEY
+				: process.env.ALCHEMY_PRIVATE_KEY_MAINNET,
 		network:
 			process.env.NEXT_PUBLIC_DEV == "true"
 				? Network.OPT_GOERLI
 				: Network.OPT_MAINNET,
 	};
+
 	const alchemy = new Alchemy(settings);
 	// Get address param and fetch collection
+	// Get registry address
+	let collectionRegistryAddress =
+		process.env.NEXT_PUBLIC_DEV == "true"
+			? COLLECTION_REGISTRY_ADDRESS__GOERLI
+			: COLLECTION_REGITSRY_ADDRESS__MAINNET;
 	const nftsForOwner = await alchemy.nft.getNftsForOwner(owner, {
-		contractAddresses: [COLLECTION_REGISTRY_ADDRESS__GOERLI],
+		contractAddresses: [collectionRegistryAddress],
 	});
 	// Send collections back
 	res.status(200).json({

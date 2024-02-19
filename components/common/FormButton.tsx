@@ -11,6 +11,7 @@ export function FormButton(props: Props) {
 	return (
 		<button
 			onClick={props.onClick}
+			disabled={props.loading}
 			className={`h-12 w-full rounded-md
                 ${
 					props.loading

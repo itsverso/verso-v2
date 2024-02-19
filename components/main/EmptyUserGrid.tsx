@@ -2,17 +2,19 @@ import React, { useState, useCallback } from "react";
 import * as Icons from "../../resources/icons";
 import { CollectionPlaceholder } from "./CollectionPlaceholder";
 import { useRouter } from "next/router";
+import useWindowDimension from "@/hooks/useWindowDimensions";
 
 export function EmptyUserGrid(props: any) {
 	let router = useRouter();
+	const { width } = useWindowDimension();
 
 	const handleRedirect = () => {
 		router.push("/create");
 	};
 	return (
-		<div className="w-full grid grid-cols-2 lg:grid md:grid-cols-3 gap-6 lg:gap-12 pt-10">
-			<CollectionPlaceholder />
-			<div className={`relative w-full aspect-square`}>
+		<div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-12 mt-6">
+			{width > 600 ? <CollectionPlaceholder /> : null}
+			<div className={`relative w-full aspect-square my-6`}>
 				<div className="w-full h-full p-20 flex flex-col items-center justify-center bg-[#EAFFEB]">
 					{props.isOwner ? (
 						<>

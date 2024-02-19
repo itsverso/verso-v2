@@ -19,26 +19,25 @@ export default async function handler(
 	res: NextApiResponse<Data>
 ) {
 	try {
+		// We may need to change this to be more abstract and not image specific
 		let imageUrl;
-		let body = JSON.parse(req.body);
-		let haschanged = true;
-		if (body.hasChanged == false) {
-			haschanged = body.hasChanged;
-		}
+		const body = JSON.parse(req.body);
+		const haschanged = body.hasChanged || true;
+
 		if (body.image && haschanged) {
-			let image = body.image;
+			const image = body.image;
 			const buffer = Buffer.from(image, "base64");
-			let tags = {
+			const tags = {
 				tags: [{ name: "Content-Type", value: body.mimeType }],
 			};
-			let id = await uploadToArweave(buffer, tags);
+			const id = await uploadToArweave(buffer, tags);
 			imageUrl = `https://arweave.net/${id}`;
 		}
 
-		let dataToUpload = haschanged
+		const dataToUpload = haschanged
 			? { ...body, image: imageUrl }
 			: { ...body };
-		let id = await uploadToArweave(JSON.stringify(dataToUpload), false);
+		const id = await uploadToArweave(JSON.stringify(dataToUpload), false);
 		res.status(200).json({
 			url: `https://arweave.net/${id}`,
 		});

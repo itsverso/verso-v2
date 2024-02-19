@@ -1,9 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import { CollectionCard } from "./CollectionCard";
-import { CollectionPlaceholder } from "./CollectionPlaceholder";
-import { AppContext } from "../../context/context";
-import * as Icons from "../../resources/icons";
-import { UserActionTypes } from "@/reducers/userReducer";
 import useGetUserCollections from "@/hooks/useGetUserCollections";
 import { EmptyUserGrid } from "./EmptyUserGrid";
 
@@ -22,20 +18,7 @@ type CarouselProps = {
 
 export function CollectionsCarousel(props: CarouselProps) {
 	const { handle } = props;
-	const { state, dispatch } = useContext(AppContext);
-	const { data, error, isLoading, mutate } = useGetUserCollections(handle);
-
-	// Simple use effect to refetch collections
-	useEffect(() => {
-		if (state.user.fetch) {
-			mutate();
-			dispatch({
-				type: UserActionTypes.FETCH,
-				payload: { fetch: false },
-			});
-		}
-		console.log("Hello: ", data);
-	}, [state.user.fetch]);
+	const { data, error, isLoading } = useGetUserCollections(handle);
 
 	if (isLoading) {
 		return <div></div>;
@@ -49,7 +32,7 @@ export function CollectionsCarousel(props: CarouselProps) {
 						<EmptyUserGrid isOwner={props.isOwner} />
 					</div>
 				) : (
-					<div className="w-full grid grid-cols-2 lg:grid md:grid-cols-3 gap-6 lg:gap-12 mt-6">
+					<div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-12 mt-6">
 						{data.collections.ownedNfts.map(
 							(item: any, index: any) => (
 								<CollectionCard

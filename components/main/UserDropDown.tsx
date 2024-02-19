@@ -1,53 +1,46 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { usePrivy } from "@privy-io/react-auth";
+import React, { useState } from "react";
+import { ConnectedWallet, usePrivy } from "@privy-io/react-auth";
 import * as Icons from "../../resources/icons";
 import { ethers } from "ethers";
 import Link from "next/link";
+import { Profile } from "@/resources/users/types";
+import { useRef } from "react";
+import { useEffect } from "react";
 
-export function UserDropDown(props: any) {
+export function UserDropDown({
+	wallet,
+	profile,
+}: {
+	wallet: ConnectedWallet;
+	profile?: Profile;
+}) {
 	const { logout } = usePrivy();
-	const [address, setAddress] = useState<string>("");
-	const [balance, setBalance] = useState<string>("");
 	const [visible, setIsVisible] = useState<boolean>(false);
 	const [hasCopied, setHasCopied] = useState<boolean>(false);
+	const balance = useRef("0.00");
 	const [walletHover, setWalletHover] = useState<boolean>(false);
 	const [balanceHover, setBalanceHover] = useState<boolean>(false);
 
-	// Set user address
-	// and fetch balance
 	useEffect(() => {
-		setWalletAndNetwork();
-	}, [props.wallet]);
+		(async () => {
+			if (!wallet.address) {
+				return;
+			}
 
-	// Get wallet instance and set state
-	const setWalletAndNetwork = async () => {
-		if (props.wallet?.address) {
-			setAddress(props.wallet.address);
-			getWalletBalance(props.wallet);
-		}
-	};
-
-	// Get wallet balance, only triggered on mount.
-	const getWalletBalance = async (wallet: any) => {
-		if (props?.wallet?.address) {
-			try {
-				let provider = await wallet.getEthersProvider();
-				let bigNumber = await provider.getBalance(
-					props?.wallet?.address
-				);
-				let balance = ethers.utils.formatEther(bigNumber);
-				setBalance(balance.slice(0, 5));
-			} catch (e) {}
-		}
-	};
+			const provider = await wallet.getEthersProvider();
+			const bigNumber = await provider.getBalance(wallet.address);
+			const etherBalance = ethers.utils.formatEther(bigNumber);
+			balance.current = etherBalance.slice(0, 5);
+		})();
+	}, [wallet.address]);
 
 	// Handle wallet hover
 	const handleWalletHover = async () => {};
 
 	// Copy address to clipboard
 	const handleClickOnCopy = async () => {
-		navigator.clipboard.writeText(address);
+		navigator.clipboard.writeText(wallet.address);
 		setHasCopied(true);
 		setTimeout(() => {
 			setHasCopied(false);
@@ -58,13 +51,13 @@ export function UserDropDown(props: any) {
 		<div>
 			<button
 				className="relative h-10 w-10 rounded-full flex items-center justify-center hover:opacity-80"
-				onClick={() => setIsVisible(true)}
+				onClick={() => setIsVisible(!visible)}
 			>
 				<div className="h-10 w-10 rounded-full">
-					{props.user?.image ? (
+					{profile?.metadata.image ? (
 						<img
 							className="h-10 w-10 rounded-full object-cover"
-							src={props.user?.image}
+							src={profile?.metadata.image}
 						/>
 					) : (
 						<div className="h-10 w-10 rounded-full object-cover bg-gradient-to-r from-gray-200 via-gray-400 to-gray-600"></div>
@@ -79,23 +72,23 @@ export function UserDropDown(props: any) {
 				} absolute right-10 w-72 rounded-lg bg-white flex flex-col text-base z-50 list-none divide-y divide-gray-100 shadow-xl my-4`}
 				id="dropdown"
 			>
-				<Link href={`/${props.user?.handle}`}>
+				<Link href={`/${profile?.metadata.handle}`}>
 					<div className="px-2 py-4 flex flex-col items-left bg-zinc-50 hover:bg-zinc-100 cursor-pointer rounded-t-lg">
 						<div className="flex flex-row items-center justify-between">
 							<div className="px-4">
 								<p className="text-lg font-medium leading-0">
-									{props?.user?.name}
+									{profile?.metadata.name}
 								</p>
 								<p className="text-base font-light text-zinc-500">
-									{props?.user?.handle}.verso
+									{profile?.metadata.handle}.verso
 								</p>
 							</div>
 							<div className="w-1/4 flex items-center justify-center">
 								<div className="h-12 w-12 rounded-full bg-white">
-									{props.user?.image ? (
+									{profile?.metadata.image ? (
 										<img
 											className="h-12 w-12 rounded-full object-cover"
-											src={props.user?.image}
+											src={profile?.metadata.image}
 										/>
 									) : (
 										<div className="h-12 w-12 rounded-full object-cover bg-gradient-to-r from-gray-200 via-gray-400 to-gray-600" />
@@ -122,9 +115,9 @@ export function UserDropDown(props: any) {
 										: "text-gray-500"
 								}`}
 							>
-								{address.slice(0, 6) +
+								{wallet.address.slice(0, 6) +
 									"..." +
-									address.slice(36, 42)}
+									wallet.address.slice(36, 42)}
 							</p>
 							<div>
 								{walletHover ? (
@@ -156,7 +149,7 @@ export function UserDropDown(props: any) {
 										: "text-gray-500"
 								}`}
 							>
-								{balance + " ETH"}
+								{balance.current + " ETH"}
 							</p>
 						</div>
 					</div>

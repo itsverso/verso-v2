@@ -9,6 +9,8 @@ import { GetStaticPaths } from "next";
 import { Spinner } from "@/components/common/Spinner";
 import { useRouter } from "next/router";
 import { ImageItem } from "@/components/main/ImageItem";
+import { useUser } from "@/context/user-context";
+import { PlusIcon } from "@heroicons/react/24/solid";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
 	return {
@@ -26,9 +28,10 @@ export async function getStaticProps({ params }: any) {
 const Collection: NextPage = (props: any) => {
 	const router = useRouter();
 	const { state } = useContext(AppContext);
+	const user = useUser();
 	const [fireFetch, setFireFetch] = useState<boolean>(false);
 	const [openCreateDrawer, setOpenCreateDrawer] = useState<boolean>(false);
-	const { data, error, isLoading, mutate } = useGetCollectionTokens(props.id);
+	const { data, isLoading, mutate } = useGetCollectionTokens(props.id);
 
 	useEffect(() => {
 		if (fireFetch) {
@@ -50,7 +53,7 @@ const Collection: NextPage = (props: any) => {
 	}
 
 	return (
-		<main className="flex flex-col px-32 py-20 min-w-screen min-h-screen">
+		<main className="flex flex-col px-6 md:px-16 lg:px-20 xl:px-32 py-20 min-w-screen min-h-screen">
 			<Drawer isOpen={openCreateDrawer} setIsOpen={setOpenCreateDrawer}>
 				<MintPictureForm
 					address={data?.address}
@@ -58,8 +61,8 @@ const Collection: NextPage = (props: any) => {
 					onClickBack={() => setOpenCreateDrawer(false)}
 				/>
 			</Drawer>
-			<div className="w-full mt-10 px-4 flex flex-col">
-				<div className="flex flex-row items-center mb-2 z-20">
+			<div className="w-full mt-4 md:mt-10 lg:px-4 flex flex-col">
+				<div className="flex flex-row items-center mb-2">
 					<div className="h-6 w-6 rounded-full bg-zinc-200">
 						{data?.moderators[0]?.image ? (
 							<img
@@ -85,25 +88,32 @@ const Collection: NextPage = (props: any) => {
 				</p>
 			</div>
 			<div className="h-full w-full mt-10">
-				<div className="w-full h-full grid grid-cols-4">
+				<div className="w-full h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 					{data?.tokens?.nfts.map((item: any, index: number) => {
-						return (
-							<ImageItem
-								item={item}
-								index={index}
-								src={item?.media[0]?.gateway}
-								route={`${router.asPath}/${item.tokenId}`}
-							/>
-						);
+						if (!item.metadataError) {
+							return (
+								<ImageItem
+									item={item}
+									index={index}
+									src={item?.media[0]?.gateway}
+									route={`${router.asPath}/${item.tokenId}`}
+								/>
+							);
+						}
 					})}
 				</div>
 			</div>
 			{
 				// Only display button if user is owner.
-				state.user.handle == props.handle ? (
-					<AddMediaButton
-						openCreate={() => setOpenCreateDrawer(true)}
-					/>
+				user?.profile?.metadata.handle == props.handle ? (
+					<div className="fixed bottom-10 right-12 flex flex-col items-center">
+						<button
+							onClick={() => setOpenCreateDrawer(true)}
+							className="my-1 flex items-center justify-center  h-14 w-14 rounded-full bg-black hover:opacity-90 cursor-pointer shadow-2xl"
+						>
+							<PlusIcon className="w-6 h-6 text-white" />
+						</button>
+					</div>
 				) : null
 			}
 		</main>

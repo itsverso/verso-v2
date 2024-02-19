@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 import { NextPage } from "next";
 import { GetStaticPaths } from "next";
 import useGetTokenDetails from "@/hooks/useGetTokenDetails";
-import useGetUserProfile from "@/hooks/useGetUserProfile";
-import { Info } from "@/resources/icons";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
-import { AppContext } from "@/context/context";
+import { useUser } from "@/context/user-context";
 import {
 	getCollectionInstance,
 	getMarketContractInstance,
 } from "@/lib/contracts";
 import { InfuraProvider } from "@/constants";
+import { UserContext } from "@/context/user-context";
+import { Spinner } from "@/components/common/Spinner";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
 	return {
@@ -28,33 +28,27 @@ export async function getStaticProps({ params }: any) {
 
 const CreatorCard = (props: any) => {
 	const router = useRouter();
-	const { data, error, isLoading, mutate } = useGetUserProfile(props.handle);
-
-	console.log("User: ", data);
+	const user = useUser();
 
 	const handleUserRedirect = () => {
 		router.push(`/${props.handle}`);
 	};
-
-	if (error) {
-		return null;
-	}
 
 	return (
 		<button
 			onClick={handleUserRedirect}
 			className="flex flex-row items-center mb-4"
 		>
-			{!data?.user?.image ? (
+			{!user?.profile?.metadata.image ? (
 				<div className="h-6 w-6 rounded-full bg-zinc-200"></div>
 			) : (
 				<img
-					src={data?.user?.image}
+					src={user?.profile?.metadata.image}
 					className="h-6 w-6 rounded-full bg-zinc-200"
 				/>
 			)}
 			<p className="ml-2 text-xl text-gray-500 font-hedvig">
-				@{data?.user?.handle}
+				@{user?.profile?.metadata.handle}
 			</p>
 		</button>
 	);
@@ -63,15 +57,12 @@ const CreatorCard = (props: any) => {
 const TokenId: NextPage = (props: any) => {
 	const { collection, id } = props;
 	const router = useRouter();
-	const { state } = useContext(AppContext);
+	const user = useContext(UserContext);
+	const [loading, setLoading] = useState<boolean>(false);
 	const { data, error, isLoading, mutate } = useGetTokenDetails(
 		collection,
 		id
 	);
-
-	useEffect(() => {
-		console.log(data);
-	}, [data]);
 
 	const handleRedirectBack = useCallback(() => {
 		router.back();
@@ -79,34 +70,47 @@ const TokenId: NextPage = (props: any) => {
 
 	const executeBuy = async () => {
 		if (data && !isLoading) {
-			let { signer, address } = state.user;
-			let market = getMarketContractInstance(data.market, InfuraProvider);
-			let price = await market.getBuyPrice(collection, id, 1);
-			let collectionContract = getCollectionInstance(collection, signer);
-			let buy = await collectionContract.collect(
-				id,
-				address,
-				1,
-				address,
-				{
-					value: price,
-				}
-			);
-
-			let receipt = await buy.wait();
+			setLoading(true);
+			try {
+				let market = getMarketContractInstance(
+					data.market,
+					InfuraProvider
+				);
+				let price = await market.getBuyPrice(collection, id, 1);
+				let provider = await user?.wallet?.getEthersProvider();
+				let signer = provider?.getSigner();
+				let collectionContract = getCollectionInstance(
+					collection,
+					signer
+				);
+				let buy = await collectionContract.collect(
+					id,
+					user?.profile?.walletAddress,
+					1,
+					user?.profile?.walletAddress,
+					{
+						value: parseInt(price._hex) + 2000000000,
+					}
+				);
+				await buy.wait();
+				setLoading(false);
+				mutate();
+			} catch (e) {
+				console.log(e);
+				setLoading(false);
+			}
 		}
-		console.log("buy");
 	};
 
 	return (
-		<main className="flex flex-row min-w-screen min-h-screen">
-			<div className="w-2/3 p-10 h-screen flex items-center justify-center bg-zinc-100">
+		<main className="flex flex-col md:flex-row min-w-screen min-h-screen pt-10 md:pt-0 px-6 md:px-0">
+			<div className="md:p-14 md:w-2/3 md:h-screen flex items-center justify-center bg-zinc-100">
 				<img
-					className="h-full object-contain shadow-md"
+					className="h-full shadow-md"
 					src={data?.token?.media[0]?.gateway}
 				/>
 			</div>
-			<div className="relative flex flex-col justify-between w-1/3 h-screen px-10 pt-12 pb-10">
+			<div className="relative flex flex-col justify-between md:w-1/3 md:h-screen md:px-10 pt-6 md:pt-12 pb-10">
 				<div className="">
 					<div className="">
 						{data ? (
@@ -117,7 +121,7 @@ const TokenId: NextPage = (props: any) => {
 					</div>
 					<button
 						onClick={handleRedirectBack}
-						className="absolute top-10 right-12 h-10 w-10"
+						className="absolute top-5 md:top-10 right-5 md:right-12 h-8 w-8 md:h-10 md:w-10"
 					>
 						<XMarkIcon color="#646464" />
 					</button>
@@ -146,12 +150,18 @@ const TokenId: NextPage = (props: any) => {
 						</p>
 					</div>
 					<div className="w-full flex flex-row">
-						<button
-							onClick={() => executeBuy()}
-							className="w-full h-16 bg-black border border-black flex flex-col items-center justify-center"
-						>
-							<p className="text-white">COLLECT</p>
-						</button>
+						{loading ? (
+							<div className="w-full h-16 bg-zinc-600 flex flex-col items-center justify-center">
+								<Spinner color={"zinc-800"} />
+							</div>
+						) : (
+							<button
+								onClick={() => executeBuy()}
+								className="w-full h-16 bg-black flex flex-col items-center justify-center"
+							>
+								<p className="text-white">COLLECT</p>
+							</button>
+						)}
 					</div>
 				</div>
 			</div>

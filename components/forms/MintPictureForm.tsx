@@ -6,14 +6,17 @@ import { ethers } from "ethers";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { uploadDataToArweave } from "@/resources";
 import { FormButton } from "../common/FormButton";
-import { FILE_SIZE, MAX_INT, NULL_ADDRESS } from "../../constants";
-import { useRouter } from "next/router";
-import { XMarkIcon, PhotoIcon } from "@heroicons/react/24/solid";
-import { getCollectionInstance } from "@/lib/contracts";
 import {
-	MARKET_MASTER_ADDRESS__GOERLI,
-	SIMPLE_MARKET_ADDRESS__GOERLI,
+	FILE_SIZE,
+	MAX_INT,
+	NULL_ADDRESS,
+	SIMPLE_MARKET_ADDRESS__MAINNET,
 } from "../../constants";
+import { useRouter } from "next/router";
+import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { getCollectionInstance } from "@/lib/contracts";
+import { MARKET_MASTER_ADDRESS__GOERLI } from "../../constants";
+import { useUser } from "@/context/user-context";
 
 type Props = {
 	onClickBack: any;
@@ -23,10 +26,7 @@ type Props = {
 
 export function MintPictureForm(props: Props) {
 	// General state.
-	const router = useRouter();
-	const { state, dispatch } = useContext(AppContext);
-	const { width, height } = useWindowDimensions();
-	const signer = state.user.signer;
+	const user = useUser();
 	// Component state
 	const [minted, setMinted] = useState<boolean>(false);
 	const [title, setTitle] = useState<string>("");
@@ -57,7 +57,7 @@ export function MintPictureForm(props: Props) {
 		if (error) {
 			setLoading(false);
 		} else {
-			let creator = state.user.handle;
+			let creator = user?.profile?.metadata.handle;
 			let isPrivate = false;
 			let timestamp = new Date().getTime();
 			let metadata = await uploadDataToArweave({
@@ -69,7 +69,6 @@ export function MintPictureForm(props: Props) {
 				isPrivate,
 				timestamp,
 			});
-			console.log(metadata);
 			await mintNewVerso(metadata);
 			// let newTokenID = await mintNewVerso(metadata);
 			// handleRedirect(newTokenID as string, props.address);
@@ -81,25 +80,30 @@ export function MintPictureForm(props: Props) {
 	};
 
 	const mintNewVerso = async (metadata: any) => {
-		try {
-			let collection = getCollectionInstance(
-				props.address,
-				state.user.signer
-			);
+		if (!user?.wallet) {
+			return;
+		}
 
+		try {
+			const provider = await user.wallet.getEthersProvider();
+			const signer = provider.getSigner();
+			const MARKET_ADDRESS =
+				process.env.NEXT_PUBLIC_DEV == "true"
+					? MARKET_MASTER_ADDRESS__GOERLI
+					: SIMPLE_MARKET_ADDRESS__MAINNET;
+			let collection = getCollectionInstance(props.address, signer);
 			let mint = await collection.create(
-				metadata.url,
-				state.user.address,
-				NULL_ADDRESS,
-				SIMPLE_MARKET_ADDRESS__GOERLI,
-				MAX_INT,
-				0,
-				true,
-				false
+				metadata.url, // url
+				props.address, // receipient
+				NULL_ADDRESS, // permissions
+				MARKET_ADDRESS, // market address
+				"1000000000000", // supply limit
+				0, // token price
+				true, // isListed
+				false // is bonded
 			);
 
 			let receipt = await mint.wait();
-			console.log("receipt: ", receipt);
 		} catch (e) {
 			setError(e as any);
 			setLoading(false);

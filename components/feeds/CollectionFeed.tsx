@@ -20,8 +20,6 @@ type ImageItemProps = {
 function ImageItem(props: ImageItemProps) {
 	let { index, item } = props;
 
-	console.log("item: ", item);
-
 	return (
 		<div
 			key={index}

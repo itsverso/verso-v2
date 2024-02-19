@@ -5,14 +5,14 @@ import { useWallets } from "@privy-io/react-auth";
 import { getFactoryContractInstance } from "@/lib/contracts";
 import { uploadDataToArweave } from "@/resources";
 import { NULL_ADDRESS } from "@/constants";
-import { UserActionTypes } from "@/reducers/userReducer";
 import { useRouter } from "next/router";
+import { useUser } from "@/context/user-context";
 
 export function CreateCollectionForm(props: any) {
 	// General state
 	const router = useRouter();
 	const { wallets } = useWallets();
-	const { state, dispatch } = useContext(AppContext);
+	const user = useUser();
 	const [signer, setSigner] = useState<any>();
 	const [loading, setLoading] = useState<boolean>(false);
 
@@ -62,9 +62,10 @@ export function CreateCollectionForm(props: any) {
 					description,
 					image,
 					mimeType,
-					creator: state.user.handle,
+					creator: user?.profile?.metadata.handle,
 					date: Date.now(),
 				});
+				console.log("metadata: ", metadata);
 				// Execute TX.
 				let factory = getFactoryContractInstance(signer);
 				console.log("We here");
@@ -80,7 +81,6 @@ export function CreateCollectionForm(props: any) {
 				// Redirect and reset
 				handleRedirect(receipt.logs[0].address);
 				resetInitialState();
-				handleRefetch();
 				props.handleClose();
 			} catch (e) {}
 		} else {
@@ -89,14 +89,9 @@ export function CreateCollectionForm(props: any) {
 	};
 
 	const handleRedirect = (collectionAddress: string) => {
-		router.push(`/${state.user.handle}/${collectionAddress}`);
-	};
-
-	const handleRefetch = () => {
-		dispatch({
-			type: UserActionTypes.FETCH,
-			payload: { fetch: true },
-		});
+		router.push(
+			`/${user?.profile?.metadata.handle ?? ""}/${collectionAddress}`
+		);
 	};
 
 	// Check errors before minting new colection
@@ -129,77 +124,73 @@ export function CreateCollectionForm(props: any) {
 
 	const ready = title.length > 0;
 
-	if (true) {
-		return (
-			<div className="w-full h-full flex flex-col justify-center bg-white px-8">
-				<h1 className="text-4xl mb-10 font-hedvig">
-					Create collection
-				</h1>
-				<div className="w-full">
-					<label className="w-full flex flex-col">
-						<p className="text-base py-2 font-medium text-gray-500">
-							Title*
+	return (
+		<div className="w-full h-full flex flex-col justify-center bg-white px-8">
+			<h1 className="text-4xl mb-10 font-hedvig">Create collection</h1>
+			<div className="w-full">
+				<label className="w-full flex flex-col">
+					<p className="text-base py-2 font-medium text-gray-500">
+						Title*
+					</p>
+					<input
+						type="text"
+						name="title"
+						value={title || ""}
+						placeholder="Name your collection..."
+						className="h-14 pl-4 text-lg border-2 border-gray-200 font-sans rounded-md font-light focus:outline-none"
+						onChange={(e) => setTitle(e.target.value)}
+						onFocus={() => setTitleError("")}
+					></input>
+					<div className="flex flex-row items-center mt-1">
+						<p className="text-rose-700 text-xs font-semibold">
+							{titleError}
 						</p>
-						<input
-							type="text"
-							name="title"
-							value={title || ""}
-							placeholder="Name your collection..."
-							className="h-14 pl-4 text-lg border-2 border-gray-200 font-sans rounded-md font-light focus:outline-none"
-							onChange={(e) => setTitle(e.target.value)}
-							onFocus={() => setTitleError("")}
-						></input>
-						<div className="flex flex-row items-center mt-1">
-							<p className="text-rose-700 text-xs font-semibold">
-								{titleError}
-							</p>
-						</div>
-					</label>
-				</div>
-				<div className="w-full mt-2">
-					<label className="w-full flex flex-col">
-						<p className="text-base py-2 font-medium text-gray-500">
-							Description
-						</p>
-						<textarea
-							name="description"
-							value={description || ""}
-							placeholder="Describe your new collection..."
-							className="h-28 p-4 border-2 border-gray-200 rounded-md font-sans text-lg font-light focus:outline-none"
-							onChange={(e) => setDescription(e.target.value)}
-						></textarea>
-					</label>
-				</div>
-
-				<div className="mt-6">
-					<button
-						onClick={handleCreateCollection}
-						disabled={ready ? false : true}
-						className={`h-14 w-full rounded-md flex flex-col items-center justify-center
-							${ready ? "cursor-pointer hover:opacity-90 bg-gray-800" : "bg-gray-100"} `}
-					>
-						{loading ? (
-							<Spinner color="zinc-white" size="8" />
-						) : (
-							<p
-								className={`text-lg font-light tracking-wide ${
-									ready ? "text-white" : "text-gray-500"
-								} `}
-							>
-								Create collection
-							</p>
-						)}
-					</button>
-				</div>
-				<p className="mt-4 text-center">
-					<span className="font-bold">Note:</span> Verso makes it easy
-					to create NFT collections following the ERC1155 standard.
-					Proceeding, you will be creating a new NFT contract and you
-					will be set as the owner.
-				</p>
+					</div>
+				</label>
 			</div>
-		);
-	}
+			<div className="w-full mt-2">
+				<label className="w-full flex flex-col">
+					<p className="text-base py-2 font-medium text-gray-500">
+						Description
+					</p>
+					<textarea
+						name="description"
+						value={description || ""}
+						placeholder="Describe your new collection..."
+						className="h-28 p-4 border-2 border-gray-200 rounded-md font-sans text-lg font-light focus:outline-none"
+						onChange={(e) => setDescription(e.target.value)}
+					></textarea>
+				</label>
+			</div>
+
+			<div className="mt-6">
+				<button
+					onClick={handleCreateCollection}
+					disabled={ready ? false : true}
+					className={`h-14 w-full rounded-md flex flex-col items-center justify-center
+							${ready ? "cursor-pointer hover:opacity-90 bg-gray-800" : "bg-gray-100"} `}
+				>
+					{loading ? (
+						<Spinner color="white" size="8" />
+					) : (
+						<p
+							className={`text-lg font-light tracking-wide ${
+								ready ? "text-white" : "text-gray-500"
+							} `}
+						>
+							Create collection
+						</p>
+					)}
+				</button>
+			</div>
+			<p className="mt-4 text-center">
+				<span className="font-bold">Note:</span> Verso makes it easy to
+				create NFT collections following the ERC1155 standard.
+				Proceeding, you will be creating a new NFT contract and you will
+				be set as the owner.
+			</p>
+		</div>
+	);
 }
 
 /**

@@ -1,26 +1,23 @@
-import React, { useContext } from "react";
+import React from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useState, useEffect } from "react";
-import { getProfileContractInstance } from "@/lib/contracts";
 import Head from "next/head";
-import { useWallets, usePrivy } from "@privy-io/react-auth";
+import { usePrivy } from "@privy-io/react-auth";
 import { Spinner } from "@/components/common/Spinner";
-import { uploadDataToArweave } from "@/resources";
-import { InfuraProvider } from "@/constants";
+import { useCreateProfile } from "@/hooks/profile/useCreateProfile";
+import { useUser } from "@/context/user-context";
 
 const CreateProfile: NextPage = () => {
 	// Global state hooks
 	const router = useRouter();
-	const { authenticated, user, login } = usePrivy();
-	const { wallets } = useWallets();
-
-	// Global page state
-	const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-	const [loading, setIsLoading] = useState<boolean>(false);
-	const [wallet, setWallet] = useState<any>(null);
-	const [signer, setSigner] = useState<any>(null);
-	const [metadataURL, setMetadataURL] = useState<string>("");
+	const { login } = usePrivy();
+	const user = useUser();
+	const {
+		createProfile,
+		error: profileError,
+		loading: loadingCreateProfile,
+	} = useCreateProfile();
 
 	// Form state variables
 	const [name, setName] = useState<string>("");
@@ -29,128 +26,51 @@ const CreateProfile: NextPage = () => {
 	const [nameError, setNameError] = useState<string | null>(null);
 	const [handleError, setHandleError] = useState<string | null>(null);
 
-	// Checks if users is logged in and sets state.
 	useEffect(() => {
-		if (authenticated) {
-			setIsLoggedIn(true);
-		} else setIsLoggedIn(false);
-	}, [authenticated]);
-
-	// If wallets exists, sets wallet and signer
-	useEffect(() => {
-		if (wallets[0]) {
-			let wallet = wallets[0];
-			setWallet(wallet);
-			getProviderAndSetSigner(wallet);
-		} else setIsLoggedIn(false);
-	}, [wallets]);
-
-	// If signer, checks if address has profile
-	useEffect(() => {
-		if (signer && isLoggedIn) checkIfAddressHasProfile();
-		else setError(null);
-	}, [signer, isLoggedIn]);
-
-	// Get provider and set signer
-	const getProviderAndSetSigner = async (wallet: any) => {
-		let provider = await wallet.getEthersProvider();
-		setSigner(provider.getSigner());
-	};
-
-	// Check if address already has profile
-	const checkIfAddressHasProfile = async () => {
-		let address = wallet.address;
-		let contractInstance = getProfileContractInstance(InfuraProvider);
-		console.log("HERE: ", address);
-		let response = await contractInstance.addressToProfileID(address);
-		let id = parseInt(response._hex);
-		if (id == 0) setError(null);
-		else setError("This address already has a profile.");
-	};
-
-	// Check that handle is not empty nor taken
-	const runHandleValidation = async () => {
-		let length = handle.length;
-		if (length == 0) setHandleError("Handle cannot be empty");
-		let contractInstance = getProfileContractInstance(signer);
-		let response = await contractInstance.getIdFromHandle(handle);
-		let id = parseInt(response._hex);
-		if (id !== 0) setHandleError("This handle already taken");
-		if (length == 0 || id !== 0) return false;
-		else return true;
-	};
-
-	// Initiate & execute minting
-	const runChecksAndMintProfile = async (e: any) => {
-		e.preventDefault();
-		setIsLoading(true);
-		let isCorrect = await runHandleValidation();
-		if (ready && isCorrect) {
-			let profileUrl = await uploadProfileToArweave(name, handle);
-			await mintProfile(profileUrl.url);
+		if (user?.profile?.metadata?.handle) {
+			router.push(`/${user?.profile?.metadata?.handle}`);
 		}
-	};
+	}, [user]);
 
-	// Execute minting
-	const mintProfile = async (metadata: string) => {
-		try {
-			console.log(1);
-			let address = wallet.address;
-			console.log(2);
-			let contractInstance = getProfileContractInstance(signer);
-			console.log(3);
-			let register = await contractInstance.registerProfile(
-				address,
-				handle,
-				metadata
-			);
-			console.log(4);
-			await register.wait();
-			router.push(`/${handle}`);
-		} catch (e) {
-			setError(
-				"Sorry, something went worng. Please try again or get in touch."
-			);
-			setIsLoading(false);
-			console.log(e);
+	const handleCreateProfile = async () => {
+		if (!user?.wallet) {
+			setError("Please connect your wallet");
+			return;
 		}
-	};
 
-	// Upload to Arweave
-	const uploadProfileToArweave = async (name: string, handle: string) => {
-		return await uploadDataToArweave({ name, handle });
+		if (!handle.length) {
+			setHandleError("Handle cannot be empty");
+			return;
+		}
+
+		await createProfile(user.wallet, name, handle);
 	};
 
 	// HANDLE input
-	const handleHandleInput = useCallback(
-		(e: any) => {
-			e.preventDefault();
-			setHandleError(null);
-			setHandle(
-				e.target.value
-					.toLocaleLowerCase()
-					.split(" ")
-					.join("")
-					.normalize("NFD")
-					.replace(/[\u0300-\u036f]/g, "")
-					.replace("/", "")
-					.replace(/[@#¢∞¬÷“”≠´∫!"·$%&/()=?¿{}]/g, "")
-			);
-		},
-		[error]
-	);
+	const handleHandleInput = useCallback((e: any) => {
+		e.preventDefault();
+		setHandleError(null);
+		setHandle(
+			e.target.value
+				.toLocaleLowerCase()
+				.split(" ")
+				.join("")
+				.normalize("NFD")
+				.replace(/[\u0300-\u036f]/g, "")
+				.replace("/", "")
+				.replace(/[@#¢∞¬÷“”≠´∫!"·$%&/()=?¿{}]/g, "")
+		);
+	}, []);
 
 	// NAME input
-	const handleNameInput = useCallback(
-		(e: any) => {
-			e.preventDefault();
-			setNameError(null);
-			setName(e.target.value);
-		},
-		[error]
-	);
+	const handleNameInput = useCallback((e: any) => {
+		e.preventDefault();
+		setNameError(null);
+		setName(e.target.value);
+	}, []);
 
-	const ready = !loading && !error && !nameError && handle.length > 0;
+	const errorMessage = error || handleError || nameError || profileError;
+	const canCreateProfile = !errorMessage && handle.length > 0;
 
 	return (
 		<div>
@@ -174,11 +94,11 @@ const CreateProfile: NextPage = () => {
 							<span className="text-versoMint">.</span>
 						</h1>
 
-						{error || handleError ? (
+						{errorMessage ? (
 							<div className="w-full flex flex-row">
 								<div className="flex items-center">
 									<h6 className="text-rose-700 text-sm font-normal">
-										{error || handleError}
+										{errorMessage}
 									</h6>
 								</div>
 							</div>
@@ -238,18 +158,18 @@ const CreateProfile: NextPage = () => {
 							<div>
 								{
 									// Buttons
-									isLoggedIn ? (
+									user?.wallet?.address ? (
 										<button
-											onClick={runChecksAndMintProfile}
-											disabled={ready ? false : true}
+											onClick={handleCreateProfile}
+											disabled={!canCreateProfile}
 											className={`h-14 w-full rounded-sm flex flex-col items-center justify-center
 												${
-													ready
+													canCreateProfile
 														? "cursor-pointer hover:opacity-90 bg-teal-400"
 														: "bg-teal-400 opacity-70"
 												} `}
 										>
-											{loading ? (
+											{loadingCreateProfile ? (
 												<Spinner
 													color="zinc-800"
 													size="8"
@@ -281,4 +201,24 @@ const CreateProfile: NextPage = () => {
 	);
 };
 
-export default CreateProfile;
+const withProfile = (WrappedComponent: NextPage) => {
+	return function WithProfile() {
+		const router = useRouter();
+		const user = useUser();
+		const { ready } = usePrivy();
+
+		useEffect(() => {
+			if (user?.profile?.metadata?.handle) {
+				router.push(`/${user?.profile?.metadata?.handle}`);
+			}
+		}, [user]);
+
+		if (!ready || user?.loading) {
+			return null;
+		}
+
+		return <WrappedComponent />;
+	};
+};
+
+export default withProfile(CreateProfile);

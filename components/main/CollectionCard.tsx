@@ -16,11 +16,6 @@ export function CollectionCard(props: Props) {
 		item.tokenId
 	);
 
-	useEffect(() => {
-		console.log("item: ", data);
-		console.log("error: ", error);
-	}, [data]);
-
 	const handleCollectionRedirect = useCallback(() => {
 		router.push(`/${props.handle}/${data?.address}`);
 	}, [data]);
@@ -60,9 +55,8 @@ export function CollectionCard(props: Props) {
 			</div>
 
 			<div className="py-2">
-				<p className="font-lora text-sm lg:text-lg">{title}</p>
-				<p className="font-lora text-xs text-zinc500">
-					{data?.tokens?.nfts?.length || 0} elements
+				<p className="font-light text-gray-600">
+					@{data?.moderators[0].handle} - {title}
 				</p>
 			</div>
 		</div>

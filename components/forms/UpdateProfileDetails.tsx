@@ -1,76 +1,54 @@
-import React, { useState, useCallback } from "react";
-import { useRouter } from "next/router";
-import useWindowDimensions from "../../hooks/useWindowDimensions";
-import { uploadDataToArweave } from "../../resources";
+import React, { useState } from "react";
 import * as Icons from "../../resources/icons";
 import { FILE_SIZE } from "../../constants";
-import { getProfileContractInstance } from "@/lib/contracts";
 import { FormButton } from "../common/FormButton";
+import { useUpdateProfile } from "@/hooks/profile/useUpdateProfile";
+import { ConnectedWallet } from "@privy-io/react-auth";
+import { Profile } from "@/resources/users/types";
+import { useCallback } from "react";
 
 type Props = {
 	side?: boolean;
-	signer?: any;
-	handle?: string;
-	user?: any;
-	onUpdateComplete: any;
+	wallet: ConnectedWallet;
+	profile: Profile;
+	onUpdateComplete: VoidFunction;
 };
 
 export function UpdateProfileDetailsForm(props: Props) {
-	// Global state hooks
-	const router = useRouter();
-	const { width, height } = useWindowDimensions();
-
-	// Form state variables
-	const [image, setImage] = useState<string | undefined>();
-	const [preview, setPreview] = useState<string>();
-	const [imageHasChanged, setImageHasChanged] = useState<boolean>(false);
+	const [image, setImage] = useState<string | undefined>(
+		props.profile.metadata.image
+	);
 	const [mimeType, setMimeType] = useState<string>("");
-	const [name, setName] = useState<string | null>(null);
-	const [description, setDescription] = useState<string | null>();
-	const [website, setWebsite] = useState<string | null>();
-	const [foundation, setFoundation] = useState<string | null>();
-	const [superRare, setSuperRare] = useState<string | null>();
+	const [name, setName] = useState<string>(props.profile.metadata.name);
+	const [imageError, setImageError] = useState<string | null>(null);
+	const [description, setDescription] = useState<string>(
+		props.profile.metadata.description ?? ""
+	);
+	const [website, setWebsite] = useState<string | undefined>(
+		props.profile.metadata.website ?? undefined
+	);
+	const [foundation, setFoundation] = useState<string | undefined>(
+		props.profile.metadata.foundation ?? undefined
+	);
+	const [superRare, setSuperRare] = useState<string | undefined>(
+		props.profile.metadata.superRare ?? undefined
+	);
 
-	const [error, setError] = useState<string | null>(null);
-	const [loading, setLoading] = useState<boolean>(false);
+	const { error, loading, updateProfile } = useUpdateProfile();
 
 	// Update profile metadata URL on registry.
-	const updateProfile = async () => {
-		setLoading(true);
-		// Upload data to Areweave
-		let metadata = await uploadProfileMetadata();
-		// Send TX
-		try {
-			const RegistryContract = getProfileContractInstance(props.signer);
-			let id = await RegistryContract.getIdFromHandle(props.user.handle);
-			let hexId = parseInt(id._hex);
-			let tx = await RegistryContract.updateProfileMetadata(
-				hexId,
-				metadata
-			);
-			await tx.wait();
-			setLoading(false);
-			props.onUpdateComplete();
-		} catch (e) {
-			setLoading(false);
-			console.log("error: ", e);
-		}
-	};
-
-	// Upload to Arweave
-	const uploadProfileMetadata = async () => {
-		let res = await uploadDataToArweave({
+	const handleUpdateProfile = async () => {
+		await updateProfile(props.wallet, props.profile, {
+			name,
+			description,
 			image,
-			name: name || props.user.name,
-			description: description || props.user?.description,
-			website: website || props.user?.website,
-			foundation: foundation || props.user?.foundation,
-			superRare: superRare || props.user?.superrare,
-			handle: props.user?.handle,
-			mimeType: mimeType,
-			hasChanged: imageHasChanged,
+			mimeType,
+			foundation,
+			superRare,
+			website,
 		});
-		return res.url;
+
+		props.onUpdateComplete();
 	};
 
 	// Handle text inputs with a switch.
@@ -100,34 +78,30 @@ export function UpdateProfileDetailsForm(props: Props) {
 		[error]
 	);
 
-	// Convert file to base64 and set in state.
-	const handleImageUpload = useCallback((e: any) => {
-		e.preventDefault();
-		let file = e.target.files[0];
-		const objectUrl = URL.createObjectURL(file);
-		setPreview(objectUrl);
+	// Convert file to base64 and set in state
+	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (!file) {
+			return;
+		}
+
 		if (file.size > FILE_SIZE) {
-			setError("File too big. 3mb maximum.");
+			setImageError("File too big. 3mb maximum.");
+			return;
 		}
-		if (!!file) {
-			let reader = new FileReader();
-			reader.onload = () => {
-				let imageBase64 = reader.result as string;
-				let trimed64 = imageBase64.split(",")[1];
-				setImage(trimed64);
-				setMimeType(file.type);
-				setImageHasChanged(true);
-			};
-			reader.readAsDataURL(file);
-		}
-	}, []);
 
-	// Delete file if user doesn't like it
-	const handleRemovePic = useCallback(() => {
-		setImage(undefined);
-	}, []);
+		const reader = new FileReader();
+		reader.onload = () => {
+			setMimeType(file.type);
+			const imageBase64 = reader.result as string;
+			setImage(imageBase64);
+		};
+		reader.readAsDataURL(file);
+	};
 
-	const ready = !error;
+	const handleRemovePic = () => {
+		setImage("");
+	};
 
 	return (
 		<div>
@@ -155,30 +129,28 @@ export function UpdateProfileDetailsForm(props: Props) {
 							</div>
 						) : null}
 
-						<div className="relative w-full mt-4 mb-5 flex flex-col">
-							<div className="w-16 lg:w-20 h-16 lg:h-20 rounded-full flex flex-row bg-zinc-100">
-								<label className={`h-full w-full`}>
-									{!!image || props.user.image ? (
+						<div className="relative mt-4 mb-5 flex flex-col">
+							<div className="w-16 lg:w-20 h-16 lg:h-20 rounded-md flex flex-row bg-zinc-100">
+								<label className="h-full w-full cursor-pointer">
+									{image ? (
 										<div>
 											<img
-												src={
-													preview || props.user.image
-												}
-												className="w-16 lg:w-20 h-16 lg:h-20 rounded-full object-cover object-center"
+												src={image}
+												className="w-16 lg:w-20 h-16 lg:h-20 rounded-md object-cover object-center"
 											/>
 										</div>
-									) : null}
-
-									<input
-										type="file"
-										accept=".jpg, .jpge, .png"
-										name="add image"
-										className="opacity-0"
-										onChange={handleImageUpload}
-									></input>
+									) : (
+										<input
+											type="file"
+											accept=".jpg, .jpge, .png"
+											name="add image"
+											className="opacity-0"
+											onChange={handleImageUpload}
+										/>
+									)}
 								</label>
 							</div>
-							{!!image ? (
+							{image ? (
 								<div
 									onClick={handleRemovePic}
 									className="absolute top-0 left-20 w-10 flex flex-row items-center justify-center cursor-pointer"
@@ -187,6 +159,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 								</div>
 							) : null}
 						</div>
+
 						<div className="w-full mb-4">
 							{
 								// Name
@@ -199,7 +172,6 @@ export function UpdateProfileDetailsForm(props: Props) {
 									type="text"
 									name="name"
 									value={name || ""}
-									placeholder={props.user?.name || ""}
 									className="h-12 px-4 font-light font-hedvig text-zinc-500 bg-zinc-100 text-sm focus:outline-none"
 									onChange={(e) => handleInputs(e, "name")}
 								></input>
@@ -217,7 +189,6 @@ export function UpdateProfileDetailsForm(props: Props) {
 								<textarea
 									name="description"
 									value={description || ""}
-									placeholder={props.user?.description || ""}
 									className="h-24 p-4 font-light font-hedvig text-zinc-500 bg-zinc-100 text-sm focus:outline-none"
 									onChange={(e) =>
 										handleInputs(e, "description")
@@ -238,9 +209,6 @@ export function UpdateProfileDetailsForm(props: Props) {
 									type="text"
 									name="website"
 									value={website || ""}
-									placeholder={
-										props.user?.website || "optional"
-									}
 									className="h-12 px-4 font-light font-hedvig text-zinc-500 bg-zinc-100 text-sm focus:outline-none"
 									onChange={(e) => handleInputs(e, "website")}
 								></input>
@@ -258,9 +226,6 @@ export function UpdateProfileDetailsForm(props: Props) {
 									type="text"
 									name="foundation"
 									value={foundation || ""}
-									placeholder={
-										props.user?.foundation || "optional"
-									}
 									className="h-12 px-4 font-light font-hedvig text-zinc-500 bg-zinc-100 text-sm focus:outline-none"
 									onChange={(e) =>
 										handleInputs(e, "foundation")
@@ -280,9 +245,6 @@ export function UpdateProfileDetailsForm(props: Props) {
 									type="text"
 									name="superrare"
 									value={superRare || ""}
-									placeholder={
-										props.user?.superRare || "optional"
-									}
 									className="h-12 px-4 font-light font-hedvig text-zinc-500 bg-zinc-100 text-sm focus:outline-none"
 									onChange={(e) =>
 										handleInputs(e, "superRare")
@@ -294,7 +256,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 							<FormButton
 								text={"Update Profile"}
 								loading={loading}
-								onClick={() => updateProfile()}
+								onClick={handleUpdateProfile}
 							/>
 						</div>
 					</div>

@@ -2,7 +2,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getCollectionRegistryContractInstance } from "@/lib/contracts";
 import COLLECTION_ABI from "../../../../artifacts/contracts/collections/Collection.sol/Collection.json";
 import { Network, Alchemy } from "alchemy-sdk";
-import { MODERATOR_HASH } from "@/constants";
+import {
+	COLLECTION_REGITSRY_ADDRESS__MAINNET,
+	MODERATOR_HASH,
+} from "@/constants";
 import { ethers } from "ethers";
 
 import {
@@ -47,18 +50,27 @@ export default async function handler(
 	if (address !== NULL_ADDRESS) {
 		// Instantiate Alchemy
 		const settings = {
-			apiKey: process.env.ALCHEMY_PRIVATE_KEY,
+			apiKey:
+				process.env.NEXT_PUBLIC_DEV == "true"
+					? process.env.ALCHEMY_PRIVATE_KEY
+					: process.env.ALCHEMY_PRIVATE_KEY_MAINNET,
 			network:
 				process.env.NEXT_PUBLIC_DEV == "true"
 					? Network.OPT_GOERLI
 					: Network.OPT_MAINNET,
 		};
+
 		const alchemy = new Alchemy(settings);
 		// Get collection tokens
 		const tokens = await alchemy.nft.getNftsForContract(address);
-		// Get collection metadata
+		// Get registry address
+		let collectionRegistryAddress =
+			process.env.NEXT_PUBLIC_DEV == "true"
+				? COLLECTION_REGISTRY_ADDRESS__GOERLI
+				: COLLECTION_REGITSRY_ADDRESS__MAINNET;
+		// Get metadata
 		const metadata = await alchemy.nft.getNftMetadata(
-			COLLECTION_REGISTRY_ADDRESS__GOERLI,
+			collectionRegistryAddress,
 			id
 		);
 		// Get collection moderators
