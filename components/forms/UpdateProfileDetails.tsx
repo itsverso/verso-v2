@@ -105,7 +105,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 
 	return (
 		<div>
-			<main>
+			<main className="mb-32">
 				<div
 					className={`overflow-y-scroll h-screen w-full flex flex-col pt-24 lg:pt-10 bg-white ${
 						props.side ? "" : "md:px-64"
@@ -259,6 +259,7 @@ export function UpdateProfileDetailsForm(props: Props) {
 								onClick={handleUpdateProfile}
 							/>
 						</div>
+						<div className="h-14"></div>
 					</div>
 				</div>
 			</main>

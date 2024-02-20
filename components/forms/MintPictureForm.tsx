@@ -231,9 +231,11 @@ export function MintPictureForm(props: Props) {
 										</div>
 									</div>
 								) : (
-									<p className="text-zinc-800 text-xs font-semibold py-6">
-										{fileName}
-									</p>
+									<div className="h-full flex flex-row items-center justify-center px-2">
+										<p className="text-zinc-800 text-xs font-semibold py-6">
+											{fileName}
+										</p>
+									</div>
 								)}
 							</div>
 							{imageError ? (

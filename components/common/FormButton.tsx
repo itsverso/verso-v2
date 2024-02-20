@@ -22,7 +22,9 @@ export function FormButton(props: Props) {
 		>
 			{props.loading ? (
 				<div className="flex flex-row">
-					<Spinner color="" size={"6"} />
+					<div
+						className={`w-4 h-4 fill-zinc-800 border-zinc-800 border-2 border-dashed rounded-full animate-spin`}
+					/>
 				</div>
 			) : (
 				<p className="text-lg font-light text-white">{props.text}</p>
