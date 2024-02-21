@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Profile } from "@/resources/users/types";
 import { useRef } from "react";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 export function UserDropDown({
 	wallet,
@@ -16,6 +17,7 @@ export function UserDropDown({
 	profile?: Profile;
 }) {
 	const { logout } = usePrivy();
+	const router = useRouter();
 	const [visible, setIsVisible] = useState<boolean>(false);
 	const [hasCopied, setHasCopied] = useState<boolean>(false);
 	const balance = useRef("0.00");
@@ -27,7 +29,6 @@ export function UserDropDown({
 			if (!wallet.address) {
 				return;
 			}
-
 			const provider = await wallet.getEthersProvider();
 			const bigNumber = await provider.getBalance(wallet.address);
 			const etherBalance = ethers.utils.formatEther(bigNumber);
@@ -37,6 +38,13 @@ export function UserDropDown({
 
 	// Handle wallet hover
 	const handleWalletHover = async () => {};
+
+	// Handle user redirect
+	const handleRedirect = async () => {
+		if (profile?.metadata.handle) {
+			router.push(`/${profile?.metadata.handle}`);
+		} else router.push("/create-profile");
+	};
 
 	// Copy address to clipboard
 	const handleClickOnCopy = async () => {
@@ -72,32 +80,34 @@ export function UserDropDown({
 				} absolute right-10 w-72 rounded-lg bg-white flex flex-col text-base z-50 list-none divide-y divide-gray-100 shadow-xl my-4`}
 				id="dropdown"
 			>
-				<Link href={`/${profile?.metadata.handle}`}>
-					<div className="px-2 py-4 flex flex-col items-left bg-zinc-50 hover:bg-zinc-100 cursor-pointer rounded-t-lg">
-						<div className="flex flex-row items-center justify-between">
-							<div className="px-4">
-								<p className="text-lg font-medium leading-0">
-									{profile?.metadata.name}
-								</p>
-								<p className="text-base font-light text-zinc-500">
-									{profile?.metadata.handle}.verso
-								</p>
-							</div>
-							<div className="w-1/4 flex items-center justify-center">
-								<div className="h-12 w-12 rounded-full bg-white">
-									{profile?.metadata.image ? (
-										<img
-											className="h-12 w-12 rounded-full object-cover"
-											src={profile?.metadata.image}
-										/>
-									) : (
-										<div className="h-12 w-12 rounded-full object-cover bg-gradient-to-r from-gray-200 via-gray-400 to-gray-600" />
-									)}
-								</div>
+				<div
+					onClick={() => handleRedirect()}
+					className="px-2 py-4 flex flex-col items-left bg-zinc-50 hover:bg-zinc-100 cursor-pointer rounded-t-lg"
+				>
+					<div className="flex flex-row items-center justify-between">
+						<div className="px-4">
+							<p className="text-lg font-medium leading-0">
+								{profile?.metadata.name}
+							</p>
+							<p className="text-base font-light text-zinc-500">
+								{profile?.metadata.handle}.verso
+							</p>
+						</div>
+						<div className="w-1/4 flex items-center justify-center">
+							<div className="h-12 w-12 rounded-full bg-white">
+								{profile?.metadata.image ? (
+									<img
+										className="h-12 w-12 rounded-full object-cover"
+										src={profile?.metadata.image}
+									/>
+								) : (
+									<div className="h-12 w-12 rounded-full object-cover bg-gradient-to-r from-gray-200 via-gray-400 to-gray-600" />
+								)}
 							</div>
 						</div>
 					</div>
-				</Link>
+				</div>
+
 				<button
 					className="h-12 p-2"
 					onClick={handleClickOnCopy}
