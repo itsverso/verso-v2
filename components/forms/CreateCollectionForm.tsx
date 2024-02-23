@@ -3,6 +3,7 @@ import { AppContext } from "@/context/context";
 import { Spinner } from "../common/Spinner";
 import { useWallets } from "@privy-io/react-auth";
 import { getFactoryContractInstance } from "@/lib/contracts";
+import { AppActionTypes } from "@/reducers/appReducer";
 import { uploadDataToArweave } from "@/resources";
 import { NULL_ADDRESS } from "@/constants";
 import { useRouter } from "next/router";
@@ -12,6 +13,7 @@ export function CreateCollectionForm(props: any) {
 	// General state
 	const router = useRouter();
 	const { wallets } = useWallets();
+	const { dispatch } = useContext(AppContext);
 	const user = useUser();
 	const [signer, setSigner] = useState<any>();
 	const [loading, setLoading] = useState<boolean>(false);
@@ -65,10 +67,8 @@ export function CreateCollectionForm(props: any) {
 					creator: user?.profile?.metadata.handle,
 					date: Date.now(),
 				});
-				console.log("metadata: ", metadata);
 				// Execute TX.
 				let factory = getFactoryContractInstance(signer);
-				console.log("We here");
 				let tx = await factory.createCollection(
 					title,
 					readType,
@@ -81,8 +81,28 @@ export function CreateCollectionForm(props: any) {
 				// Redirect and reset
 				handleRedirect(receipt.logs[0].address);
 				resetInitialState();
-				props.handleClose();
-			} catch (e) {}
+				dispatch({
+					type: AppActionTypes.Set_Toaster,
+					payload: {
+						toaster: {
+							render: true,
+							success: true,
+							message: "Collection Created!",
+						},
+					},
+				});
+			} catch (e) {
+				dispatch({
+					type: AppActionTypes.Set_Toaster,
+					payload: {
+						toaster: {
+							render: true,
+							success: false,
+							message: undefined,
+						},
+					},
+				});
+			}
 		} else {
 			setLoading(false);
 		}

@@ -1,9 +1,6 @@
-import React, { useState, useCallback, useEffect, useContext } from "react";
-import { Spinner } from "../common/Spinner";
+import React, { useState, useCallback, useContext } from "react";
 import { AppContext } from "../../context/context";
 import { AppActionTypes } from "../../reducers/appReducer";
-import { ethers } from "ethers";
-import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { uploadDataToArweave } from "@/resources";
 import { FormButton } from "../common/FormButton";
 import {
@@ -27,6 +24,7 @@ type Props = {
 export function MintPictureForm(props: Props) {
 	// General state.
 	const user = useUser();
+	const { dispatch } = useContext(AppContext);
 	// Component state
 	const [minted, setMinted] = useState<boolean>(false);
 	const [title, setTitle] = useState<string>("");
@@ -70,9 +68,6 @@ export function MintPictureForm(props: Props) {
 				timestamp,
 			});
 			await mintNewVerso(metadata);
-			// let newTokenID = await mintNewVerso(metadata);
-			// handleRedirect(newTokenID as string, props.address);
-			// setMinted(true);
 			props.onClickBack();
 			props.fireFetch();
 			resetInitialState();
@@ -102,11 +97,30 @@ export function MintPictureForm(props: Props) {
 				true, // isListed
 				false // is bonded
 			);
-
 			let receipt = await mint.wait();
+			dispatch({
+				type: AppActionTypes.Set_Toaster,
+				payload: {
+					toaster: {
+						render: true,
+						success: true,
+						message: "Verso Created!",
+					},
+				},
+			});
 		} catch (e) {
 			setError(e as any);
 			setLoading(false);
+			dispatch({
+				type: AppActionTypes.Set_Toaster,
+				payload: {
+					toaster: {
+						render: true,
+						success: false,
+						message: undefined,
+					},
+				},
+			});
 			console.log(e);
 		}
 	};

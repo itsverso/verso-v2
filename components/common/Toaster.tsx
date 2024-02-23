@@ -6,7 +6,7 @@ export const Toaster = () => {
 	const { state, dispatch } = useContext(AppContext);
 
 	useEffect(() => {
-		setTimeout(() => closeToaster(), 5000);
+		setTimeout(() => closeToaster(), 500000);
 	}, [state.app.renderToaster]);
 
 	const closeToaster = () => {
@@ -28,9 +28,13 @@ export const Toaster = () => {
 				<div
 					id="toast-success"
 					className={
-						`${
-							state.app.renderToaster ? "z-50" : "z-0"
-						} flex flex-row items-center  px-3 w-full h-16 rounded-md bg-white shadow` +
+						`${state.app.renderToaster ? "z-50" : "z-0"}
+                        ${
+							state.app.toasterSuccess
+								? "bg-[#EAFFEB]"
+								: "bg-rose-100"
+						} 
+                        flex flex-row items-center  px-3 w-full h-16 rounded-md shadow` +
 						(state.app.renderToaster
 							? " transition-opacity opacity-100 translate-y-0 transform duration-700"
 							: " transition-all delay-100 opacity-0 translate-y-full")
@@ -40,12 +44,12 @@ export const Toaster = () => {
 					{state.app.toasterSuccess ? (
 						<div
 							className={
-								"inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-sm bg-green-100"
+								"inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-sm bg-[#EAFFEB]"
 							}
 						>
 							<svg
 								aria-hidden="true"
-								className="w-5 h-5"
+								className="w-7 h-7"
 								fill="#0f766e"
 								viewBox="0 0 20 20"
 								xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +65,7 @@ export const Toaster = () => {
 					) : (
 						<div
 							className={
-								"inline-flex items-center justify-center flex-shrink-0 w-8 h-8 bg-rose-100"
+								"inline-flex items-center justify-center flex-shrink-0"
 							}
 						>
 							<svg
@@ -70,7 +74,7 @@ export const Toaster = () => {
 								viewBox="0 0 24 24"
 								strokeWidth={1.5}
 								stroke="#9f1239"
-								className="w-6 h-6"
+								className="w-7 h-7"
 							>
 								<path
 									strokeLinecap="round"

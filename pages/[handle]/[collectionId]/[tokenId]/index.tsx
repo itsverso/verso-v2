@@ -9,9 +9,11 @@ import {
 	getCollectionInstance,
 	getMarketContractInstance,
 } from "@/lib/contracts";
+import { AppActionTypes } from "@/reducers/appReducer";
 import { InfuraProvider } from "@/constants";
 import { UserContext } from "@/context/user-context";
 import { Spinner } from "@/components/common/Spinner";
+import { AppContext } from "@/context/context";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
 	return {
@@ -58,6 +60,7 @@ const TokenId: NextPage = (props: any) => {
 	const { collection, id } = props;
 	const router = useRouter();
 	const user = useContext(UserContext);
+	const { dispatch } = useContext(AppContext);
 	const [loading, setLoading] = useState<boolean>(false);
 	const { data, error, isLoading, mutate } = useGetTokenDetails(
 		collection,
@@ -93,9 +96,29 @@ const TokenId: NextPage = (props: any) => {
 					}
 				);
 				await buy.wait();
+				dispatch({
+					type: AppActionTypes.Set_Toaster,
+					payload: {
+						toaster: {
+							render: true,
+							success: true,
+							message: "New verso minted!",
+						},
+					},
+				});
 				setLoading(false);
 				mutate();
 			} catch (e) {
+				dispatch({
+					type: AppActionTypes.Set_Toaster,
+					payload: {
+						toaster: {
+							render: true,
+							success: false,
+							message: undefined,
+						},
+					},
+				});
 				console.log(e);
 				setLoading(false);
 			}
