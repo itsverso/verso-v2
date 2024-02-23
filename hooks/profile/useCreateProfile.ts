@@ -1,3 +1,4 @@
+import { AppContext } from "@/context/context";
 import { UserActionTypes, UserDispatchContext } from "@/context/user-context";
 import { createProfile } from "@/resources/users/createProfile";
 import { Profile } from "@/resources/users/types";
@@ -5,8 +6,10 @@ import { ConnectedWallet } from "@privy-io/react-auth";
 import { useContext } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
+import { AppActionTypes } from "@/reducers/appReducer";
 
 const useCreateProfile = () => {
+	const { dispatch } = useContext(AppContext);
 	const userDispatch = useContext(UserDispatchContext);
 	const [data, setData] = useState<Profile | null>(null);
 	const [loading, setLoading] = useState(false);
@@ -24,9 +27,29 @@ const useCreateProfile = () => {
 			try {
 				profile = await createProfile(wallet, name, handle);
 				setData(profile);
+				dispatch({
+					type: AppActionTypes.Set_Toaster,
+					payload: {
+						toaster: {
+							render: true,
+							success: true,
+							message: "Welcome to Verso!",
+						},
+					},
+				});
 			} catch (error: any) {
 				profile = null;
 				setError(error.message);
+				dispatch({
+					type: AppActionTypes.Set_Toaster,
+					payload: {
+						toaster: {
+							render: true,
+							success: false,
+							message: undefined,
+						},
+					},
+				});
 			} finally {
 				setLoading(false);
 			}

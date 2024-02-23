@@ -9,6 +9,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { createUser } from "@/resources/users/createUser";
 import { UserProvider } from "@/context/user-context";
+import { Toaster } from "@/components/common/Toaster";
 import localFont from "next/font/local";
 
 const hedvig = localFont({
@@ -71,6 +72,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 							className={`${GeistSans.variable} ${GeistMono.variable} ${hedvig.variable}`}
 						>
 							<Header />
+							<Toaster />
 							<Component {...pageProps} />
 						</main>
 					</UserProvider>
