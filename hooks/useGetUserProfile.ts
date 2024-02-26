@@ -4,8 +4,8 @@ import useSWR from "swr";
 const useGetUserProfile = (handle: string) => {
   const fetcher = async (handle: string) => getUserProfileByhandle(handle);
 
-  const { data, error, isLoading } = useSWR(handle, fetcher);
-  return { data, error, isLoading };
+  const { data, error, isLoading, mutate } = useSWR(handle, fetcher);
+  return { data, error, isLoading, mutate };
 };
 
 export default useGetUserProfile;

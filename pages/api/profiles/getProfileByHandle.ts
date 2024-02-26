@@ -2,13 +2,12 @@ import type { NextApiResponse } from "next";
 import { getProfileContractInstance } from "@/lib/contracts";
 import { InfuraProvider } from "@/constants";
 import { APIResponse } from "../types";
-import { profiles } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { Profile } from "@/resources/users/types";
 
 export async function getProfileByHandle(
   handle: string,
-  res: NextApiResponse<APIResponse<profiles>>
+  res: NextApiResponse<APIResponse<Profile>>
 ) {
   const profile = await prisma.profiles.findFirst({
     where: {
@@ -19,7 +18,11 @@ export async function getProfileByHandle(
   if (profile) {
     res.status(200).json({
       message: "success",
-      data: profile,
+      data: {
+        metadata: profile.metadata as Profile["metadata"],
+        metadataURI: profile.metadataURI,
+        walletAddress: profile.user_id,
+      },
     });
 
     return;
@@ -29,7 +32,7 @@ export async function getProfileByHandle(
   const profileId = await profilesContract.getIdFromHandle(handle);
   const id = parseInt(profileId._hex);
   const profileInChain = await profilesContract.getProfileByID(id);
-  const walletAddress = await profilesContract.ownerOf(id);
+  const walletAddress: string = await profilesContract.ownerOf(id);
 
   if (!profileInChain || !walletAddress) {
     res.status(404).json({
@@ -83,6 +86,10 @@ export async function getProfileByHandle(
   });
 
   res.status(200).json({
-    data: newProfile,
+    data: {
+      metadata: newProfile.metadata as Profile["metadata"],
+      metadataURI: newProfile.metadataURI,
+      walletAddress: newProfile.user_id,
+    },
   });
 }
