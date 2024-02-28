@@ -25,7 +25,7 @@ const frameMetadata = getFrameMetadata({
 });
 
 export const metadata: Metadata = {
-	title: "Collection Name",
+	title: "Collection Name Test",
 	description: "collection description",
 	openGraph: {
 		title: "Collection Name",
