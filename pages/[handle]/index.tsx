@@ -128,7 +128,6 @@ const Profile: Component = ({ handle }) => {
 				</div>
 				<div className="w-full my-4 flex items-center justify-start">
 					<div className=" flex flex-row items-center justify-end">
-						<WarpcastBox walletAddress={data?.walletAddress} />
 						{data?.metadata.website ? (
 							<a
 								target="_blank"
@@ -136,6 +135,15 @@ const Profile: Component = ({ handle }) => {
 								className="w-10 h-10 rounded-md m-1 border border-gray-400 hover:opacity-70 flex items-center justify-center"
 							>
 								<World size="6" />
+							</a>
+						) : null}
+						{data?.metadata.warpcast ? (
+							<a
+								target="_blank"
+								href={data?.metadata.website}
+								className="w-10 h-10 rounded-md m-1 border border-gray-400 hover:opacity-70 flex items-center justify-center"
+							>
+								<p className="font-sans font-black">W</p>
 							</a>
 						) : null}
 					</div>

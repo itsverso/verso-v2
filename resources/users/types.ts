@@ -10,5 +10,6 @@ export interface Profile {
 		website?: string;
 		foundation?: string;
 		superRare?: string;
+		warpcast?: string;
 	};
 }
