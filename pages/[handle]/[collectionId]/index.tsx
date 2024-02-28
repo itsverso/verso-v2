@@ -58,6 +58,7 @@ const Collection: NextPage = (props: any) => {
 
 	const handleUserRedirect = () => {
 		router.push(`/${data?.moderators[0]?.handle}`);
+		console.log("hello");
 	};
 
 	return (
