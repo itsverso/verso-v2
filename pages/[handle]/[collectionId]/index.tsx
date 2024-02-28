@@ -69,7 +69,7 @@ const Collection: NextPage = (props: any) => {
 	}
 
 	return (
-		<html>
+		<>
 			<Head>
 				<meta property="og:title" content={`Try`} />
 				<meta
@@ -154,7 +154,7 @@ const Collection: NextPage = (props: any) => {
 					) : null
 				}
 			</main>
-		</html>
+		</>
 	);
 };
 
