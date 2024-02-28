@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { NextPage } from "next";
 import { GetStaticPaths } from "next";
 import useGetTokenDetails from "@/hooks/useGetTokenDetails";
@@ -14,6 +14,7 @@ import { InfuraProvider } from "@/constants";
 import { UserContext } from "@/context/user-context";
 import { Spinner } from "@/components/common/Spinner";
 import { AppContext } from "@/context/context";
+import { useEditor } from "@tiptap/react";
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
 	return {
@@ -66,6 +67,10 @@ const TokenId: NextPage = (props: any) => {
 		collection,
 		id
 	);
+
+	useEffect(() => {
+		console.log(data);
+	}, [data]);
 
 	const handleRedirectBack = useCallback(() => {
 		router.back();
