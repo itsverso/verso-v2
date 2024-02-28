@@ -71,7 +71,21 @@ const Collection: NextPage = (props: any) => {
 	return (
 		<html>
 			<Head>
-				<metadata />
+				<meta property="og:title" content={`Try`} />
+				<meta
+					property="og:image"
+					content={`https://arweave.net/kA7Qry-8yP24ANW9aKGHhNS_tja_41eiQiar67cMLCI`}
+				/>
+				<meta property="fc:frame" content="vNext" />
+				<meta
+					property="fc:frame:image"
+					content={`https://arweave.net/kA7Qry-8yP24ANW9aKGHhNS_tja_41eiQiar67cMLCI`}
+				/>
+				<meta
+					property="fc:frame:post_url"
+					content={`<next_js_image_path>`}
+				/>
+				<meta property="fc:frame:button:1" content="Get started" />
 			</Head>
 			<main className="flex flex-col px-6 md:px-16 lg:px-20 xl:px-32 py-20 min-w-screen min-h-screen">
 				<Drawer
