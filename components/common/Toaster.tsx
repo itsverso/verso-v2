@@ -6,7 +6,7 @@ export const Toaster = () => {
 	const { state, dispatch } = useContext(AppContext);
 
 	useEffect(() => {
-		setTimeout(() => closeToaster(), 500000);
+		setTimeout(() => closeToaster(), 5000);
 	}, [state.app.renderToaster]);
 
 	const closeToaster = () => {

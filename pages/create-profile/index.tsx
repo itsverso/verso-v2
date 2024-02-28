@@ -69,7 +69,7 @@ const CreateProfile: NextPage = () => {
 		setName(e.target.value);
 	}, []);
 
-	const errorMessage = error || handleError || nameError || profileError;
+	const errorMessage = error || handleError || nameError;
 	const canCreateProfile = !errorMessage && handle.length > 0;
 
 	return (

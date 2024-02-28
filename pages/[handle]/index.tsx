@@ -13,6 +13,7 @@ import { World } from "../../resources/icons";
 import { Spinner } from "@/components/common/Spinner";
 import useGetUserProfile from "@/hooks/useGetUserProfile";
 import { Profile } from "@/resources/users/types";
+import { WarpcastBox } from "@/components/main/WarpcastBox";
 
 type Component = NextPage<{ handle: string }>;
 
@@ -47,13 +48,14 @@ const Profile: Component = ({ handle }) => {
   // Set right view based on param.
   // If not set, collection view is default.
   useEffect(() => {
+    console.log("User: ", data);
     let hasParam = params.has("collections");
     if (hasParam) {
       let param = params.get("collections");
       if (param == "true") setCollectionsView(true);
       else setCollectionsView(false);
     } else setCollectionsView(true);
-  }, [params]);
+  }, [params, data]);
 
   if (isLoading) {
     return (
@@ -144,6 +146,7 @@ const Profile: Component = ({ handle }) => {
                   />
                 </a>
               ) : null}
+              <WarpcastBox walletAddress={data?.walletAddress} />
               {data?.metadata.website ? (
                 <a
                   target="_blank"
@@ -151,6 +154,15 @@ const Profile: Component = ({ handle }) => {
                   className="w-10 h-10 rounded-md m-1 border border-gray-400 hover:opacity-70 flex items-center justify-center"
                 >
                   <World size="6" />
+                </a>
+              ) : null}
+              {data?.metadata.warpcast ? (
+                <a
+                  target="_blank"
+                  href={data?.metadata.website}
+                  className="w-10 h-10 rounded-md m-1 border border-gray-400 hover:opacity-70 flex items-center justify-center"
+                >
+                  <p className="font-sans font-black">W</p>
                 </a>
               ) : null}
             </div>
