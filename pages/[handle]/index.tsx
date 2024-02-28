@@ -55,10 +55,6 @@ const Profile: Component = ({ handle }) => {
     } else setCollectionsView(true);
   }, [params]);
 
-  const handleSwitchView = () => {
-    router.push(`/${handle}?collections=${!collectionsView}`);
-  };
-
   if (isLoading) {
     return (
       <main className="flex flex-row items-center justify-center min-h-screen min-w-screen">
@@ -171,11 +167,12 @@ const Profile: Component = ({ handle }) => {
         <div className="border-b border-gray-200"></div>
       </div>
       <div className="w-full mt-5 pb-24">
-        {handle && (
+        {data?.walletAddress && (
           <CollectionsCarousel
             openDrawer={() => setOpenCreateDrawer(true)}
             isOwner={isUserOwnProfile}
-            handle={handle}
+            userWalletAddress={data.walletAddress}
+            userHandle={handle}
           />
         )}
       </div>

@@ -51,8 +51,3 @@ export const InfuraProvider = new ethers.providers.InfuraProvider(
   network,
   process.env.INFURA_PRIVATE_KEY
 );
-
-export const AlchemyProvider = new ethers.providers.AlchemyProvider(
-  "optimism-goerli",
-  process.env.ALCHEMY_PRIVATE_KEY
-);
