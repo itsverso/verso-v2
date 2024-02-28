@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { ImageItem } from "@/components/main/ImageItem";
 import { useUser } from "@/context/user-context";
 import { PlusIcon } from "@heroicons/react/24/solid";
+import Head from "next/head";
 import { getFrameMetadata } from "@coinbase/onchainkit";
 import type { Metadata } from "next";
 
@@ -68,70 +69,78 @@ const Collection: NextPage = (props: any) => {
 	}
 
 	return (
-		<main className="flex flex-col px-6 md:px-16 lg:px-20 xl:px-32 py-20 min-w-screen min-h-screen">
-			<Drawer isOpen={openCreateDrawer} setIsOpen={setOpenCreateDrawer}>
-				<MintPictureForm
-					address={data?.address}
-					fireFetch={() => setFireFetch(true)}
-					onClickBack={() => setOpenCreateDrawer(false)}
-				/>
-			</Drawer>
-			<div className="w-full mt-4 md:mt-10 lg:px-4 flex flex-col">
-				<div className="flex flex-row items-center mb-2">
-					<div className="h-6 w-6 rounded-full bg-zinc-200">
-						{data?.moderators[0]?.image ? (
-							<img
-								className="w-full h-full rounded-full object-cover"
-								src={data?.moderators[0]?.image}
-							/>
-						) : null}
-					</div>
-					<div
-						className="cursor-pointer"
-						onClick={() => handleUserRedirect()}
-					>
-						<p className="ml-2 mt-1 text-xl text-gray-600 hover:opacity-80 font-hedvig">
-							@{data?.moderators[0]?.handle}
-						</p>
-					</div>
-				</div>
-				<p className="font-hedvig font-light text-4xl ">
-					{data?.metadata?.title}
-				</p>
-				<p className="font-sans text-lg text-zinc-600 font-light max-w-3xl mt-2">
-					{data?.metadata?.description}
-				</p>
-			</div>
-			<div className="h-full w-full mt-10">
-				<div className="w-full h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-					{data?.tokens?.nfts.map((item: any, index: number) => {
-						if (!item.metadataError) {
-							return (
-								<ImageItem
-									item={item}
-									index={index}
-									src={item?.media[0]?.gateway}
-									route={`${router.asPath}/${item.tokenId}`}
+		<html>
+			<Head>
+				<metadata />
+			</Head>
+			<main className="flex flex-col px-6 md:px-16 lg:px-20 xl:px-32 py-20 min-w-screen min-h-screen">
+				<Drawer
+					isOpen={openCreateDrawer}
+					setIsOpen={setOpenCreateDrawer}
+				>
+					<MintPictureForm
+						address={data?.address}
+						fireFetch={() => setFireFetch(true)}
+						onClickBack={() => setOpenCreateDrawer(false)}
+					/>
+				</Drawer>
+				<div className="w-full mt-4 md:mt-10 lg:px-4 flex flex-col">
+					<div className="flex flex-row items-center mb-2">
+						<div className="h-6 w-6 rounded-full bg-zinc-200">
+							{data?.moderators[0]?.image ? (
+								<img
+									className="w-full h-full rounded-full object-cover"
+									src={data?.moderators[0]?.image}
 								/>
-							);
-						}
-					})}
-				</div>
-			</div>
-			{
-				// Only display button if user is owner.
-				user?.profile?.metadata.handle == props.handle ? (
-					<div className="fixed bottom-10 right-12 flex flex-col items-center">
-						<button
-							onClick={() => setOpenCreateDrawer(true)}
-							className="my-1 flex items-center justify-center  h-14 w-14 rounded-full bg-black hover:opacity-90 cursor-pointer shadow-2xl"
+							) : null}
+						</div>
+						<div
+							className="cursor-pointer"
+							onClick={() => handleUserRedirect()}
 						>
-							<PlusIcon className="w-6 h-6 text-white" />
-						</button>
+							<p className="ml-2 mt-1 text-xl text-gray-600 hover:opacity-80 font-hedvig">
+								@{data?.moderators[0]?.handle}
+							</p>
+						</div>
 					</div>
-				) : null
-			}
-		</main>
+					<p className="font-hedvig font-light text-4xl ">
+						{data?.metadata?.title}
+					</p>
+					<p className="font-sans text-lg text-zinc-600 font-light max-w-3xl mt-2">
+						{data?.metadata?.description}
+					</p>
+				</div>
+				<div className="h-full w-full mt-10">
+					<div className="w-full h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+						{data?.tokens?.nfts.map((item: any, index: number) => {
+							if (!item.metadataError) {
+								return (
+									<ImageItem
+										item={item}
+										index={index}
+										src={item?.media[0]?.gateway}
+										route={`${router.asPath}/${item.tokenId}`}
+									/>
+								);
+							}
+						})}
+					</div>
+				</div>
+				{
+					// Only display button if user is owner.
+					user?.profile?.metadata.handle == props.handle ? (
+						<div className="fixed bottom-10 right-12 flex flex-col items-center">
+							<button
+								onClick={() => setOpenCreateDrawer(true)}
+								className="my-1 flex items-center justify-center  h-14 w-14 rounded-full bg-black hover:opacity-90 cursor-pointer shadow-2xl"
+							>
+								<PlusIcon className="w-6 h-6 text-white" />
+							</button>
+						</div>
+					) : null
+				}
+			</main>
+		</html>
 	);
 };
 
