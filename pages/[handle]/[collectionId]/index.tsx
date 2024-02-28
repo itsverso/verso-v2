@@ -14,16 +14,6 @@ import { PlusIcon } from "@heroicons/react/24/solid";
 import { getFrameMetadata } from "@coinbase/onchainkit";
 import type { Metadata } from "next";
 
-const frameMetadata = getFrameMetadata({
-	buttons: [
-		{
-			label: "Next",
-		},
-	],
-	image: `https://arweave.net/kA7Qry-8yP24ANW9aKGHhNS_tja_41eiQiar67cMLCI`,
-	post_url: `http://localhost:3000/api/frame/gallery?collectionAddress=0x4C45D09c7c362b84C8221d03e7409464c71B729F`,
-});
-
 export const metadata: Metadata = {
 	title: "Collection Name Test",
 	description: "collection description",
@@ -34,9 +24,7 @@ export const metadata: Metadata = {
 			`https://arweave.net/kA7Qry-8yP24ANW9aKGHhNS_tja_41eiQiar67cMLCI`,
 		],
 	},
-	other: {
-		...frameMetadata,
-	},
+	other: {},
 };
 
 export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
