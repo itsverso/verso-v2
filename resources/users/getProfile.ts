@@ -1,4 +1,3 @@
-import { profiles } from "@prisma/client";
 import { Profile } from "./types";
 
 const URL = process.env.NEXT_PUBLIC_BASE_URL + `/profiles`;
