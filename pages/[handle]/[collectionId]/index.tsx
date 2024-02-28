@@ -60,14 +60,6 @@ const Collection: NextPage = (props: any) => {
 		router.push(`/${data?.moderators[0]?.handle}`);
 	};
 
-	if (isLoading) {
-		return (
-			<main className="flex items-center justify-center min-w-screen min-h-screen">
-				<Spinner />
-			</main>
-		);
-	}
-
 	return (
 		<>
 			<Head>
@@ -83,7 +75,7 @@ const Collection: NextPage = (props: any) => {
 				/>
 				<meta
 					property="fc:frame:post_url"
-					content={`<next_js_image_path>`}
+					content={`https://www.itsverso.com/guille/0x0C85CB358E7805A4B9B5725890B8Ba3C5b71c028`}
 				/>
 				<meta property="fc:frame:button:1" content="Get started" />
 			</Head>
