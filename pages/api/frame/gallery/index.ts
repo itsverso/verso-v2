@@ -25,11 +25,23 @@ export default async function handler(
 		body: JSON.stringify({ address }),
 	});
 	let data = await requestCollectionData.json();
+	console.log(data);
 
 	let body = req.body;
-	console.log(body);
-
-	if (true) {
+	if (body.untrustedData.buttonIndex == 1) {
+		let htmlResponse = `<!DOCTYPE html><html><head>
+			<title>This is frame 7</title>
+			<meta property="fc:frame" content="vNext" />
+			<meta property="fc:frame:image" content="https://arweave.net/kA7Qry-8yP24ANW9aKGHhNS_tja_41eiQiar67cMLCI" />
+			<meta property="fc:frame:button:1" content="Hello hello" />
+			<meta property="fc:frame:button:1:action" content="post_redirect" />
+			<meta property="fc:frame:button:2" content="Button 1 clicked" />
+			<meta property="fc:frame:button:2:action" content="post_redirect" />
+			<meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_BASE_URL}/api/end" />
+		</head></html>`;
+		res.setHeader("Content-Type", "text/html");
+		res.status(200).send(htmlResponse);
+	} else {
 		let htmlResponse = `<!DOCTYPE html><html><head>
 			<title>This is frame 7</title>
 			<meta property="fc:frame" content="vNext" />
@@ -42,26 +54,5 @@ export default async function handler(
 		</head></html>`;
 		res.setHeader("Content-Type", "text/html");
 		res.status(200).send(htmlResponse);
-	} else {
-		if (tokenId === 7) {
-			return new NextResponse(`<!DOCTYPE html><html><head>
-		  <title>This is frame 7</title>
-		  <meta property="fc:frame" content="vNext" />
-		  <meta property="fc:frame:image" content="https://arweave.net/kA7Qry-8yP24ANW9aKGHhNS_tja_41eiQiar67cMLCI" />
-		  <meta property="fc:frame:button:1" content="Visit CosmicCowboys.cloud" />
-		  <meta property="fc:frame:button:1:action" content="post_redirect" />
-		  <meta property="fc:frame:button:2" content="Learn How this was made" />
-		  <meta property="fc:frame:button:2:action" content="post_redirect" />
-		  <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_BASE_URL}/api/end" />
-		</head></html>`);
-		} else {
-			return new NextResponse(`<!DOCTYPE html><html><head>
-		  <title>This is frame ${nextId}</title>
-		  <meta property="fc:frame" content="vNext" />
-		  <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_GATEWAY_URL}/ipfs/Qme4FXhoxHHfyzTfRxSpASbMF8kajLEPkRQWhwWu9pkUjm/${nextId}.png" />
-		  <meta property="fc:frame:button:1" content="Next Page" />
-		  <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_BASE_URL}/api/frame?id=${nextId}" />
-		</head></html>`);
-		}
 	}
 }
