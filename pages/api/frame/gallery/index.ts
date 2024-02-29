@@ -53,7 +53,7 @@ export default async function handler(
 				<meta property="fc:frame:image" content="${data.tokens.nfts[nextToken].rawMetadata.image}" />
 				<meta property="fc:frame:button:1" content="Visit on Verso" />
 				<meta property="fc:frame:button:1:action" content="post_redirect" />
-				<meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_BASE_URL}/frame/gallery/redirect${handle}/${address}" />
+				<meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_BASE_URL}/frame/gallery/redirect?handle=${handle}&collectionAddress=${address}" />
 			</head></html>`;
 		res.setHeader("Content-Type", "text/html");
 		res.status(200).send(htmlResponse);
