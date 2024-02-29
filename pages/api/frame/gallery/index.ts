@@ -31,11 +31,13 @@ export default async function handler(
 	console.log(body);
 
 	let nextToken = tokenId;
-	if (tokenId == 0) nextToken = 0;
-	else if (body.untrustedData.buttonIndex == 1) {
-		nextToken = tokenId - 1;
-	} else if (body.untrustedData.buttonIndex == 2) {
+	if (
+		body.untrustedData.buttonIndex == 1 ||
+		body.untrustedData.buttonIndex == 3
+	) {
 		nextToken = tokenId + 1;
+	} else if (body.untrustedData.buttonIndex == 2) {
+		nextToken = tokenId - 1;
 	}
 
 	if (nextToken == 0) {
@@ -45,12 +47,12 @@ export default async function handler(
 				<title>This is frame 7</title>
 				<meta property="fc:frame" content="vNext" />
 				<meta property="fc:frame:image" content="${
-					data.tokens.nfts[1].rawMetadata.image
+					data.tokens.nfts[0].rawMetadata.image
 				}" />
 				<meta property="fc:frame:button:1" content="Get started" />
 				<meta property="fc:frame:post_url" content="${
 					process.env.NEXT_PUBLIC_BASE_URL
-				}/frame/gallery?collectionAddress=${address}&tokenId=${1}" />
+				}/frame/gallery?collectionAddress=${address}&tokenId=${0}" />
 			</head></html>`;
 		res.setHeader("Content-Type", "text/html");
 		res.status(200).send(htmlResponse);
@@ -61,8 +63,8 @@ export default async function handler(
 				<title>This is frame 7</title>
 				<meta property="fc:frame" content="vNext" />
 				<meta property="fc:frame:image" content="${data.tokens.nfts[nextToken].rawMetadata.image}" />
-				<meta property="fc:frame:button:1" content="Previous" />
-				<meta property="fc:frame:button:2" content="Next" />
+				<meta property="fc:frame:button:2" content="Previous" />
+				<meta property="fc:frame:button:3" content="Next" />
 				<meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_BASE_URL}/frame/gallery?collectionAddress=${address}&tokenId=${nextToken}" />
 			</head></html>`;
 		res.setHeader("Content-Type", "text/html");
