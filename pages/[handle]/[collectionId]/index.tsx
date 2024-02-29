@@ -38,7 +38,10 @@ export const getStaticPaths: GetStaticPaths<{ handle: string }> = async () => {
 export async function getStaticProps({ params }: any) {
 	let id = params.collectionId;
 	let handle = params.handle;
-	return { props: { id, handle } };
+	const route = process.env.NEXT_PUBLIC_BASE_URL + `/collection/${id}`;
+	let res = await fetch(route);
+	let collection = await res.json();
+	return { props: { id, handle, collection } };
 }
 
 const Collection: NextPage = (props: any) => {
@@ -72,7 +75,7 @@ const Collection: NextPage = (props: any) => {
 				<meta property="fc:frame" content="vNext" />
 				<meta
 					property="fc:frame:image"
-					content={`https://arweave.net/kA7Qry-8yP24ANW9aKGHhNS_tja_41eiQiar67cMLCI`}
+					content={`${props.collection?.tokens?.nfts[0]?.rawMetadata?.image}`}
 				/>
 				<meta
 					property="fc:frame:post_url"

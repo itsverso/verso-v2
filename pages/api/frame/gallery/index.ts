@@ -30,41 +30,26 @@ export default async function handler(
 	let body = req.body;
 	console.log(body);
 
-	let nextToken = tokenId;
-	if (
-		body.untrustedData.buttonIndex == 1 ||
-		body.untrustedData.buttonIndex == 3
-	) {
-		nextToken = tokenId + 1;
-	} else if (body.untrustedData.buttonIndex == 2) {
-		nextToken = tokenId - 1;
-	}
+	let nextToken = tokenId + 1;
 
-	if (nextToken == 0) {
-		// If token id is 0 and user has clicked on "Get started"
-		// We return second image and button options
-		let htmlResponse = `<!DOCTYPE html><html><head>
-				<title>This is frame 7</title>
-				<meta property="fc:frame" content="vNext" />
-				<meta property="fc:frame:image" content="${
-					data.tokens.nfts[0].rawMetadata.image
-				}" />
-				<meta property="fc:frame:button:1" content="Get started" />
-				<meta property="fc:frame:post_url" content="${
-					process.env.NEXT_PUBLIC_BASE_URL
-				}/frame/gallery?collectionAddress=${address}&tokenId=${0}" />
-			</head></html>`;
-		res.setHeader("Content-Type", "text/html");
-		res.status(200).send(htmlResponse);
-	} else if (nextToken < maxLength) {
+	if (nextToken < maxLength - 1) {
 		// If token id is 0 and user has clicked on "Get started"
 		// We return second image and button options
 		let htmlResponse = `<!DOCTYPE html><html><head>
 				<title>This is frame 7</title>
 				<meta property="fc:frame" content="vNext" />
 				<meta property="fc:frame:image" content="${data.tokens.nfts[nextToken].rawMetadata.image}" />
-				<meta property="fc:frame:button:2" content="Previous" />
-				<meta property="fc:frame:button:3" content="Next" />
+				<meta property="fc:frame:button:1" content="Next" />
+				<meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_BASE_URL}/frame/gallery?collectionAddress=${address}&tokenId=${nextToken}" />
+			</head></html>`;
+		res.setHeader("Content-Type", "text/html");
+		res.status(200).send(htmlResponse);
+	} else if (nextToken == maxLength - 1) {
+		let htmlResponse = `<!DOCTYPE html><html><head>
+				<title>This is frame 7</title>
+				<meta property="fc:frame" content="vNext" />
+				<meta property="fc:frame:image" content="${data.tokens.nfts[nextToken].rawMetadata.image}" />
+				<meta property="fc:frame:button:1" content="Visit on Verso" />
 				<meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_BASE_URL}/frame/gallery?collectionAddress=${address}&tokenId=${nextToken}" />
 			</head></html>`;
 		res.setHeader("Content-Type", "text/html");
