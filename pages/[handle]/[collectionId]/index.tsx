@@ -79,7 +79,7 @@ const Collection: NextPage = (props: any) => {
 				/>
 				<meta
 					property="fc:frame:post_url"
-					content={`https://www.itsverso.com/api/frame/gallery?collectionAddress=0x0C85CB358E7805A4B9B5725890B8Ba3C5b71c028&tokenId=0`}
+					content={`https://www.itsverso.com/api/frame/gallery?handle=${props.handle}&collectionAddress=0x0C85CB358E7805A4B9B5725890B8Ba3C5b71c028&tokenId=0`}
 				/>
 				<meta property="fc:frame:button:1" content="Get started" />
 			</Head>

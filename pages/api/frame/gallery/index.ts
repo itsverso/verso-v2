@@ -6,6 +6,7 @@ interface APIRequest extends NextApiRequest {
 	query: {
 		collectionAddress?: string | undefined;
 		tokenId?: string | undefined;
+		handle?: string | undefined;
 	};
 }
 
@@ -17,6 +18,7 @@ export default async function handler(
 ) {
 	const tokenId = parseInt(req.query.tokenId as string);
 	const address = req.query.collectionAddress;
+	const handle = req.query.handle as string;
 	const nextId = tokenId + 1;
 
 	let route = process.env.NEXT_PUBLIC_BASE_URL + `/collection/${address}`;
@@ -40,7 +42,7 @@ export default async function handler(
 				<meta property="fc:frame" content="vNext" />
 				<meta property="fc:frame:image" content="${data.tokens.nfts[nextToken].rawMetadata.image}" />
 				<meta property="fc:frame:button:1" content="Next" />
-				<meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_BASE_URL}/frame/gallery?collectionAddress=${address}&tokenId=${nextToken}" />
+				<meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_BASE_URL}/frame/gallery?handle=${handle}&collectionAddress=${address}&tokenId=${nextToken}" />
 			</head></html>`;
 		res.setHeader("Content-Type", "text/html");
 		res.status(200).send(htmlResponse);
@@ -50,7 +52,8 @@ export default async function handler(
 				<meta property="fc:frame" content="vNext" />
 				<meta property="fc:frame:image" content="${data.tokens.nfts[nextToken].rawMetadata.image}" />
 				<meta property="fc:frame:button:1" content="Visit on Verso" />
-				<meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_BASE_URL}/frame/gallery?collectionAddress=${address}&tokenId=${nextToken}" />
+				<meta property="fc:frame:button:2:action" content="post_redirect" />
+				<meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_BASE_URL}/${handle}/${address}" />
 			</head></html>`;
 		res.setHeader("Content-Type", "text/html");
 		res.status(200).send(htmlResponse);
