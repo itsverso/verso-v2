@@ -47,9 +47,11 @@ export default async function handler(
 				<meta property="fc:frame" content="vNext" />
 				<meta property="fc:frame:image" content="${data.tokens.nfts[nextToken].rawMetadata.image}" />
 				<meta property="fc:frame:button:1" content="Next" />
-				<meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_BASE_URL}/api/frame/gallery?collectionAddress=${address}&tokenId=${nextToken}" />
+				<meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_BASE_URL}/frame/gallery?collectionAddress=${address}&tokenId=${nextToken}" />
 			</head></html>`;
 		res.setHeader("Content-Type", "text/html");
 		res.status(200).send(htmlResponse);
 	}
 }
+
+// https://www.itsverso.com/api/frame/gallery?collectionAddress=0x0C85CB358E7805A4B9B5725890B8Ba3C5b71c028&tokenId=1
