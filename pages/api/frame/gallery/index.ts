@@ -26,7 +26,7 @@ export default async function handler(
 	});
 	let data = await requestCollectionData.json();
 
-	let body = JSON.parse(req.body);
+	let body = req.body;
 	console.log(body);
 
 	if (true) {
