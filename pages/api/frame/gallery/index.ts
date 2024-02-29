@@ -25,7 +25,9 @@ export default async function handler(
 		body: JSON.stringify({ address }),
 	});
 	let data = await requestCollectionData.json();
-	console.log(data);
+
+	let body = JSON.parse(req.body);
+	console.log(body);
 
 	if (true) {
 		let htmlResponse = `<!DOCTYPE html><html><head>
